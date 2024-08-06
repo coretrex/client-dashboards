@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Annual Plan</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+</head>
+<body>
+    <div class="header">
+        <h1>Annual Plan</h1>
+        <p class="subtext">Outline your key annual goals and metrics for the upcoming years.</p>
+    </div>
+    <div class="goals-container">
+        <div class="goal-column">
+            <div class="module-header">
+                <h2 class="module-title">1 Year Plan</h2>
+            </div>
+            <div class="goal-module" id="one-year-plan">
+                <ul class="editable-list" id="one-year-list">
+                    <li>
+                        <span><b>Future Date:</b></span>
+                        <span contenteditable="true" class="editable-field" data-default="Enter Future Date">Enter Future Date</span>
+                        <div class="dropdown">
+                            <button class="dropdown-icon"><i class="fas fa-ellipsis-h"></i></button>
+                            <div class="dropdown-content">
+                                <a href="#" onclick="editField(this)"><i class="fas fa-edit"></i> Edit</a>
+                                <a href="#" onclick="deleteField(this)"><i class="fas fa-trash"></i> Delete</a>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <span><b>Revenue:</b></span>
+                        <span contenteditable="true" class="editable-field" data-default="Enter Revenue">Enter Revenue</span>
+                        <div class="dropdown">
+                            <button class="dropdown-icon"><i class="fas fa-ellipsis-h"></i></button>
+                            <div class="dropdown-content">
+                                <a href="#" onclick="editField(this)"><i class="fas fa-edit"></i> Edit</a>
+                                <a href="#" onclick="deleteField(this)"><i class="fas fa-trash"></i> Delete</a>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <span><b>Profit:</b></span>
+                        <span contenteditable="true" class="editable-field" data-default="Enter Profit">Enter Profit</span>
+                        <div class="dropdown">
+                            <button class="dropdown-icon"><i class="fas fa-ellipsis-h"></i></button>
+                            <div class="dropdown-content">
+                                <a href="#" onclick="editField(this)"><i class="fas fa-edit"></i> Edit</a>
+                                <a href="#" onclick="deleteField(this)"><i class="fas fa-trash"></i> Delete</a>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <span><b>CVR (%):</b></span>
+                        <span contenteditable="true" class="editable-field" data-default="Enter cvr (%)">Enter CVR (%)</span>
+                        <div class="dropdown">
+                            <button class="dropdown-icon"><i class="fas fa-ellipsis-h"></i></button>
+                            <div class="dropdown-content">
+                                <a href="#" onclick="editField(this)"><i class="fas fa-edit"></i> Edit</a>
+                                <a href="#" onclick="deleteField(this)"><i class="fas fa-trash"></i> Delete</a>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <span><b>AOV:</b></span>
+                        <span contenteditable="true">Enter AOV</span>
+                        <div class="dropdown">
+                            <button class="dropdown-icon"><i class="fas fa-ellipsis-h"></i></button>
+                            <div class="dropdown-content">
+                                <a href="#" onclick="editField(this)"><i class="fas fa-edit"></i> Edit</a>
+                                <a href="#" onclick="deleteField(this)"><i class="fas fa-trash"></i> Delete</a>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <span><b>TaCoS:</b></span>
+                        <span contenteditable="true">Enter TaCoS</span>
+                        <div class="dropdown">
+                            <button class="dropdown-icon"><i class="fas fa-ellipsis-h"></i></button>
+                            <div class="dropdown-content">
+                                <a href="#" onclick="editField(this)"><i class="fas fa-edit"></i> Edit</a>
+                                <a href="#" onclick="deleteField(this)"><i class="fas fa-trash"></i> Delete</a>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="goal-column">
+            <div class="module-header">
+                <h2 class="module-title">3 Year Plan</h2>
+            </div>
+            <div class="goal-module" id="three-year-plan">
+                <ul class="editable-list" id="three-year-list">
+                    <li>
+                        <span><b>Future Date:</b></span>
+                        <span contenteditable="true" class="future-date">Enter Future Date</span>
+                        <div class="dropdown">
+                            <button class="dropdown-icon"><i class="fas fa-ellipsis-h"></i></button>
+                            <div class="dropdown-content">
+                                <a href="#" onclick="editField(this)"><i class="fas fa-edit"></i> Edit</a>
+                                <a href="#" onclick="deleteField(this)"><i class="fas fa-trash"></i> Delete</a>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <span><b>Revenue:</b></span>
+                        <span contenteditable="true">Enter Revenue</span>
+                        <div class="dropdown">
+                            <button class="dropdown-icon"><i class="fas fa-ellipsis-h"></i></button>
+                            <div class="dropdown-content">
+                                <a href="#" onclick="editField(this)"><i class="fas fa-edit"></i> Edit</a>
+                                <a href="#" onclick="deleteField(this)"><i class="fas fa-trash"></i> Delete</a>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <span><b>Profit:</b></span>
+                        <span contenteditable="true">Enter Profit</span>
+                        <div class="dropdown">
+                            <button class="dropdown-icon"><i class="fas fa-ellipsis-h"></i></button>
+                            <div class="dropdown-content">
+                                <a href="#" onclick="editField(this)"><i class="fas fa-edit"></i> Edit</a>
+                                <a href="#" onclick="deleteField(this)"><i class="fas fa-trash"></i> Delete</a>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <span><b>CVR (%):</b></span>
+                        <span contenteditable="true">Enter CVR (%)</span>
+                        <div class="dropdown">
+                            <button class="dropdown-icon"><i class="fas fa-ellipsis-h"></i></button>
+                            <div class="dropdown-content">
+                                <a href="#" onclick="editField(this)"><i class="fas fa-edit"></i> Edit</a>
+                                <a href="#" onclick="deleteField(this)"><i class="fas fa-trash"></i> Delete</a>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <span><b>AOV:</b></span>
+                        <span contenteditable="true">Enter AOV</span>
+                        <div class="dropdown">
+                            <button class="dropdown-icon"><i class="fas fa-ellipsis-h"></i></button>
+                            <div class="dropdown-content">
+                                <a href="#" onclick="editField(this)"><i class="fas fa-edit"></i> Edit</a>
+                                <a href="#" onclick="deleteField(this)"><i class="fas fa-trash"></i> Delete</a>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <span><b>TaCoS:</b></span>
+                        <span contenteditable="true">Enter TaCoS</span>
+                        <div class="dropdown">
+                            <button class="dropdown-icon"><i class="fas fa-ellipsis-h"></i></button>
+                            <div class="dropdown-content">
+                                <a href="#" onclick="editField(this)"><i class="fas fa-edit"></i> Edit</a>
+                                <a href="#" onclick="deleteField(this)"><i class="fas fa-trash"></i> Delete</a>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="goal-column">
+            <div class="module-header">
+                <h2 class="module-title">5 Year Plan</h2>
+            </div>
+            <div class="goal-module" id="five-year-plan">
+                <ul class="editable-list" id="five-year-list">
+                    <li>
+                        <span><b>Future Date:</b></span>
+                        <span contenteditable="true" class="future-date">Enter Future Date</span>
+                        <div class="dropdown">
+                            <button class="dropdown-icon"><i class="fas fa-ellipsis-h"></i></button>
+                            <div class="dropdown-content">
+                                <a href="#" onclick="editField(this)"><i class="fas fa-edit"></i> Edit</a>
+                                <a href="#" onclick="deleteField(this)"><i class="fas fa-trash"></i> Delete</a>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <span><b>Revenue:</b></span>
+                        <span contenteditable="true">Enter Revenue</span>
+                        <div class="dropdown">
+                            <button class="dropdown-icon"><i class="fas fa-ellipsis-h"></i></button>
+                            <div class="dropdown-content">
+                                <a href="#" onclick="editField(this)"><i class="fas fa-edit"></i> Edit</a>
+                                <a href="#" onclick="deleteField(this)"><i class="fas fa-trash"></i> Delete</a>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <span><b>Profit:</b></span>
+                        <span contenteditable="true">Enter Profit</span>
+                        <div class="dropdown">
+                            <button class="dropdown-icon"><i class="fas fa-ellipsis-h"></i></button>
+                            <div class="dropdown-content">
+                                <a href="#" onclick="editField(this)"><i class="fas fa-edit"></i> Edit</a>
+                                <a href="#" onclick="deleteField(this)"><i class="fas fa-trash"></i> Delete</a>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <span><b>CVR (%):</b></span>
+                        <span contenteditable="true">Enter CVR (%)</span>
+                        <div class="dropdown">
+                            <button class="dropdown-icon"><i class="fas fa-ellipsis-h"></i></button>
+                            <div class="dropdown-content">
+                                <a href="#" onclick="editField(this)"><i class="fas fa-edit"></i> Edit</a>
+                                <a href="#" onclick="deleteField(this)"><i class="fas fa-trash"></i> Delete</a>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <span><b>AOV:</b></span>
+                        <span contenteditable="true">Enter AOV</span>
+                        <div class="dropdown">
+                            <button class="dropdown-icon"><i class="fas fa-ellipsis-h"></i></button>
+                            <div class="dropdown-content">
+                                <a href="#" onclick="editField(this)"><i class="fas fa-edit"></i> Edit</a>
+                                <a href="#" onclick="deleteField(this)"><i class="fas fa-trash"></i> Delete</a>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <span><b>TaCoS:</b></span>
+                        <span contenteditable="true">Enter TaCoS</span>
+                        <div class="dropdown">
+                            <button class="dropdown-icon"><i class="fas fa-ellipsis-h"></i></button>
+                            <div class="dropdown-content">
+                                <a href="#" onclick="editField(this)"><i class="fas fa-edit"></i> Edit</a>
+                                <a href="#" onclick="deleteField(this)"><i class="fas fa-trash"></i> Delete</a>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="script.js"></script>
+</body>
+</html>

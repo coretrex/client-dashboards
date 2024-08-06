@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consumer Profile</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background: linear-gradient(to right, #004085, #001f3f);
+            color: white;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .upload-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: #fff;
+        }
+
+        .file-label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 2px dashed #fff;
+            padding: 20px;
+            border-radius: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        .file-label:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .image-display {
+            display: none;
+            position: relative;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .image-display img {
+            max-width: 100%;
+            max-height: 80vh;
+            cursor: zoom-in;
+        }
+
+        .delete-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 30px;
+            height: 30px;
+            background-color: red;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        #lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+            cursor: zoom-out;
+        }
+
+        #lightbox img {
+            max-width: 90%;
+            max-height: 90%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="upload-container" class="upload-container">
+            <input type="file" id="file-input" class="file-input" accept="image/*" style="display: none;">
+            <label for="file-input" class="file-label">
+                <p>Click Here to add Your Brand's Consumer Profile</p>
+            </label>
+        </div>
+        <div id="image-display" class="image-display">
+            <button class="delete-button" style="display: none;">&times;</button>
+            <img id="uploaded-image" src="#" alt="Uploaded Image">
+        </div>
+    </div>
+
+    <div id="lightbox">
+        <img id="lightbox-img" src="#" alt="Lightbox Image">
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const fileInput = document.getElementById('file-input');
+            const imageDisplay = document.getElementById('image-display');
+            const uploadedImage = document.getElementById('uploaded-image');
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImg = document.getElementById('lightbox-img');
+            const deleteButton = document.querySelector('.delete-button');
+            const fileLabel = document.querySelector('.file-label');
+
+            if (fileInput && imageDisplay && uploadedImage && lightbox && lightboxImg && deleteButton && fileLabel) {
+                console.log('All elements found');
+
+                fileInput.addEventListener('change', function(event) {
+                    console.log('File input changed');
+                    const file = event.target.files[0];
+                    console.log('Selected file:', file);
+                    if (file && file.type.startsWith('image/')) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            console.log('File read successfully');
+                            uploadedImage.src = e.target.result;
+                            imageDisplay.style.display = 'flex';
+                            fileLabel.style.display = 'none';
+                            deleteButton.style.display = 'flex';
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+
+                uploadedImage.addEventListener('click', function() {
+                    console.log('Image clicked');
+                    lightboxImg.src = uploadedImage.src;
+                    lightbox.style.display = 'flex';
+                });
+
+                lightbox.addEventListener('click', function(e) {
+                    if (e.target !== lightboxImg) {
+                        console.log('Lightbox clicked outside of image');
+                        lightbox.style.display = 'none';
+                    }
+                });
+
+                deleteButton.addEventListener('click', function() {
+                    console.log('Delete button clicked');
+                    uploadedImage.src = '#';
+                    imageDisplay.style.display = 'none';
+                    fileLabel.style.display = 'flex';
+                    deleteButton.style.display = 'none';
+                    fileInput.value = ''; // Reset the file input
+                });
+            } else {
+                console.error('One or more elements not found');
+            }
+        });
+    </script>
+</body>
+</html>

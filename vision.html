@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vision</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="header">
+        <h1>Vision</h1>
+        <p class="subtext">Define and manage your core values, purpose, niche, and go-to-market strategy to align your team's efforts and achieve your business goals.</p>
+    </div>
+    <div class="vision-container">
+        <div class="vision-column">
+            <div class="vision-module" id="core-values">
+                <h2><i class="fas fa-heart"></i> Core Values</h2>
+                <ul class="editable-list" id="core-values-list"></ul>
+                <div class="vision-input-container">
+                    <input type="text" id="core-values-input" placeholder="Add Core Value" onkeypress="handleAddItem(event, 'core-values-list', 'core-values-input')">
+                    <button class="add-icon" onclick="addItem('core-values-list', 'core-values-input')"><i class="fas fa-plus"></i></button>
+                </div>
+            </div>
+            <div class="vision-module" id="purpose-cause-passion">
+                <h2><i class="fas fa-bullseye"></i> Purpose/Cause/Passion</h2>
+                <ul class="editable-list" id="purpose-cause-passion-list"></ul>
+                <div class="vision-input-container">
+                    <input type="text" id="purpose-cause-passion-input" placeholder="Add Purpose, Cause, Passion" onkeypress="handleAddItem(event, 'purpose-cause-passion-list', 'purpose-cause-passion-input')">
+                    <button class="add-icon" onclick="addItem('purpose-cause-passion-list', 'purpose-cause-passion-input')"><i class="fas fa-plus"></i></button>
+                </div>
+            </div>
+            <div class="vision-module" id="niche">
+                <h2><i class="fas fa-chart-pie"></i> Niche</h2>
+                <ul class="editable-list" id="niche-list"></ul>
+                <div class="vision-input-container">
+                    <input type="text" id="niche-input" placeholder="Add Niche" onkeypress="handleAddItem(event, 'niche-list', 'niche-input')">
+                    <button class="add-icon" onclick="addItem('niche-list', 'niche-input')"><i class="fas fa-plus"></i></button>
+                </div>
+            </div>
+        </div>
+        <div class="vision-column">
+            <div class="vision-module" id="go-to-market-strategy">
+                <h2><i class="fas fa-rocket"></i> Go to Market Strategy</h2>
+                <div class="vision-editable-list-container">
+                    <h3>Target Market</h3>
+                    <ul class="editable-list" id="target-market-list">
+                        <li><span><b>Age:</b></span><span contenteditable="true">Enter Age</span><div class="dropdown"><button class="dropdown-icon"><i class="fas fa-ellipsis-h"></i></button><div class="dropdown-content"><a href="#" onclick="editField(this)"><i class="fas fa-edit"></i> Edit</a><a href="#" onclick="deleteField(this)"><i class="fas fa-trash"></i> Delete</a></div></div></li>
+                        <li><span><b>Sex:</b></span><span contenteditable="true">Enter Sex</span><div class="dropdown"><button class="dropdown-icon"><i class="fas fa-ellipsis-h"></i></button><div class="dropdown-content"><a href="#" onclick="editField(this)"><i class="fas fa-edit"></i> Edit</a><a href="#" onclick="deleteField(this)"><i class="fas fa-trash"></i> Delete</a></div></div></li>
+                        <li><span><b>Household Income:</b></span><span contenteditable="true">Enter Household Income</span><div class="dropdown"><button class="dropdown-icon"><i class="fas fa-ellipsis-h"></i></button><div class="dropdown-content"><a href="#" onclick="editField(this)"><i class="fas fa-edit"></i> Edit</a><a href="#" onclick="deleteField(this)"><i class="fas fa-trash"></i> Delete</a></div></div></li>
+                        <li><span><b>Location:</b></span><span contenteditable="true">Enter Location</span><div class="dropdown"><button class="dropdown-icon"><i class="fas fa-ellipsis-h"></i></button><div class="dropdown-content"><a href="#" onclick="editField(this)"><i class="fas fa-edit"></i> Edit</a><a href="#" onclick="deleteField(this)"><i class="fas fa-trash"></i> Delete</a></div></div></li>
+                        <li><span><b>Education:</b></span><span contenteditable="true">Enter Education</span><div class="dropdown"><button class="dropdown-icon"><i class="fas fa-ellipsis-h"></i></button><div class="dropdown-content"><a href="#" onclick="editField(this)"><i class="fas fa-edit"></i> Edit</a><a href="#" onclick="deleteField(this)"><i class="fas fa-trash"></i> Delete</a></div></div></li>
+                    </ul>
+                </div>
+                <div class="vision-editable-list-container">
+                    <h3>Unique Value Proposition</h3>
+                    <ul class="editable-list" id="unique-value-proposition-list">
+                        <li><span class="italic-preview" contenteditable="true">e.g., Wholesome, delicious snacks that fuel your active lifestyle.</span><div class="dropdown"><button class="dropdown-icon"><i class="fas fa-ellipsis-h"></i></button><div class="dropdown-content"><a href="#" onclick="editField(this)"><i class="fas fa-edit"></i> Edit</a><a href="#" onclick="deleteField(this)"><i class="fas fa-trash"></i> Delete</a></div></div></li>
+                    </ul>
+                </div>
+                <div class="vision-editable-list-container">
+                    <h3>Guarantee</h3>
+                    <ul class="editable-list" id="guarantee-list">
+                        <li><span class="italic-preview" contenteditable="true">e.g., Enjoy or it's free—your happiness, our priority.</span><div class="dropdown"><button class="dropdown-icon"><i class="fas fa-ellipsis-h"></i></button><div class="dropdown-content"><a href="#" onclick="editField(this)"><i class="fas fa-edit"></i> Edit</a><a href="#" onclick="deleteField(this)"><i class="fas fa-trash"></i> Delete</a></div></div></li>
+                    </ul>
+                </div>
+                <button class="brand-analytics-button" onclick="window.open('https://sellercentral.amazon.com/brand-analytics/', '_blank')">
+                    Navigate to Amazon Brand Analytics <i class="fas fa-external-link-alt"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    <script src="vision.js"></script>
+</body>
+</html>

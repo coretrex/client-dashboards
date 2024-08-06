@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quarterly Goals</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.13.0/Sortable.min.js" defer></script>
+    <script src="quarterly-goals.js" defer></script>
+</head>
+<body>
+    <div class="quarterly-goals-container">
+        <div id="quarterly-countdown-timer" class="countdown-timer unique-timer"></div>
+        <div id="quarterly-countdown-text" class="countdown-text unique-text"></div>
+        <div class="goal-input-container">
+            <input type="text" id="new-goal-input" class="goal-input unique-goal-input" placeholder="Deploy A+ across all SKUs...">
+        </div>
+        <div class="committed-goals">
+            <h2>Committed Quarterly Goals</h2>
+            <ul id="goal-list"></ul>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,1707 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;700&display=swap');
+
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+
+    background: linear-gradient(90deg, rgb(1, 6, 75) 0%, hsla(211, 100%, 28%, 1) 100%);
+    color: white;
+}
+
+.module-title {
+    color: white !important;
+    text-align: center;
+    font-size: 2em; /* Adjust size as needed */
+    font-weight: bold;
+    background-color: #0434b6;
+    padding: 0px 0; /* Adjust padding as needed */
+    margin: 0; /* Remove default margins */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100px; /* Adjust height as needed */
+}
+
+
+
+.sidebar {
+    width: 250px;
+    height: 100vh;
+    background-color: #001f3f;
+    display: flex;
+    flex-direction: column;
+    padding-top: 20px;
+    padding-bottom: 20px; /* Add padding at the bottom */
+    position: fixed;
+    top: 0;
+    left: 0;
+    overflow-y: auto; /* Add vertical scroll if needed */
+    scrollbar-width: none; /* For Firefox */
+    -ms-overflow-style: none;  /* For Internet Explorer and Edge */
+}
+
+.sidebar::-webkit-scrollbar {
+    display: none; /* For Chrome, Safari, and Opera */
+}
+
+.sidebar-logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.logo {
+    max-width: 200px;
+    height: auto;
+}
+
+.sidebar-menu {
+    list-style-type: none;
+    padding: 0;
+    width: 100%;
+    flex: 1;
+    overflow-y: auto; /* Add vertical scroll if needed */
+    scrollbar-width: none; /* For Firefox */
+    -ms-overflow-style: none;  /* For Internet Explorer and Edge */
+}
+
+.sidebar-menu::-webkit-scrollbar {
+    display: none; /* For Chrome, Safari, and Opera */
+}
+
+.sidebar-menu li {
+    width: 100%;
+}
+
+.sidebar-menu li a {
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    color: white;
+    text-decoration: none;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.sidebar-menu li a i {
+    margin-right: 10px;
+}
+
+.sidebar-menu li a:hover {
+    background-color: #0434b6;
+}
+
+.analytics-hub-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 0;
+    color: white;
+    text-decoration: none;
+    border: 2px solid white;
+    border-radius: 4px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    background-color: transparent;
+    margin: 10px; /* 10px margin on all sides */
+    margin-bottom: 45px; /* Additional margin at the bottom */
+    box-sizing: border-box;
+}
+
+.analytics-hub-button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.main-content {
+    margin-left: 250px;
+    padding: 20px;
+    width: calc(100% - 250px);
+}
+
+.header {
+    margin-left:20px;
+}
+
+.header h1 {
+    font-size: 36px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.header h2 {
+    font-size: 20px;
+    font-weight: normal;
+    margin-bottom: 30px;
+}
+
+.container {
+    width: 100%;
+    max-width: 1000px;
+    padding: 20px;
+    border-radius: 10px;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.input-container {
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 20px;
+    gap: 20px;
+}
+
+.input-box {
+    background-color: transparent;
+    padding: 15px;
+    border-radius: 8px;
+    flex: 1;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+.input-box label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 20px;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+.input-box input, .input-box input[type="range"] {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-bottom: 2px solid #ffffff;
+    border-radius: 0;
+    background: transparent;
+    font-size: 14px;
+    color: #ffffff;
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
+}
+
+.input-box input::placeholder {
+    color: #cccccc;
+    font-family: 'Poppins', sans-serif;
+    text-align: center;
+}
+
+.input-box input:focus::placeholder {
+    color: transparent;
+}
+
+.input-box .range-value {
+    margin-top: 10px;
+    color: #ffffff;
+}
+
+.toggle-container {
+    cursor: pointer;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.toggle-text {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.toggle-icon {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.metrics-subtext {
+    margin-bottom: 20px;
+    font-size: 14px;
+    color: #cccccc;
+}
+
+button {
+    width: 100%;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-bottom: 5px;
+    padding-top: 5px;
+    border: none;
+    border-radius: 0px;
+    background-color: #007bff;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    font-weight: bold;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+.results {
+    margin-top: 20px;
+    padding: 10px;
+    border-radius: 4px;
+    color: #ffffff;
+    display: none;
+    text-align: left;
+}
+
+/* Checklist Styles */
+body.modal-open {
+    overflow: hidden;
+}
+
+.checklist-container {
+    display: flex;
+    gap: 20px;
+    justify-content: space-between;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+.checklist-container .task-bucket {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    width: 30%;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;
+    color: #000000;
+}
+
+.on-hold-btn, .done-btn, .delete-task-btn {
+    background-color: #007bff; /* Blue background */
+    color: white;              /* White text */
+    border: none;
+    border-radius: 4px;        /* Optional: rounded corners */
+    width: 30px;               /* Fixed width */
+    height: 30px;              /* Fixed height */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;           /* Font size for the icons */
+    cursor: pointer;
+    margin-left: 0px;          /* Space between buttons */
+}
+
+.on-hold-btn i, .done-btn i, .delete-task-btn i {
+    pointer-events: none;      /* Prevent click events on the icon */
+}
+
+.on-hold-btn:hover, .done-btn:hover, .delete-task-btn:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+
+.checklist-container .task-bucket:hover {
+    background-color: #f0f0f0;
+}
+
+.checklist-container .bucket-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.checklist-container .bucket-header h3 {
+    margin: 0;
+}
+
+.checklist-container .add-task-btn {
+    background-color: #0434b6;
+    color: white;
+    border: none;
+    font-weight:normal;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.checklist-container .add-task-btn:hover {
+    background-color: #0056b3;
+}
+
+.checklist-container .task-list {
+    list-style-type: none;
+    padding: 0;
+    min-height: 100px; /* Add minimum height for better visual */
+}
+
+.checklist-container .task-item {
+    background-color: #f9f9f9;
+    margin-bottom: 5px;
+    padding: 5px 10px; /* Reduced padding */
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    cursor: move; /* Indicate that the item is draggable */
+    color: #000000;
+    font-family: 'Poppins', sans-serif;
+    border: 1px solid #e0e0e0;
+}
+
+.checklist-container .task-item.completed {
+    background-color: #e0e0e0;
+    text-decoration: line-through;
+}
+
+.checklist-container .task-actions {
+    display: flex;
+    gap: 5px;
+}
+
+.checklist-container .task-actions .icon {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    margin-left: 5px;
+}
+
+.checklist-container .task-actions .icon:hover {
+    color: #007bff;
+}
+
+.checklist-container .task-actions .icon.yellow {
+    color: #ffc107;
+}
+
+.checklist-container .task-actions .icon.green {
+    color: #28a745;
+}
+
+.checklist-container .task-actions .icon.red {
+    color: #dc3545;
+}
+
+.checklist-container .task-actions .icon.delete {
+    color: #ff0000;
+    font-size: 18px;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    position: relative;
+    width: 300px;
+    color: #000000;
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    font-size: 20px;
+}
+
+input[type="text"] {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin: 10px 0;
+    border: none;
+    border-bottom: 1px solid #ccc;
+    color: #000000;
+    font-family: 'Poppins', sans-serif;
+}
+
+.icon-padding {
+    padding-left: 8px; /* Adjust the value to your preference */
+}
+
+/*File Manager */
+
+.file-manager-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 20px;
+    width: 100%;
+    max-width: 600px;
+    margin: auto;
+    color: white;
+}
+
+.upload-container {
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.file-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 2px dashed #fff;
+    padding: 10px;
+    border-radius: 10px;
+    width: 100%;
+    max-width: 400px;
+    height: 50px;
+    transition: background-color 0.3s ease;
+    text-align: center;
+}
+
+.file-label:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.folders {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.folder {
+    border: 2px solid #ffffff;
+    padding: 10px;
+    border-radius: 4px;
+    width: 100%;
+    background-color: #f0f0f0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    position: relative;
+}
+
+.folder-title {
+    margin: 0;
+    padding: 5px;
+    color: #333;
+    width: 100%;
+    font-size: 16px;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+}
+
+.folder-title::after {
+    content: '▼';
+    font-size: 12px;
+}
+
+.uncategorized-title {
+    margin: 0;
+    padding: 5px 0;
+    color: #ffffff;
+    width: 100%;
+    font-size: 16px;
+    font-weight: bold;
+    border-bottom: 1px solid #ffffff;
+}
+
+.uncategorized {
+    width: 100%;
+    margin-top: 20px;
+}
+
+.file-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 5px 0 0 0;
+    width: 100%;
+    display: none;
+}
+
+.file-list.expanded {
+    display: block;
+}
+
+.file-list.empty::before {
+    content: 'No files available.';
+    display: block;
+    padding: 5px;
+    color: #999;
+    text-align: center;
+}
+
+.file-list li {
+    background-color: #007bff;
+    color: white;
+    padding: 5px;
+    margin-bottom: 5px;
+    border-radius: 4px;
+    cursor: move;
+    text-align: left;
+}
+
+.quarterly-goals-container {
+    padding: 20px;
+    text-align: center;
+    color: white;
+}
+
+.countdown-timer {
+    font-size: 4rem;
+    font-family: 'Poppins', sans-serif;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: baseline;
+    gap: 0.5rem;
+}
+
+.countdown-timer .number {
+    font-weight: 700; /* Extra bold */
+}
+
+.countdown-timer .unit {
+    font-weight: 300; /* Thin weight */
+}
+
+.countdown-text {
+    font-size: 1.5rem;
+    font-family: 'Poppins', sans-serif;
+    margin-bottom: 20px;
+}
+
+.goal-input-container {
+    margin-bottom: 20px;
+}
+
+/*.goal-column {
+    box-shadow: 
+        0 0 5px #0575ed, 
+        0 0 5px #0575ed, 
+        0 0 65px #0575ed, 
+        0 0 15px #0575ed, 
+        0 0 65px #0575ed; /* Multiple shadows to create neon effect */
+        
+}
+
+.goal-input {
+    width: calc(100% - 20px);
+    padding: 10px;
+    font-size: 1rem;
+    border: none;
+    border-bottom: 2px solid lightgrey;
+    background: transparent;
+    color: white !important; /* Ensure text color is white */
+    font-family: 'Poppins', sans-serif;
+    text-align: center;
+    outline: none;
+}
+
+.goal-input::placeholder {
+    color: lightgrey;
+    font-style: italic;
+}
+
+.committed-goals {
+    text-align: left;
+}
+
+.committed-goals h2 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+.committed-goals ul {
+    list-style-type: none;
+    padding: 0;
+    font-size: 1.2rem;
+}
+
+.goal-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    cursor: grab; /* Indicates draggable item */
+    color: white; /* Ensure text color is white */
+    position: relative;
+}
+
+.goal-item.on-track {
+    background-color: green;
+}
+
+.goal-item.on-hold {
+    background-color: orange;
+}
+
+.goal-item.off-track {
+    background-color: red;
+}
+
+.goal-item.completed {
+    background-color: grey;
+    color: grey;
+    background-color: #f0f0f0;
+    order: 1;
+}
+
+.goal-status {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Adjust the gap as needed */
+}
+
+.status-dropdown {
+    padding: 5px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.8rem;
+    color: white;
+    background-color: darkgreen; /* Initial color for On-Track */
+    height: 30px; /* Ensure dropdown has consistent height */
+    line-height: 30px; /* Center text vertically */
+}
+
+.status-dropdown.on-track {
+    background-color: darkgreen;
+}
+
+.status-dropdown.on-hold {
+    background-color: darkorange;
+}
+
+.status-dropdown.off-track {
+    background-color: darkred;
+}
+
+.status-button {
+    padding: 5px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.8rem;
+    color: white;
+    background-color: darkgreen; /* Initial color for the complete button */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 30px; /* Ensure all buttons have the same height */
+    width: 30px; /* Ensure all buttons have the same width */
+}
+
+.status-button.delete-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.status-button i {
+    font-size: 1rem;
+    color: white;
+    line-height: 1; /* Ensure icons are centered */
+}
+
+.sortable-ghost {
+    opacity: 0.4;
+}
+
+/* Other styles */
+.upload-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #fff;
+}
+
+.file-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 2px dashed #fff;
+    padding: 20px;
+    border-radius: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.file-label:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.file-icon {
+    font-size: 50px;
+    margin-bottom: 10px;
+}
+
+.image-display {
+    display: none;
+    position: relative; /* Make the container position relative */
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.image-display img {
+    max-width: 100%;
+    max-height: 80vh;
+    cursor: zoom-in;
+}
+
+.delete-button {
+    position: absolute;
+    top: 0px;
+    right: 5px;
+    background-color: #36454F;
+    width: 30px;
+    height: 30px;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.status-button.delete-button:hover {
+    background-color: #333; /* Very dark grey on hover */
+}
+
+/* styles.css */
+
+.calculate-btn {
+    width: 100%; /* Adjust the width as needed */
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    border: none;
+    border-radius: 0px;
+    background-color: #0434b6;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    font-weight: bold;
+}
+
+.calculate-btn:hover {
+    background-color: #0056b3;
+}
+
+
+#lightbox {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    justify-content: center;
+    align-items: center;
+    cursor: zoom-out;
+}
+
+#lightbox img {
+    max-width: 90%;
+    max-height: 90%;
+}
+
+#lightbox.zoomed-in img {
+    transform: scale(2);
+}
+
+/* KPI Specific Page Styles */
+.header .subtext {
+    font-size: 14px;
+    font-weight: 300; /* Thin text */
+    margin-top: -10px;
+    color: #cccccc; /* Light color for contrast */
+}
+
+.kpi-container {
+    padding: 20px;
+}
+
+.kpi-table-container {
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+.kpi-table {
+    width: max-content; /* This ensures the table does not shrink */
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+.kpi-table th, .kpi-table td {
+    padding: 5px;
+    border: 1px solid #ddd;
+    text-align: left;
+    color: #000;
+    min-width: 120px; /* Fixed width for each cell */
+}
+
+.kpi-table th {
+    background: #0434b6; /* Darker blue for header */
+    color: white;
+    position: relative;
+}
+
+.kpi-table th .delete-container {
+    position: absolute;
+    top: 50%;
+    right: 5px;
+    transform: translateY(-50%);
+}
+
+.kpi-table th .delete-button {
+    background: none;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 12px;
+    padding: 2px 5px;
+}
+
+.kpi-table th .delete-button:hover {
+    color: red;
+}
+
+.kpi-table td[contenteditable="true"] {
+    background: #f9f9f9;
+    cursor: text;
+}
+
+/* Add padding to the right of the text in the first column */
+.kpi-table td:first-child {
+    padding-right: 25px;
+    font-weight: bold;
+    background-color: #F1F1F1;
+}
+
+.kpi-table td:nth-child(2) {
+    background-color: #F1F1F1;
+}
+
+.kpi-buttons {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+}
+
+.kpi-button {
+    background: #0434b6;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.kpi-button:hover {
+    background: #0056b3;
+}
+
+/* Vision CSS */
+/* styles.css */
+.vision-container {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+}
+
+.vision-column {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.vision-module {
+    background-color: #ffffff;
+    color: #000000;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden; /* Ensure fields stay within the module */
+    position: relative;
+}
+
+.vision-module h2 {
+    margin-top: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.editable-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.editable-list li {
+    display: flex;
+    align-items: center;
+    padding: 5px 0;
+    position: relative;
+}
+
+.editable-list li span {
+    color: #000000; /* Black color for regular text */
+    word-break: break-word; /* Ensure long words break correctly */
+}
+
+.editable-list li span:first-child {
+    color: #025698; /* Color for bold text */
+    font-weight: bold;
+    padding-left: 20px; /* Padding left for bold text */
+    margin-right: 5px; /* Reduced margin */
+}
+
+.editable-list li span:last-child {
+    flex: 1;
+}
+
+.dropdown {
+    position: absolute;
+    right: 0; /* Fixed to the right side */
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: white;
+    min-width: 160px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    z-index: 1000; /* Ensure dropdown appears in front */
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content a:hover {
+    background-color: #f1f1f1;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.editable-item h3 {
+    margin: 10px 0 5px;
+}
+
+.editable-item p {
+    padding: 10px;
+    bottom-border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+    cursor: text;
+}
+
+.vision-input-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+    padding-bottom: 0; /* Ensure padding bottom is zero */
+}
+
+input[type="text"] {
+    flex: 1;
+    padding: 10px;
+    bottom-border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
+.subtext {
+    font-size: 16px;
+    color: #cccccc;
+    margin-top: -10px;
+    margin-bottom: 20px;
+}
+
+.add-icon {
+    background-color: #0434b6;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    height: 40px;
+    width: 40px;
+}
+
+.add-icon:hover {
+    background-color: #0056b3;
+}
+
+.dropdown-icon {
+    background-color: transparent;
+    color: #007bff;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dropdown-icon:hover {
+    color: #0056b3;
+    background-color: #ddd !important;
+}
+
+.vision-editable-list-container h3 {
+    margin: 10px 0 5px; /* Reduced margin for tighter spacing */
+}
+
+.italic-preview {
+    flex: 1;
+    color: #000000; /* Black color for regular text */
+    font-style: italic; /* Italics */
+    font-weight: normal; /* Regular font weight */
+    font-size: 16px; /* Regular size */
+}
+
+.unique-value-input,
+.guarantee-input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+/* Meeting Agenda*/
+/* General container setup to reduce the gap and expand the modules */
+.checklist-container {
+    display: flex;
+    gap: 10px; /* Smaller gap between modules */
+    padding: 20px; /* Padding around the entire container */
+    justify-content: space-around; /* Ensures equal spacing */
+}
+
+.discussion-type {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    color: #000;
+    margin-right: 10px;
+}
+
+.task-bucket {
+    flex-grow: 1; /* Makes each bucket grow to fill the space */
+    margin: 0; /* Removes any default margins */
+    padding: 20px; /* Padding inside each bucket */
+    border-radius: 8px; /* Rounded corners for aesthetics */
+}
+
+/* Adjustments for Meeting Topics */
+.meeting-topics {
+    background-color: #f0f8ff; /* Light azure for distinction */
+    color: #000000;
+}
+
+.meeting-topics .bucket-header {
+    color: black;
+}
+
+
+.light-font {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 200; /* Light font weight */
+}
+
+
+.meeting-topics .task-list {
+    background-color: #f8f9fa; /* Very light grey */
+}
+
+/* Adjustments for Parking Lot */
+.parking-lot {
+    background-color: #fffaf0; /* Light golden for distinction */
+    color: #000000;
+}
+
+.parking-lot .bucket-header {
+    color: black;
+}
+
+.parking-lot .task-list {
+    background-color: #fdfdfe; /* Very light almost white */
+}
+
+
+/* Goals Page */
+
+.goal-column {
+    padding: 0 !important; /* Remove padding from goal-column */
+}
+
+.module-header {
+    background-color: #001f3f;
+    margin: 0; /* Remove default margin */
+    width: 100%; /* Ensure it spans the full width */
+    box-sizing: border-box; /* Include padding and border in element's total width and height */
+}
+
+
+.goals-container {
+    display: flex;
+    justify-content: space-around;
+    padding: 20px;
+}
+
+.goal-column {
+    background-color: #ffffff;
+    padding: 20px;
+    padding-top: 0px;
+    border-radius: 0px;
+    width: 30%;
+    color: #000000;
+}
+
+.goal-column h2 {
+    color: #000000;
+}
+
+.editable-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.editable-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    padding-bottom:10px;
+    border-bottom: 1px solid #ccc;
+}
+
+.editable-list span {
+    flex: 1;
+    padding: 5px;
+    margin-left: 5px;
+    border-radius: 4px;
+    outline: none;
+}
+
+.editable-list span[contenteditable="true"] {
+    background-color: transparent;
+    border: none;
+    width: calc(100% - 5px);
+}
+
+.editable-list .future-date {
+    width: 200px;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-icon {
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content a:hover {
+    background-color: #f1f1f1;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.dropdown:hover .dropdown-icon {
+    background-color: #ddd;
+}
+
+
+
+
+/* Brand Analytics Button */
+
+.brand-analytics-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    color: white;
+    text-decoration: none;
+    border: 2px solid #0434b6;
+    border-radius: 0px;
+    background-color: #0434b6;
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 20px; /* Add margin at the top */
+    gap: 10px; /* Add space between text and icon */
+}
+
+.brand-analytics-button:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+
+
+
+/* Media queries to adjust the input sizes */
+@media (max-width: 768px) {
+    .input-container {
+        gap: 10px;
+    }
+
+    .input-box {
+        padding: 10px;
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .input-container {
+        gap: 5px;
+    }
+
+    .input-box {
+        padding: 8px;
+        font-size: 12px;
+    }
+}
+
+/* Responsive adjustments */
+@media (max-height: 768px) {
+    .sidebar {
+        height: 100vh;
+        overflow-y: auto;
+    }
+
+    .sidebar-menu {
+        overflow-y: auto;
+    }
+}
+
+.modal-open {
+    overflow: hidden;
+}
+
+
+.blur-background {
+    filter: blur(5px);
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1; /* Ensure it is behind the modal */
+}
+.content-wrapper {
+    position: relative;
+    z-index: 1; /* Lower z-index to be behind the modal */
+}
+
+/* Meeting Agenda */
+/* Meeting Agenda */
+body.modal-open {
+    overflow: hidden;
+}
+
+.meeting-checklist-container {
+    display: flex;
+    gap: 10px; /* Reduced gap between columns */
+    justify-content: space-between;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+.meeting-task-bucket {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    flex-grow: 1; /* Allow columns to grow */
+    width: 45%; /* Set width to make columns larger */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;
+    color: #000000;
+}
+
+.meeting-start-btn, .meeting-done-btn, .meeting-delete-task-btn {
+    color: white;              /* White text */
+    border: none;
+    border-radius: 4px;        /* Optional: rounded corners */
+    width: 30px;               /* Fixed width */
+    height: 30px;              /* Fixed height */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;           /* Font size for the icons */
+    cursor: pointer;
+    margin-left: 0px;          /* Space between buttons */
+}
+
+.meeting-start-btn {
+    background-color: #28a745; /* Green background */
+}
+
+.meeting-start-btn:hover {
+    background-color: #218838; /* Darker green on hover */
+}
+
+.meeting-done-btn {
+    background-color: #17a2b8; /* Blue background */
+}
+
+.meeting-done-btn:hover {
+    background-color: #138496; /* Darker blue on hover */
+}
+
+.meeting-delete-task-btn {
+    background-color: #dc3545; /* Red background */
+}
+
+.meeting-delete-task-btn:hover {
+    background-color: #c82333; /* Darker red on hover */
+}
+
+.meeting-checklist-container .meeting-task-bucket:hover {
+    background-color: #f0f0f0;
+}
+
+.meeting-checklist-container .meeting-bucket-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.meeting-checklist-container .meeting-bucket-header h3 {
+    margin: 0;
+}
+
+.meeting-checklist-container .meeting-add-task-btn {
+    background-color: #0434b6;
+    color: white;
+    border: none;
+    font-weight:normal;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.meeting-checklist-container .meeting-add-task-btn:hover {
+    background-color: #0056b3;
+}
+
+.meeting-checklist-container .meeting-task-list {
+    list-style-type: none;
+    padding: 0;
+    min-height: 100px; /* Add minimum height for better visual */
+}
+
+.meeting-checklist-container .meeting-task-item {
+    background-color: #f9f9f9;
+    margin-bottom: 5px;
+    padding: 5px 10px; /* Reduced padding */
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    cursor: move; /* Indicate that the item is draggable */
+    color: #000000;
+    font-family: 'Poppins', sans-serif;
+    border: 1px solid #e0e0e0;
+}
+
+.meeting-checklist-container .meeting-task-item.meeting-completed {
+    background-color: #e0e0e0;
+    text-decoration: line-through;
+}
+
+.meeting-checklist-container .meeting-task-item.discussion-started {
+    background-color: #d1ecf1; /* Light blue background to indicate the discussion has started */
+}
+
+.meeting-checklist-container .meeting-task-actions {
+    display: flex;
+    gap: 5px;
+}
+
+.meeting-checklist-container .meeting-task-actions .icon {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    margin-left: 5px;
+}
+
+.meeting-checklist-container .meeting-task-actions .icon:hover {
+    color: #007bff;
+}
+
+.meeting-checklist-container .meeting-task-actions .icon.yellow {
+    color: #ffc107;
+}
+
+.meeting-checklist-container .meeting-task-actions .icon.green {
+    color: #28a745;
+}
+
+.meeting-checklist-container .meeting-task-actions .icon.red {
+    color: #dc3545;
+}
+
+.meeting-checklist-container .meeting-task-actions .icon.delete {
+    color: #ff0000;
+    font-size: 18px;
+}
+
+.meeting-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000; /* Ensure the modal content is above the modal background */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+}
+
+.meeting-modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    position: relative;
+    width: 300px;
+    color: #000000;
+    z-index: 1001; /* Ensure the modal content is above the blur effect */
+}
+
+.meeting-close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    font-size: 20px;
+}
+
+input[type="text"] {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin: 10px 0;
+    border: none;
+    border-bottom: 1px solid #ccc; /* Ensure input border is visible */
+    color: #000000;
+    font-family: 'Poppins', sans-serif;
+    position: relative;
+    z-index: 1002; /* Ensure input is above blur effect */
+}
+
+/* Discussion modal styles */
+.discussion-modal {
+    display: none;
+    position: fixed;
+    z-index: 1002; /* Ensure it is above the blur effect */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    justify-content: center;
+    align-items: center;
+    color: white;
+    text-align: center;
+}
+
+.discussion-content {
+    position: relative;
+}
+
+#discussion-title {
+    font-size: 3em;
+    margin-bottom: 20px;
+}
+
+#countdown-timer {
+    font-size: 2em;
+    margin-bottom: 20px;
+}
+
+.discussion-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.discussion-btn {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.discussion-btn:hover {
+    background-color: #0056b3;
+}
+
+/* Add this at the end of styles.css */
+.discussion-btn {
+    height: 50px; /* Set a fixed height for all buttons */
+    line-height: 50px; /* Center the text vertically */
+    padding: 0 20px; /* Adjust the padding */
+    margin: 1px;
+    display: inline-block;
+    white-space: nowrap; /* Prevent text from wrapping */
+}
+
+#pause-timer-btn {
+    background-color: #dda408; /* Green */
+}
+
+#resume-timer-btn {
+    background-color: #ffc107; /* Yellow */
+}
+
+#stop-timer-btn {
+    background-color: #dc3545; /* Red */
+}
+
+#done-btn {
+    background-color: #038603; /* Blue */
+}
+
+#add-5min-btn {
+    background-color: #1548d6; /* Light blue */
+}
+
+/*Countdown Timer for Quarterly Goals*/
+
+/* Countdown Timer Unique Styles */
+.unique-timer {
+    font-size: 4rem !important;
+    font-family: 'Poppins', sans-serif;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: baseline;
+    gap: 0.5rem;
+}
+
+.unique-timer .number {
+    font-weight: 700; /* Extra bold */
+}
+
+.unique-timer .unit {
+    font-weight: 300; /* Thin weight */
+}
+
+.unique-text {
+    font-size: 1.5rem;
+    font-family: 'Poppins', sans-serif;
+    margin-bottom: 20px;
+}
+
+/* Growth Calculator Input Styles */
+.growth-input {
+    color: white !important;
+}
+
+/* Ensure placeholder text is also white */
+.growth-input::placeholder {
+    color: lightgrey !important;
+    font-style: italic;
+}
+
+/* Unique Quarterly Goals Input Styles */
+.unique-goal-input {
+    background: none;
+    font-size:2em;
+    border: none;
+    border-bottom: 2px solid #ddd;
+    color: white !important;
+    text-align: center;
+    outline: none;
+    font-family: 'Poppins', sans-serif;
+    padding: 10px;
+    width: calc(100% - 20px);
+}
+
+.unique-goal-input::placeholder {
+    color: #ddd;
+    font-style: italic;
+}
+
+

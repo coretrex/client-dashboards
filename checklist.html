@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Checklist</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="header">
+        <h1>Task Checklist</h1>
+        <p class="subtext">Add or review the status of our most pressing tactics to effectively move your brand forward.</p>
+    </div>
+    <div class="checklist-container">
+        <div class="task-bucket" id="active-tasks" ondrop="drop(event)" ondragover="allowDrop(event)">
+            <div class="bucket-header">
+                <h3>Active Tasks</h3>
+                <button class="add-task-btn" onclick="showAddTaskModal()">+</button>
+            </div>
+            <ul class="task-list" id="active-task-list"></ul>
+        </div>
+        <div class="task-bucket" id="onhold-tasks" ondrop="drop(event)" ondragover="allowDrop(event)">
+            <div class="bucket-header">
+                <h3>On-Hold</h3>
+            </div>
+            <ul class="task-list" id="onhold-task-list"></ul>
+        </div>
+        <div class="task-bucket" id="completed-tasks" ondrop="drop(event)" ondragover="allowDrop(event)">
+            <div class="bucket-header">
+                <h3>Completed</h3>
+            </div>
+            <ul class="task-list" id="completed-task-list"></ul>
+        </div>
+    </div>
+
+    <div class="modal" id="add-task-modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="hideAddTaskModal()">&times;</span>
+            <h3>Add a new task</h3>
+            <input type="text" id="new-task-input" placeholder="Type your task here..." onkeypress="handleAddTask(event)">
+        </div>
+    </div>
+
+    <!-- Link to the external JavaScript files -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
+    <script src="checklist.js"></script>
+</body>
+</html>
