@@ -1704,4 +1704,236 @@ input[type="text"] {
     font-style: italic;
 }
 
+.brands-list{
+    width: 100%;
+    display: flex;
+    gap: 26px;
+ flex-wrap: wrap;
+}
+.brand-item{
+display: flex;
+align-items: center;
+gap: 3px;
+}
+.brand-item img{
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
+
+
+
+#add-brand-form{
+    display: flex;
+    align-items: center;
+    width: 750px;
+}
+#add-brand-form label{
+    width: 110px;
+}
+#brand-name{
+ padding: 5px;
+ border-radius: 3px;
+width: 200px;
+margin-right: 20px;
+}
+#add-brand-button{
+    border-radius: 3px;
+    width : 120px;
+    }
+    #brand-logo{
+        border-radius: 10px;
+        width: 140px;
+        margin-right:10px ;
+        background-color: rgb(29, 14, 252);
+    }
+
+
+
+.assign-brand-team{
+    width: 100px;
+    height: 50px;
+    border-radius: 20%;
+    padding: 2px;
+    margin-left: 2px;
+}
+.header-info{
+    display: flex;
+    align-items: center;
+    width: 50%;
+}
+
+.header-info select{
+font-family: 'Poppins', sans-serif;
+padding: 8.6px;
+background-color: #007bff;
+border-color: #007bff;
+color: white;
+margin-right: 5px;
+border-radius: 3px;
+}
+.header-info button{
+border-radius: 0px;
+width: 100px;
+}
+
+#brand-select{
+    font-family: 'Poppins', sans-serif;
+    padding: 5px;
+    background-color: #007bff;
+    color: white;
+    margin-right: 5px;
+    border-radius: 3px;
+    border-style: none;
+    margin-top: 10px;
+}
+.brand-option{
+    padding: 8.6px;
+    background-color: #007bff;
+    color: white;
+    margin-right: 5px;
+    border-radius: 30px;
+    border-style: none;
+    margin-top: 3px;
+    width: 100px;
+}
+/* Loader container */
+#loader1 {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999; /* Ensures it is on top of all other content */
+}
+
+/* Loader animation */
+.loader {
+    border: 16px solid #f3f3f3; /* Light grey background for the spinner */
+    border-top: 16px solid #3498db; /* Blue color for the top part of the spinner */
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    animation: spin 2s linear infinite;
+}
+
+/* Keyframes for the spin animation */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+/* Base styles for the alert box */
+#alert-box1 {
+    display: none;
+}
+.alert-box {
+    position: fixed;
+    z-index: 9999;
+    padding: 15px 20px;
+    left : 50%;
+    top: 4px;
+    /* transform: translate(-50%, -50%); */
+    /* margin: 20px; */
+    border-radius: 5px;
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    /* position: relative; */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Success alert styles */
+.alert-box.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+.alert-box.failed {
+    background-color: #ff0000;
+    color: #ffffff;
+    border: 1px solid #c3e6cb;
+}
+
+/* Animation for showing the alert */
+@keyframes slideIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.alert-box {
+    animation: slideIn 0.5s ease-in-out;
+}
+#clients-content{
+    display: none;
+}
+#team-content{
+    display: none;
+}
+#brands-container{
+    display: none;
+}
+
+
+
+/* Table cell styling - set this to white */
+.kpi-table tbody td {
+    background-color: white; /* White background for cells */
+    color: black;
+    padding: 10px;
+    border: 1px solid #ddd; /* Optional: Add a border for better visual separation */
+}
+
+.kpi-cell {
+    position: relative;
+}
+
+.delete-icon {
+    width: 16px;
+    height: 16px;
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    display: none; /* Hide by default */
+    cursor: pointer;
+}
+
+.kpi-cell:hover .delete-icon {
+    display: inline; /* Show on hover */
+}
+
+.delete-row {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.delete-button {
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.delete-button:hover {
+    background-color: #ff1a1a;
+}
+
+.delete-container {
+    position: relative;
+}
+
+.delete-container:hover .delete-icon {
+    display: inline-block;
+    cursor: pointer;
+    position: absolute;
+    left: -20px;
+}
+
 

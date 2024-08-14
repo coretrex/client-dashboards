@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,16 +16,19 @@
             margin: 0;
             background-color: #f0f2f5;
         }
+
         .login-container {
             background-color: white;
             padding: 40px;
             border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             text-align: center;
         }
+
         .login-container h2 {
             margin-bottom: 20px;
         }
+
         .login-container input {
             width: 100%;
             padding: 10px;
@@ -32,6 +36,7 @@
             border: 1px solid #ccc;
             border-radius: 4px;
         }
+
         .login-container button {
             width: 100%;
             padding: 10px;
@@ -41,17 +46,38 @@
             color: white;
             font-size: 16px;
         }
+
+        .login-container p {
+            color: #0434b6;
+            border-style: none;
+            font-size: small;
+            display: flex;
+            justify-items: start;
+        }
+
+        .login-container a {
+            color: #0434b6;
+            margin-left: 2px;
+        }
+        .login-container h2 {
+            color: black;
+        }
+
     </style>
     <script defer src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
     <script defer src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
-    <script defer src="script.js"></script>
+    <script type="module" src="script.js" defer></script>
+
 </head>
+
 <body>
     <div class="login-container">
         <h2>Login</h2>
         <input type="email" id="login-email" placeholder="Email" required>
         <input type="password" id="login-password" placeholder="Password" required>
+        <p>Don't have an account? <a href="signup.html">Create an account</a></p>
         <button id="login-btn">Login</button>
     </div>
 </body>
+
 </html>

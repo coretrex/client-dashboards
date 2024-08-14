@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Document</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(90deg, rgb(1, 6, 75) 0%, hsla(211, 100%, 28%, 1) 100%);
+        }
+
+        .signup-container {
+            background-color: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 300px; /* Adjust the width as needed */
+        }
+
+        .signup-container h2 {
+            margin-bottom: 20px;
+        }
+
+        .signup-container input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .signup-container button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .signup-container p {
+            color: #0434b6;
+            font-size: small;
+        }
+
+        .signup-container a {
+            color: #0434b6;
+            margin-left: 2px;
+        }
+
+        .signup-container h2 {
+            color: black;
+        }
+
+        .radio-group {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .radio-group label {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            color: black;
+        }
+
+        .radio-group input {
+            margin-right: 8px;
+        }
+    </style>
+    <script defer src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
+    <script type="module" src="script.js" defer></script>
+</head>
+
+<body>
+    <div class="signup-container">
+        <h2>Sign Up</h2>
+        <input type="text" id="signup-name" placeholder="Name" required>
+        <input type="email" id="signup-email" placeholder="Email" required>
+        <input type="password" id="signup-password" placeholder="Password" required>
+
+        <div class="radio-group">
+            <label><input type="radio" name="role" value="Client" required> Client</label>
+            <label><input type="radio" name="role" value="Team" required> Team</label>
+            <label><input type="radio" name="role" value="Admin" required> Admin</label>
+        </div>
+
+        <p>Already have an account? <a href="login.html">Sign in</a></p>
+        <button id="signup-btn">Create Account</button>
+    </div>
+
+    <script src="signup.js"></script>
+</body>
+
+</html>

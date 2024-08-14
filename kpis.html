@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 </head>
+
 <body>
     <div class="header">
         <h1>KPI Tracking</h1>
@@ -19,88 +21,45 @@
                     <tr>
                         <th>KPI</th>
                         <th>Goal</th>
-                        <th class="date-cell">MM/DD/YY</th>
-                        <th class="date-cell">MM/DD/YY</th>
-                        <th class="date-cell">MM/DD/YY</th>
-                        <th class="date-cell">MM/DD/YY</th>
+                        <!-- Weeks columns will be added dynamically -->
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td contenteditable="true">Revenue</td>
+                        <td>
+                            <div class="delete-container">
+                                <span class="delete-icon" style="display:none;">🗑️</span>
+                                Revenue
+                            </div>
+                        </td>
                         <td contenteditable="true">Goal 1</td>
-                        <td contenteditable="true"></td>
-                        <td contenteditable="true"></td>
-                        <td contenteditable="true"></td>
-                        <td contenteditable="true"></td>
+                        <!-- More cells here for weeks -->
                     </tr>
                     <tr>
-                        <td contenteditable="true">Buy Box %</td>
+                        <td>
+                            <div class="delete-container">
+                                <span class="delete-icon" style="display:none;">🗑️</span>
+                                Buy Box %
+                            </div>
+                        </td>
                         <td contenteditable="true">Goal 2</td>
-                        <td contenteditable="true"></td>
-                        <td contenteditable="true"></td>
-                        <td contenteditable="true"></td>
-                        <td contenteditable="true"></td>
+                        <!-- More cells here for weeks -->
                     </tr>
-                    <tr>
-                        <td contenteditable="true">Optimization Score</td>
-                        <td contenteditable="true">Goal 3</td>
-                        <td contenteditable="true"></td>
-                        <td contenteditable="true"></td>
-                        <td contenteditable="true"></td>
-                        <td contenteditable="true"></td>
-                    </tr>
-                    <tr>
-                        <td contenteditable="true">Page Views</td>
-                        <td contenteditable="true">Goal 4</td>
-                        <td contenteditable="true"></td>
-                        <td contenteditable="true"></td>
-                        <td contenteditable="true"></td>
-                        <td contenteditable="true"></td>
-                    </tr>
-                    <tr>
-                        <td contenteditable="true">Conversion Rate</td>
-                        <td contenteditable="true">Goal 5</td>
-                        <td contenteditable="true"></td>
-                        <td contenteditable="true"></td>
-                        <td contenteditable="true"></td>
-                        <td contenteditable="true"></td>
-                    </tr>
-                    <tr>
-                        <td contenteditable="true">Ad Revenue</td>
-                        <td contenteditable="true">Goal 6</td>
-                        <td contenteditable="true"></td>
-                        <td contenteditable="true"></td>
-                        <td contenteditable="true"></td>
-                        <td contenteditable="true"></td>
-                    </tr>
-                    <tr>
-                        <td contenteditable="true">ACoS</td>
-                        <td contenteditable="true">Goal 7</td>
-                        <td contenteditable="true"></td>
-                        <td contenteditable="true"></td>
-                        <td contenteditable="true"></td>
-                        <td contenteditable="true"></td>
-                    </tr>
-                    <tr>
-                        <td contenteditable="true">TACoS</td>
-                        <td contenteditable="true">Goal 8</td>
-                        <td contenteditable="true"></td>
-                        <td contenteditable="true"></td>
-                        <td contenteditable="true"></td>
-                        <td contenteditable="true"></td>
-                    </tr>
+                    <!-- Add more rows as necessary -->
                 </tbody>
             </table>
         </div>
         <div class="kpi-buttons">
+            <button class="kpi-button" id="save-button">Save</button>
             <button class="kpi-button" onclick="addWeekColumn()">Add Week</button>
             <button class="kpi-button" onclick="addKpiRow()">Add KPI</button>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="kpi.js?v=1.0.0"></script>
-    <script src="script.js?v=1.0.0"></script>
+    <script type="module" src="script.js?v=1.0.0"></script>
+    <script type="module" src="kpi.js?v=1.0.0"></script>
+
 </body>
+
 </html>

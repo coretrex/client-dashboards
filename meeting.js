@@ -1,3 +1,5 @@
+import {deleteField,updateDoc,db,doc,collection,query,where,getDocs} from "./script.js";
+import { globalSelectedValue as selectedId,initializePage } from "./script.js";
 document.addEventListener('DOMContentLoaded', function() {
     initializeMeetingPage();
 });
@@ -5,51 +7,169 @@ document.addEventListener('DOMContentLoaded', function() {
 let countdown;
 let timerInterval;
 
-function initializeMeetingPage() {
-    // Any initialization specific to the meeting module can go here
+export async function initializeMeetingPage() {
+    
+    console.log(selectedId);
+    try {
+        const brandRef = doc(db, "brands", selectedId);
+        console.log(brandRef);
+        const quarterlyGoalsRef = collection(db, "meeting");
+        const q = query(quarterlyGoalsRef, where("brandId", "==", brandRef));
+        const querySnapshot = await getDocs(q);
+        if (!querySnapshot.empty) {
+            querySnapshot.forEach(docSnapshot => {
+                const data = docSnapshot.data();
+                console.log("Fetched Meeting data:", data);
+                // Now we populate the HTML with the fetched data
+                populateMeetingTasks(data);
+            });
+        } else {
+            console.log("No meeting data found for the selected brand.");
+        }
+    } catch (error) {
+        console.error("Error fetching quarterly goals data:", error);
+    }
 }
-
-function handleAddMeetingTask(event) {
-    if (event.key === 'Enter') {
-        const inputId = event.target.id;
-        const taskText = document.getElementById(inputId).value;
-        if (taskText.trim() !== '') {
-            if (inputId === 'new-meeting-topic-input') {
-                addMeetingTask(taskText, 'meeting-topic-list');
+function populateMeetingTasks(data) {
+    const meetingTopicList = document.getElementById('meeting-topic-list');
+    const completedTopicsList = document.getElementById('completed-topics-list');
+    
+    // Clear existing tasks from the lists
+    meetingTopicList.innerHTML = '';
+    completedTopicsList.innerHTML = '';
+    // Assuming `data` is an object with tasks
+    for (const taskId in data) {
+        if(taskId === 'brandId') continue;
+        if (data.hasOwnProperty(taskId)) {
+            const task = data[taskId];
+            console.log(task);
+            if (task.completed) {
+                addTaskToList(task, completedTopicsList, true,taskId);
+            } else {
+                addTaskToList(task, meetingTopicList, false,taskId);
             }
-            document.getElementById(inputId).value = '';
-            hideAddMeetingTaskModal();
         }
     }
 }
-
-function addMeetingTask(taskText, listId) {
-    const taskList = document.getElementById(listId);
+function addTaskToList(task, listElement, isCompleted,key) {
     const taskItem = document.createElement('li');
     taskItem.className = 'meeting-task-item';
     taskItem.draggable = true;
-    taskItem.id = `meeting-task-${new Date().getTime()}`; // unique id
+    console.log(task);
+    taskItem.id = `meeting-task-${key}`;
     taskItem.ondragstart = dragMeeting;
+
     taskItem.innerHTML = `
-        <span>${taskText}</span>
+        <span>${task.name}</span>
         <div class="meeting-task-actions">
-            <select class="discussion-type" onchange="updateTaskBackground(this)">
-                <option value="inform">Inform</option>
-                <option value="discuss">Discuss</option>
-                <option value="solve">Solve</option>
+            <select class="discussion-type" onchange="updateTaskBackground(this,${key})">
+                <option value="inform" ${task.status === 'inform' ? 'selected' : ''}>Inform</option>
+                <option value="discuss" ${task.status === 'discuss' ? 'selected' : ''}>Discuss</option>
+                <option value="solve" ${task.status === 'solve' ? 'selected' : ''}>Solve</option>
             </select>
             <button class="meeting-start-btn" onclick="startDiscussion(this)"><i class="fas fa-play"></i></button>
             <button class="meeting-done-btn" onclick="markAsMeetingCompleted(this)"><i class="fas fa-check"></i></button>
             <button class="meeting-delete-task-btn" onclick="deleteMeetingTask(this)"><i class="fas fa-times"></i></button>
         </div>
     `;
+
+    if (isCompleted) {
+        taskItem.classList.add('meeting-completed');
+    }
+
+    listElement.appendChild(taskItem);
+}
+
+async function handleAddMeetingTask(event) {
+    if (event.key === 'Enter') {
+        const inputId = event.target.id;
+        const taskText = document.getElementById(inputId).value.trim();
+        if (taskText !== '') {
+            const brandRef = doc(db, "brands", selectedId);
+            const quarterlyGoalsRef = collection(db, "meeting");
+            const q = query(quarterlyGoalsRef, where("brandId", "==", brandRef));
+            const querySnapshot = await getDocs(q);
+
+            if (!querySnapshot.empty) {
+                querySnapshot.forEach(async (docSnapshot) => {
+                    const meetingDocRef = doc(db, "meeting", docSnapshot.id);
+                    const newTaskId = `${new Date().getTime()}`; // unique ID for the new task
+                    const newTask = {
+                        name: taskText,
+                        status: "inform", // Default status
+                        completed: false
+                    };
+
+                    // Update the Firestore document with the new task
+                    await updateDoc(meetingDocRef, {
+                        [newTaskId]: newTask
+                    });
+
+                    // Add the task to the UI
+                    addMeetingTaskToUI(newTask, 'meeting-topic-list', newTaskId);
+                });
+            } else {
+                console.log("No meeting data found for the selected brand.");
+            }
+
+            document.getElementById(inputId).value = '';
+            hideAddMeetingTaskModal();
+        }
+    }
+}
+
+function addMeetingTaskToUI(task, listId, taskId) {
+    const taskList = document.getElementById(listId);
+    const taskItem = document.createElement('li');
+    taskItem.className = 'meeting-task-item';
+    taskItem.draggable = true;
+    taskItem.id = `meeting-task-${taskId}`; // use the generated task ID
+    taskItem.ondragstart = dragMeeting;
+
+    taskItem.innerHTML = `
+        <span>${task.name}</span>
+        <div class="meeting-task-actions">
+            <select class="discussion-type" onchange="updateTaskBackground(this,${taskId})">
+                <option value="inform" ${task.status === 'inform' ? 'selected' : ''}>Inform</option>
+                <option value="discuss" ${task.status === 'discuss' ? 'selected' : ''}>Discuss</option>
+                <option value="solve" ${task.status === 'solve' ? 'selected' : ''}>Solve</option>
+            </select>
+            <button class="meeting-start-btn" onclick="startDiscussion(this)"><i class="fas fa-play"></i></button>
+            <button class="meeting-done-btn" onclick="markAsMeetingCompleted(this)"><i class="fas fa-check"></i></button>
+            <button class="meeting-delete-task-btn" onclick="deleteMeetingTask(this)"><i class="fas fa-times"></i></button>
+        </div>
+    `;
+
     taskList.appendChild(taskItem);
 }
 
-function deleteMeetingTask(button) {
+async function deleteMeetingTask(button) {
     const taskItem = button.parentElement.parentElement;
-    taskItem.remove();
+    const taskId = taskItem.id.replace('meeting-task-', '');
+console.log(taskId);
+    try {
+        const brandRef = doc(db, "brands", selectedId);
+        const quarterlyGoalsRef = collection(db, "meeting");
+        const q = query(quarterlyGoalsRef, where("brandId", "==", brandRef));
+        const querySnapshot = await getDocs(q);
+
+        if (!querySnapshot.empty) {
+            const meetingDocRef = querySnapshot.docs[0].ref;
+            // Remove the task from the Firestore document
+            await updateDoc(meetingDocRef, {
+                [`${taskId}`]: deleteField(),
+            });
+
+            // Remove the task from the UI
+            taskItem.remove();
+        } else {
+            console.log("No meeting document found for the selected brand.");
+        }
+    } catch (error) {
+        console.error("Error deleting meeting task:", error);
+    }
 }
+
 
 function startDiscussion(button) {
     const taskItem = button.parentElement.parentElement;
@@ -66,13 +186,35 @@ function startDiscussion(button) {
 }
 
 
-function markAsMeetingCompleted(button) {
+async function markAsMeetingCompleted(button) {
     const taskItem = button.parentElement.parentElement;
-    taskItem.classList.add('meeting-completed');
-    const completedList = document.getElementById('completed-topics-list');
-    completedList.appendChild(taskItem);
-    launchMeetingConfetti();
+    const taskId = taskItem.id.replace('meeting-task-', '');
+
+    try {
+        const brandRef = doc(db, "brands", selectedId);
+        const quarterlyGoalsRef = collection(db, "meeting");
+        const q = query(quarterlyGoalsRef, where("brandId", "==", brandRef));
+        const querySnapshot = await getDocs(q);
+
+        if (!querySnapshot.empty) {
+            const meetingDocRef = querySnapshot.docs[0].ref;
+
+            // Update the task's completed status in Firestore
+            await updateDoc(meetingDocRef, {
+                [`${taskId}.completed`]: true,
+            });
+            taskItem.classList.add('meeting-completed');
+            const completedList = document.getElementById('completed-topics-list');
+            completedList.appendChild(taskItem);
+            launchMeetingConfetti();
+        } else {
+            console.log("No meeting document found for the selected brand.");
+        }
+    } catch (error) {
+        console.error("Error marking meeting task as completed:", error);
+    }
 }
+
 
 function launchMeetingConfetti() {
     confetti({
@@ -159,9 +301,13 @@ function addFiveMinutes() {
     countdown += 300; // Add 5 minutes in seconds
 }
 
-function updateTaskBackground(selectElement) {
+async function updateTaskBackground(selectElement, taskId) {
+    console.log(selectElement.value, taskId);
     const taskItem = selectElement.parentElement.parentElement;
-    switch (selectElement.value) {
+    const newStatus = selectElement.value;
+
+    // Update the background color based on the selected value
+    switch (newStatus) {
         case 'inform':
             taskItem.style.backgroundColor = '#e7f3ff'; // Light blue
             break;
@@ -172,4 +318,39 @@ function updateTaskBackground(selectElement) {
             taskItem.style.backgroundColor = '#e7ffe7'; // Light green
             break;
     }
+
+    try {
+        const brandRef = doc(db, "brands", selectedId);
+        const quarterlyGoalsRef = collection(db, "meeting");
+        const q = query(quarterlyGoalsRef, where("brandId", "==", brandRef));
+        const querySnapshot = await getDocs(q);
+
+        if (!querySnapshot.empty) {
+            const meetingDocRef = querySnapshot.docs[0].ref;
+
+            // Update the task's status in Firestore
+            await updateDoc(meetingDocRef, {
+                [`${taskId}.status`]: newStatus,
+            });
+
+            console.log("Task status updated in Firestore:", newStatus);
+        } else {
+            console.log("No meeting document found for the selected brand.");
+        }
+    } catch (error) {
+        console.error("Error updating task background and status:", error);
+    }
 }
+window.updateTaskBackground = updateTaskBackground;
+window.addFiveMinutes=addFiveMinutes;
+window.completeDiscussion=completeDiscussion;
+window.resumeTimer=resumeTimer;
+window.pauseTimer=pauseTimer;
+window.showAddMeetingTaskModal=showAddMeetingTaskModal;
+window.hideAddMeetingTaskModal=hideAddMeetingTaskModal;
+window.startDiscussion=startDiscussion;
+window.handleAddMeetingTask=handleAddMeetingTask;
+window.deleteMeetingTask=deleteMeetingTask;
+window.markAsMeetingCompleted=markAsMeetingCompleted;
+window.stopTimer=stopTimer;
+window.populateMeetingTasks=populateMeetingTasks;
