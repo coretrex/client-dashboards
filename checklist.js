@@ -274,17 +274,19 @@ function hideAddTaskModal() {
 }
 
 function createOnboardingTasks() {
+  console.log("Onboarding Tasks button clicked");
   const onboardingTasks = [
-    "Dashboard Walkthrough",
-    "VTO Submission",
-    "1, 3, 5 Year Plan Review",
-    "Quarterly Rocks Created"
+      "Dashboard Walkthrough",
+      "VTO Submission",
+      "1, 3, 5 Year Plan Review",
+      "Quarterly Rocks Created"
   ];
 
   onboardingTasks.forEach(task => {
-    addTask(task, "active-task-list");
+      addTask(task, "active-task-list");
   });
 }
+
 
 export async function fetchChecklistData(selectedId) {
   try {
