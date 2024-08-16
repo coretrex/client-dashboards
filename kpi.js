@@ -12,6 +12,7 @@ document.addEventListener("DOMContentLoaded", function () {
     initializeFlatpickr();
     loadKpiTable();
     attachDeleteButtons(); // Attach delete buttons to all rows after loading
+    formatTable(); // Apply initial formatting
 });
 
 function initializeFlatpickr() {
@@ -89,6 +90,8 @@ function addWeekColumn() {
         newCell.contentEditable = true;
         row.appendChild(newCell);
     });
+
+    formatTable(); // Reapply formatting after adding a column
 }
 
 function addKpiRow() {
@@ -123,8 +126,38 @@ function addKpiRow() {
 
     // Append the new row to the table body
     table.querySelector("tbody").appendChild(newRow);
+    
+    formatTable(); // Reapply formatting after adding a row
 }
 
+function formatTable() {
+    const table = document.getElementById('kpi-table');
+    const rows = table.querySelectorAll('tbody tr');
+
+    rows.forEach(row => {
+        const kpiName = row.children[0].textContent.trim();
+
+        row.querySelectorAll('td').forEach((cell, index) => {
+            if (index === 0) return; // Skip the KPI name column
+
+            if (kpiName === 'Revenue') {
+                cell.textContent = formatCurrency(cell.textContent);
+            } else if (kpiName === 'Buy Box %') {
+                cell.textContent = formatPercentage(cell.textContent);
+            }
+        });
+    });
+}
+
+function formatCurrency(value) {
+    const number = parseFloat(value.replace(/[^0-9.-]+/g,""));
+    return isNaN(number) ? value : `$${number.toFixed(2)}`;
+}
+
+function formatPercentage(value) {
+    const number = parseFloat(value.replace(/[^0-9.-]+/g,""));
+    return isNaN(number) ? value : `${number.toFixed(2)}%`;
+}
 
 function attachDeleteButtons() {
     document.querySelectorAll('.delete-row').forEach(button => {
@@ -145,8 +178,8 @@ function saveKpiTable() {
     const tableHTML = table.innerHTML;
 }
 
-
 // Ensure this function runs after DOMContentLoaded
 document.addEventListener("DOMContentLoaded", function () {
     document.getElementById('save-button').addEventListener('click', saveKpiTable);
+    formatTable(); // Initial formatting on load
 });
