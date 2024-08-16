@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 function initializeChecklistPage() {
   document.querySelectorAll(".task-list").forEach(list => {
-    list.innerHTML = "";
+      list.innerHTML = "";
   });
   const addTaskBtn = document.querySelector(".add-task-btn");
   const closeBtn = document.querySelector(".close-btn");
@@ -17,42 +17,38 @@ function initializeChecklistPage() {
   const taskBuckets = document.querySelectorAll(".task-bucket");
 
   if (addTaskBtn) {
-    addTaskBtn.addEventListener("click", showAddTaskModal);
+      addTaskBtn.addEventListener("click", showAddTaskModal);
   }
   if (closeBtn) {
-    closeBtn.addEventListener("click", hideAddTaskModal);
+      closeBtn.addEventListener("click", hideAddTaskModal);
   }
   if (newTaskInput) {
-    newTaskInput.addEventListener("keypress", handleAddTask);
+      newTaskInput.addEventListener("keypress", handleAddTask);
   }
   taskBuckets.forEach((bucket) => {
-    bucket.addEventListener("drop", drop);
-    bucket.addEventListener("dragover", allowDrop);
+      bucket.addEventListener("drop", drop);
+      bucket.addEventListener("dragover", allowDrop);
   });
 
-  document.querySelectorAll(".on-hold-btn").forEach((button) => {
-    button.addEventListener("click", moveToOnHold);
-  });
+  const onboardingTasksBtn = document.getElementById("onboarding-tasks-btn");
+  const croIncreaseBtn = document.getElementById("cro-increase-btn");
+  const campaignScaffoldingBtn = document.getElementById("campaign-scaffolding-btn");
 
-  document.querySelectorAll(".done-btn").forEach((button) => {
-    button.addEventListener("click", markAsCompleted);
-  });
-
-  document.querySelectorAll(".delete-task-btn").forEach((button) => {
-    button.addEventListener("click", deleteTask);
-  });
-
-  // Attach event listeners for the new buttons
-  document.getElementById("onboarding-tasks-btn").addEventListener("click", function () {
-    createOnboardingTasks();
-  });
-  document.getElementById("cro-increase-btn").addEventListener("click", function () {
-    // Define the tasks to be created for CRO Increase here
-  });
-  document.getElementById("campaign-scaffolding-btn").addEventListener("click", function () {
-    // Define the tasks to be created for Campaign Scaffolding here
-  });
+  if (onboardingTasksBtn) {
+      onboardingTasksBtn.addEventListener("click", createOnboardingTasks);
+  }
+  if (croIncreaseBtn) {
+      croIncreaseBtn.addEventListener("click", function () {
+          // Define the tasks to be created for CRO Increase here
+      });
+  }
+  if (campaignScaffoldingBtn) {
+      campaignScaffoldingBtn.addEventListener("click", function () {
+          // Define the tasks to be created for Campaign Scaffolding here
+      });
+  }
 }
+
 
 function handleAddTask(event) {
   if (event.key === "Enter") {
