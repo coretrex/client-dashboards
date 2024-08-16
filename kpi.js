@@ -151,8 +151,9 @@ function formatTable() {
 
 function formatCurrency(value) {
     const number = parseFloat(value.replace(/[^0-9.-]+/g,""));
-    return isNaN(number) ? value : `$${number.toFixed(2)}`;
+    return isNaN(number) ? value : `$${number.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
+
 
 function formatPercentage(value) {
     const number = parseFloat(value.replace(/[^0-9.-]+/g,""));
