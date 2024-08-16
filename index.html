@@ -20,6 +20,7 @@
     <script type="module" src="quarterly-goals.js"></script>
     <script type="module" src="meeting.js"></script>
     <script type="module" src="vision.js"></script>
+    <script type="module" src="data.js"></script>
 </head>
 
 <body>
@@ -29,23 +30,31 @@
         </a>
         <ul class="sidebar-menu">
             <li><a href="#kpis" onclick="loadContent(event, 'kpis.html')"><i class="fas fa-chart-line"></i>
-                    <span>KPIs</span></a></li>
+                <span>KPIs</span></a></li>
             <li><a href="#checklist" onclick="loadContent(event, 'checklist.html')"><i class="fas fa-check-square"></i>
-                    <span>Checklist</span></a></li>
-            <li><a href="#quarterly-goals" onclick="loadContent(event, 'quarterly-goals.html')"><i
-                        class="fas fa-bullseye"></i> <span>Quarterly Goals</span></a></li>
+                <span>Checklist</span></a></li>
+            <li><a href="#quarterly-goals" onclick="loadContent(event, 'quarterly-goals.html')"><i class="fas fa-bullseye"></i> 
+                <span>Quarterly Goals</span></a></li>
             <li><a href="#meeting" onclick="loadContent(event, 'meeting.html')"><i class="fas fa-comments"></i>
-                    <span>Meeting Agenda</span></a></li>
+                <span>Meeting Agenda</span></a></li>
             <li><a href="#vision" onclick="loadContent(event, 'vision.html')"><i class="fas fa-binoculars"></i>
-                    <span>Vision</span></a></li>
-            <li><a href="#goals" onclick="loadContent(event, 'goals.html')"><i class="fas fa-user"></i> <span>Annual
-                        Plan</span></a></li>
-            <li><a href="#growth-calculator" onclick="loadContent(event, 'growth-calculator.html')"><i
-                        class="fas fa-rocket"></i> <span>Growth Calculator</span></a></li>
-            <li><a href="./login.html" id="logout-link"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
+                <span>Vision</span></a></li>
+            <li><a href="#goals" onclick="loadContent(event, 'goals.html')"><i class="fas fa-user"></i>
+                <span>Annual Plan</span></a></li>
+            <li><a href="#growth-calculator" onclick="loadContent(event, 'growth-calculator.html')"><i class="fas fa-rocket"></i>
+                <span>Growth Calculator</span></a></li>
+ 
 
-
+            
+            <!-- New Data Page -->
+            <li><a href="#data" onclick="loadContent(event, 'data.html')"><i class="fas fa-database"></i>
+                <span>Data</span></a></li>
+                <li><a href="#admin-dashboard" id="admin-dashboard" onclick="loadContent(event, 'admin.html')"><i class="fas fa-user-shield"></i> <span>Admin Dashboard</span></a></li>
+        
+            <li><a href="./login.html" id="logout-link"><i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span></a></li>
         </ul>
+        
         <a href="https://app.coretrex.com/overview" target="_blank" class="analytics-hub-button">
             <span>Analytics Hub</span>
             <i class="fas fa-external-link-alt icon-padding"></i>
@@ -66,70 +75,10 @@
     </div>
 
     <div class="main-content" id="main-content">
-        <div id="brands-container">
-            <h1>Brands</h1>
-            <div class="brands-list" id="brands-list">
-            </div>
-            <h2>Add New Brand</h2>
-            <form id="add-brand-form">
-                    <label for="brand-name">Brand Name</label>
-                    <input type="text" id="brand-name" name="brand-name" placeholder="Enter brand" required>
-                    <label for="brand-logo">Brand Logo</label>
-                    <input type="file" id="brand-logo" name="brand-logo" accept="image/*" required>
-                <button id="add-brand-button" type="submit">Add Brand</button>
-            </form>
-
-        </div>
-        <div id="clients-content">
-            <!-- Static headers, dynamic rows -->
-            <h1>Clients Info</h1>
-            <div class="header-info">
-                <select name="clients" id="client-info">
-                </select>
-                <select name="brands1" id="brand-info-1">
-                </select>
-                <button id="add-client-button">Save</button>
-            </div>
-            <table id="clients-table" class="kpi-table">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Brands</th>
-                    </tr>
-                </thead>
-                <tbody id="clients-tbody">
-                    <!-- Dynamic rows will be inserted here -->
-                </tbody>
-            </table>
-        </div>
-
-        <div id="team-content">
-            <!-- Static headers, dynamic rows -->
-            <h1>Team Members Info</h1>
-            <div class="header-info">
-                <select name="team" id="team-info">
-                </select>
-                <select name="brands" id="brand-info">
-                </select>
-                <button id="add-team-button">Save</button>
-            </div>
-            <table id="team-table" class="kpi-table">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Brands</th>
-                    </tr>
-                </thead>
-                <tbody id="team-tbody">
-                    <!-- Dynamic rows will be inserted here -->
-
-
-                </tbody>
-            </table>
-        </div>
+        
     </div>
+
+        
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 </body>

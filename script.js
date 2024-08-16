@@ -17,6 +17,8 @@ import {
   setDoc,
   getDoc,
   addDoc,
+  deleteDoc,
+
 } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 import {
   getStorage,
@@ -29,7 +31,7 @@ import { initializeGoalInput, initializeQuarterlyCountdownTimer, fetchQuarterlyG
 import { fetchPlanData } from "./goals.js";
 import { initializeMeetingPage as fetchMeetingData } from './meeting.js';
 import { fetchVisionData } from "./vision.js";
-import { deleteDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+import { initializeDataPage } from './data.js';
 var globalSelectedValue;
 var globalOptionselected;
 export { globalSelectedValue };
@@ -42,6 +44,18 @@ const firebaseConfig = {
   appId: "1:964784655965:web:c25a95fd4e4af26be407b4",
   measurementId: "G-NLRD798V18"
 };
+
+// const firebaseConfig = {
+//   apiKey: "AIzaSyCxJLN7vB9MfAMmmI9g6k25w7sNyqVuBnM",
+//   authDomain: "coretrex-d2fd5.firebaseapp.com",
+//   projectId: "coretrex-d2fd5",
+//   storageBucket: "coretrex-d2fd5.appspot.com",
+//   messagingSenderId: "271576667402",
+//   appId: "1:271576667402:web:374f672e7d2ad46d3016f3",
+//   measurementId: "G-RJRLTC8MHN"
+// };
+
+
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
@@ -121,14 +135,20 @@ document.addEventListener("DOMContentLoaded", function () {
         // const realuser = { userid, name, email, role }
         // window.location.href = "/"; // Redirect to home or another page
       } catch (error) {
-        console.error("Error creating account:", error);
+        console.error("Error creating account:", error.message);
         alert("Error creating account: " + error.message);
+        if (error.message === "Firebase: Error (auth/email-already-in-use).") {
+          console.log("This email is suspended by admin. Please use another email.");
+        }
       }
     });
   }
 
+
+
   document.getElementById("add-team-button").addEventListener("click", async () => {
     try {
+      console.log("Add team button clicked");
       document.getElementById("loader1").style.display = "flex";
       const selectedTeamMemberId = document.getElementById("team-info").value;
       const selectedBrandId = document.getElementById("brand-info").value;
@@ -163,6 +183,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
   document.getElementById("add-client-button").addEventListener("click", async () => {
     try {
+      console.log("here");
       document.getElementById("loader1").style.display = "flex";
       const selectedTeamMemberId = document.getElementById("client-info").value;
       const selectedBrandId = document.getElementById("brand-info-1").value;
@@ -195,7 +216,18 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     document.getElementById("loader1").style.display = "none";
   });
+  document.getElementById("sidebar-logo").addEventListener("click", () => {
+    console.log("Sidebar logo clicked");
+    document.getElementById("main-content").innerHTML = '';
+  })
+
+
 });
+
+
+
+
+
 
 function logout() {
   // Make sure auth is properly initialized before calling signOut
@@ -216,26 +248,30 @@ async function loadUserData(user) {
       const userData = docSnap.data();
       console.log("User Data:", userData);
       if (userData.role === "Admin") {
-        document.getElementById("clients-content").style.display = "block";
-        document.getElementById("team-content").style.display = "block";
-        document.getElementById("brands-container").style.display = "block";
+        const customEvent = new Event('click');
+        loadContent(customEvent, 'admin.html');
+        document.getElementById('admin-dashboard').style.display = 'block';
+        console.log("Admin data loaded successfully!");
       }
       localStorage.setItem("userData", JSON.stringify(userData));
-      if (userData.role === "Client") {
+      if (userData.role === "Client" || userData.role === "Team") {
         loadTeamData(userData);
-      } else if (userData.role === "Team") {
-        loadTeamData(userData);
+        const customEvent = new Event('click');
+        loadContent(customEvent, 'kpis.html');
       } else if (userData.role === "Admin") {
         loadAdminData();
       }
     } else {
       console.log("No such user!");
+      window.location.href = "/error.html";
+
     }
   } catch (error) {
     console.log("Error getting user data:", error);
   }
   document.getElementById('loader1').style.display = 'none';
 }
+
 
 function loadClientData(clientId) {
   const clientDocRef = doc(db, "clients", clientId);
@@ -299,30 +335,84 @@ function renderBrands() {
   let brandsHTML = '';
   brandsArray.forEach((brand) => {
     brandsHTML += `
-      <div class="brand-item">
-        <img src="${brand.brandlogoURL}" alt="${brand.name} Logo" width="50">
+      <div id="${brand.brandId}" class="brand-item">
+        <div class="brand-logo-container">
+          <i class="brand-delete-icon fas fa-trash" data-brand-id="${brand.brandId}"></i>
+          <img src="${brand.brandlogoURL}" alt="${brand.name} Logo" width="50">
+        </div>
         <div>${brand.name}</div>
-      </div>`;
+      </div>
+    `;
   });
   brandsList.innerHTML = brandsHTML;
 
-  // Handle form submission
-  document
-    .getElementById("add-brand-form")
-    .addEventListener("submit", async (event) => {
+
+  const addBrandForm = document.getElementById("add-brand-form");
+  if (!addBrandForm.dataset.listenerAdded) {
+    addBrandForm.addEventListener("submit", async (event) => {
       event.preventDefault();
       const brandName = document.getElementById("brand-name").value;
       const brandLogo = document.getElementById("brand-logo").files[0];
-
+      console.log(brandName, brandLogo);
       if (brandName && brandLogo) {
         const uniqueFileName = `${Date.now()}_${brandLogo.name}`;
         await addNewBrand(brandName, brandLogo, uniqueFileName);
-        // Re-fetch and render brands after adding a new one
         await loadAdminData();
+        return;
       } else {
         console.error("Brand name or logo is missing.");
       }
     });
+    // Mark that the event listener has been added
+    addBrandForm.dataset.listenerAdded = true;
+  }
+
+
+  document.querySelectorAll('.brand-delete-icon').forEach(icon => {
+    icon.addEventListener('click', async (e) => {
+      document.getElementById('loader1').style.display = 'flex';
+      // console.log(e.target.getAttribute('data-brand-id'));
+      const brandId = e.target.getAttribute('data-brand-id');
+
+
+      try {
+        // Array of collection names to delete documents from
+        const collections = ['kpiTracking', 'checklists', 'meeting', 'quarterly-goals', 'plans', 'visions'];
+
+        // Delete documents from each collection that match the brandId
+        for (const collectionName of collections) {
+          const querySnapshot = await getDocs(query(collection(db, collectionName), where('brandId', '==', doc(db, 'brands', brandId))));
+          const deletePromises = querySnapshot.docs.map(doc => deleteDoc(doc.ref));
+          await Promise.all(deletePromises);
+        }
+
+        // Update users collection to remove the brandId from the array field
+        const usersQuerySnapshot = await getDocs(query(collection(db, 'users'), where('brandId', 'array-contains', doc(db, 'brands', brandId))));
+        const updatePromises = usersQuerySnapshot.docs.map(async (userDoc) => {
+          const userData = userDoc.data();
+          const updatedBrandIds = userData.brandId.filter(id => id.id !== brandId);
+          return updateDoc(userDoc.ref, { brandId: updatedBrandIds });
+        });
+        await Promise.all(updatePromises);
+
+        // Finally, delete the brand document from the 'brands' collection
+        const brandDocRef = doc(db, 'brands', brandId);
+        await deleteDoc(brandDocRef);
+
+        // Remove the brand from localStorage
+        const updatedBrandsArray = brandsArray.filter(brand => brand.brandId !== brandId);
+        localStorage.setItem('brandsData', JSON.stringify(updatedBrandsArray));
+        // Re-render the brands
+        // renderBrands();
+        loadAdminData();
+
+        console.log(`Brand with ID ${brandId} and its associated documents have been deleted successfully.`);
+      } catch (error) {
+        console.error("Error deleting brand:", error);
+        document.getElementById('loader1').style.display = 'none';
+      }
+    });
+  });
 }
 
 async function addNewBrand(brandName, brandLogo, uniqueFileName) {
@@ -427,6 +517,7 @@ async function addNewBrand(brandName, brandLogo, uniqueFileName) {
       }
     })
 
+
     const oldBrandsData = localStorage.getItem("brandsData");
     const oldBrandsArray = oldBrandsData ? JSON.parse(oldBrandsData) : [];
 
@@ -470,14 +561,24 @@ async function getUserWithBrandNames(docSnap) {
     })
   );
 
-  // Return user data along with a comma-separated list of brand names
+  // Return user data along with a comma-separated list of brand names and the document ID
   return {
-    ...userData,
-    brands: brandNames.join(", "),
+    brandIds,
+    id: docSnap.id,          // Include the document ID
+    ...userData,             // Include the user data
+    brands: brandNames.join(", "),  // Include the brand names as a comma-separated string
   };
 }
+
 async function loadAdminData() {
   try {
+    const data = localStorage.getItem("brandsData");
+
+    // Check if data is null or an empty array
+    if (data === null || data === '[]') {
+      localStorage.removeItem("selectedBrandId");
+    }
+    console.log("here")
     const clientsQuery = query(
       collection(db, "users"),
       where("role", "==", "Client")
@@ -486,6 +587,7 @@ async function loadAdminData() {
       collection(db, "users"),
       where("role", "==", "Team")
     );
+    console.log("here1")
 
     // Fetch both client and team data concurrently
     const [clientsSnapshot, teamSnapshot] = await Promise.all([
@@ -500,14 +602,17 @@ async function loadAdminData() {
     const teamData = await Promise.all(
       teamSnapshot.docs.map((doc) => getUserWithBrandNames(doc))
     );
+    console.log("here2")
 
     // Render the data into the HTML
     renderClientTable(clientsData);
     renderTeamTable(teamData);
 
+
     // Store the data in localStorage
     localStorage.setItem("clientsData", JSON.stringify(clientsData));
     localStorage.setItem("teamData", JSON.stringify(teamData));
+    console.log("here3")
 
     // Fetch and store brand data
     const brandsCollection = collection(db, "brands");
@@ -541,6 +646,7 @@ async function loadAdminData() {
       teamDropdown.appendChild(option);
     });
 
+
     // Populate the client dropdown
     const clientDropdown = document.getElementById("client-info");
     clientDropdown.innerHTML = ""; // Clear any existing options
@@ -552,6 +658,7 @@ async function loadAdminData() {
       option.textContent = client.name;
       clientDropdown.appendChild(option);
     });
+
 
     // Populate the brands dropdown
     const brandsDropdown = document.getElementById("brand-info");
@@ -578,37 +685,289 @@ async function loadAdminData() {
     document.getElementById('loader1').style.display = 'none';
   } catch (error) {
     console.error("Error getting admin data:", error);
+    document.getElementById("loader1").style.display = "none";
   }
-  document.getElementById("loader1").style.display = "none";
+
+  if (!document.getElementById("add-team-button").dataset.listenerAdded) {
+    document.getElementById("add-team-button").addEventListener("click", async () => {
+      try {
+        console.log("Add team button clicked");
+        document.getElementById("loader1").style.display = "flex";
+        const selectedTeamMemberId = document.getElementById("team-info").value;
+        const selectedBrandId = document.getElementById("brand-info").value;
+        const brandReference = doc(db, "brands", selectedBrandId);
+        const userDocRef = doc(db, "users", selectedTeamMemberId);
+        const userDoc = await getDoc(userDocRef);
+        if (userDoc.exists()) {
+          let brandIdArray = userDoc.data().brandId || [];
+          if (!brandIdArray.some(ref => ref.id === brandReference.id)) {
+            brandIdArray.push(brandReference);
+          }
+          await updateDoc(userDocRef, {
+            brandId: brandIdArray
+          });
+          await loadAdminData();
+          document.getElementById('alert-box1').classList.remove('failed');
+          document.getElementById('alert-box1').classList.add('success');
+          document.getElementById('alert-box1').innerHTML = 'Data saved successfully!';
+          document.getElementById("loader1").style.display = "none";
+          document.getElementById('alert-box1').style.display = 'flex';
+          setTimeout(() => {
+            document.getElementById('alert-box1').style.display = 'none';
+          }, 3000);
+          console.log("User document updated with new brand reference:", brandReference);
+        } else {
+          console.log("User document does not exist.");
+        }
+      } catch (error) {
+        console.error("Error updating user document:", error);
+      }
+      document.getElementById("loader1").style.display = "none";
+    });
+
+    // Mark the listener as added
+    document.getElementById("add-team-button").dataset.listenerAdded = true;
+  }
+  if (!document.getElementById("add-client-button").dataset.listenerAdded) {
+    document.getElementById("add-client-button").addEventListener("click", async () => {
+      try {
+        console.log("Add client button clicked");
+        document.getElementById("loader1").style.display = "flex";
+        const selectedClientId = document.getElementById("client-info").value;
+        const selectedBrandId = document.getElementById("brand-info-1").value;
+        const brandReference = doc(db, "brands", selectedBrandId);
+        const userDocRef = doc(db, "users", selectedClientId);
+        const userDoc = await getDoc(userDocRef);
+        if (userDoc.exists()) {
+          let brandIdArray = userDoc.data().brandId || [];
+          if (!brandIdArray.some(ref => ref.id === brandReference.id)) {
+            brandIdArray.push(brandReference);
+          }
+          await updateDoc(userDocRef, {
+            brandId: brandIdArray
+          });
+          await loadAdminData();
+          document.getElementById('alert-box1').classList.remove('failed');
+          document.getElementById('alert-box1').classList.add('success');
+          document.getElementById('alert-box1').innerHTML = 'Data saved successfully!';
+          document.getElementById("loader1").style.display = "none";
+          document.getElementById('alert-box1').style.display = 'flex';
+          setTimeout(() => {
+            document.getElementById('alert-box1').style.display = 'none';
+          }, 3000);
+          console.log("User document updated with new brand reference:", brandReference);
+        } else {
+          console.log("User document does not exist.");
+        }
+      } catch (error) {
+        console.error("Error updating user document:", error);
+      }
+      document.getElementById("loader1").style.display = "none";
+    });
+
+    // Mark the listener as added
+    document.getElementById("add-client-button").dataset.listenerAdded = true;
+  }
+  if (!document.getElementById("clients-tbody").dataset.listenerAdded) {
+    document.getElementById("clients-tbody").addEventListener("click", async (event) => {
+      if (event.target && event.target.id === "delete-client") {
+        document.getElementById("loader1").style.display = "flex";
+        const clientId = event.target.dataset.clientId;
+        console.log(`Deleting client with ID ${clientId}`);
+        if (confirm(`Are you sure you want to delete client ${clientId}?`)) {
+          await deleteClient(clientId);
+          await loadAdminData();
+        }
+      }
+      else if (event.target && event.target.id === 'delete-brands') {
+        const teamId = event.target.dataset.clientId;
+        showDeleteBrandModal(event, teamId);
+      }
+      document.getElementById("loader1").style.display = "none";
+
+    });
+
+    document.getElementById("clients-tbody").dataset.listenerAdded = true;
+
+  }
+  if (!document.getElementById("team-tbody").dataset.listenerAdded) {
+    document.getElementById("team-tbody").addEventListener("click", async (event) => {
+      if (event.target && event.target.id === "delete-team") {
+        document.getElementById("loader1").style.display = "flex";
+        const teamId = event.target.dataset.teamId;
+        console.log(`Deleting team with ID ${teamId}`);
+        if (confirm(`Are you sure you want to delete team ${teamId}?`)) {
+          await deleteTeam(teamId);
+          await loadAdminData();
+        }
+      }
+      else if (event.target && event.target.id === 'delete-brands') {
+        const teamId = event.target.dataset.teamId;
+        console.log(`Deleting brands for team ${teamId}`);
+        showDeleteBrandModal(event, teamId);
+        // showDeleteBrandModal(event);
+        console.log('delete-brands clicked');
+      }
+    });
+    document.getElementById("team-tbody").dataset.listenerAdded = true;
+
+  }
+  document.getElementById('delete-brand-confirm').addEventListener('click', async () => {
+    document.getElementById('loader1').style.display = 'flex';
+    const selectedBrandId = document.getElementById('brand-select1').value;
+    console.log(document.getElementById('delete-brands').dataset.clientId);
+    const clientId = document.getElementById('delete-brands').dataset.clientId; // Ensure to store clientId somewhere
+    console.log(selectedBrandId, clientId);
+
+    try {
+      // Get user document reference
+      const userDocRef = doc(db, 'users', clientId);
+      const userDoc = await getDoc(userDocRef);
+      if (userDoc.exists()) {
+        let brandIdArray = userDoc.data().brandId || [];
+        // Remove the selected brand ID from the array
+        brandIdArray = brandIdArray.filter(ref => ref.id !== selectedBrandId);
+        // Update user document
+        await updateDoc(userDocRef, { brandId: brandIdArray });
+        // Reload the admin data
+        await loadAdminData();
+        document.getElementById('brand-delete-modal').style.display = 'none';
+      } else {
+        console.log("User document does not exist.");
+      }
+    } catch (error) {
+      console.error("Error deleting brand:", error);
+      document.getElementById('loader1').style.display = 'none';
+
+    }
+  });
+
+  document.getElementById('cancel-brand-delete').addEventListener('click', () => {
+    document.getElementById('brand-delete-modal').style.display = 'none';
+  });
+}
+async function showDeleteBrandModal(event, teamId) {
+  document.getElementById('delete-brands').dataset.clientId = teamId;
+  console.log('Button clicked:', event.target.dataset.brandId); // Debug
+  const brandIds = JSON.parse(event.target.dataset.brandId);
+  const modal = document.getElementById('brand-delete-modal');
+  const brandSelect = document.getElementById('brand-select1');
+  brandSelect.innerHTML = '';
+  const brandsData = JSON.parse(localStorage.getItem('brandsData')) || [];
+  brandsData.forEach(brand => {
+    if (brandIds.includes(brand.brandId)) {
+      const option = document.createElement('option');
+      console.log('Adding option:', brand); // Debug
+      option.value = brand.brandId;
+      option.textContent = brand.name;
+      brandSelect.appendChild(option);
+      console.log(option);
+    }
+  });
+  console.log('Modal display:', modal.style.display); // Debug
+  modal.style.display = 'flex';
 }
 
-// Function to render the client table
 function renderClientTable(clientsData) {
   const tbody = document.getElementById("clients-tbody");
+  console.log("clientsData", clientsData);
+
   if (tbody) {
-      tbody.innerHTML = clientsData.map((client) => `
-          <tr data-id="${client.id}">
-              <td>${client.name}</td>
-              <td>${client.email}</td>
-              <td>${client.brands}</td>
-              <td><button class="delete-client-button">Delete</button></td>
-          </tr>
-      `).join("");
+    tbody.innerHTML = clientsData?.map((client) => {
+      // Extract brand IDs from the array
+      const brandIds = client.brandId?.map(brand => {
+        return brand._key.path.segments[brand._key.path.segments.length - 1];
+      }) || [];
+
+      return ` 
+        <tr>
+            <td>${client.name}</td>
+            <td>${client.email}</td>
+            <td class="brands-box" style="background-color:white">
+                ${client.brands}
+                <div class="more-options">
+                    <button class="more-options-button"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                    <div class="more-options-menu">
+                         ${brandIds.length > 0
+          ? `<button id="delete-brands" data-brand-id='${JSON.stringify(brandIds)}' data-client-id="${client.id}">Delete Brands</button>`
+          : ''
+        }
+                        <button id="delete-client" data-client-id="${(client.id)}">Delete ${client.name}</button>
+                    </div>
+                </div>
+            </td>
+        </tr>
+      `;
+    }).join("");
   }
 }
 
-// Function to render the team table
+async function deleteClient(clientId) {
+  try {
+    console.log(`Deleting client with ID ${clientId}`);
+    const clientDocRef = doc(db, 'users', clientId);
+    await deleteDoc(clientDocRef);
+    const clientsData = JSON.parse(localStorage.getItem('clientsData')) || [];
+    const updatedClientsArray = clientsData.filter(client => client.id !== clientId);
+    localStorage.setItem('clientsData', JSON.stringify(updatedClientsArray));
+    renderClientTable(updatedClientsArray);
+    console.log(`Client with ID ${clientId} has been deleted successfully.`);
+  } catch (error) {
+    console.error("Error deleting client:", error);
+  }
+}
+
+
 function renderTeamTable(teamData) {
   const tbody = document.getElementById("team-tbody");
+  console.log("teamData", teamData);
   if (tbody) {
-      tbody.innerHTML = teamData.map((team) => `
-          <tr data-id="${team.id}">
-              <td>${team.name}</td>
-              <td>${team.email}</td>
-              <td>${team.brands}</td>
-              <td><button class="delete-team-button">Delete</button></td>
-          </tr>
-      `).join("");
+    tbody.innerHTML = teamData?.map((team) => {
+      // Extract brand IDs from the array
+      const brandIds = team.brandId?.map(brand => {
+        return brand._key.path.segments[brand._key.path.segments.length - 1];
+      }) || [];
+
+      return `
+        <tr>
+          <td>${team.name}</td>
+          <td>${team.email}</td>
+          <td class="brands-box" style="background-color:white">
+            ${team.brands}
+            <div class="more-options">
+              <button class="more-options-button"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+              <div class="more-options-menu">
+                ${brandIds.length > 0 ? `<button id="delete-brands" data-brand-id='${JSON.stringify(brandIds)}' data-team-id="${team.id}">Delete Brands</button>` : ''}
+                <button id="delete-team" data-team-id="${team.id}">Delete ${team.name}</button>
+              </div>
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join("");
+  }
+}
+
+
+async function deleteTeam(teamId) {
+  try {
+    console.log(`Deleting team with ID ${teamId}`);
+
+    // Delete the team document from Firestore
+    const teamDocRef = doc(db, 'users', teamId);
+    await deleteDoc(teamDocRef);
+
+    // Remove team from localStorage
+    const teamData = JSON.parse(localStorage.getItem('teamData')) || [];
+    const updatedTeamArray = teamData.filter(team => team.id !== teamId);
+    localStorage.setItem('teamData', JSON.stringify(updatedTeamArray));
+
+    // Re-render the team table
+    renderTeamTable(updatedTeamArray);
+
+    console.log(`Team with ID ${teamId} has been deleted successfully.`);
+  } catch (error) {
+    console.error("Error deleting team:", error);
   }
 }
 
@@ -635,41 +994,73 @@ async function fetchKPIData(selectedBrandId) {
     console.error("Error fetching KPI data: ", error.message);
   }
 }
+export const flatpickrInstances = new Map();
+export const headerFieldToIndex = new Map();
+
 function updateTableWithKPIData(kpiData) {
   const tableBody = document.querySelector("#kpi-table tbody");
   const tableHead = document.querySelector("#kpi-table thead tr");
   tableBody.innerHTML = ""; // Clear existing rows
   tableHead.innerHTML = ""; // Clear existing headers
+
   if (kpiData.length > 0) {
     const firstEntry = kpiData[0].table;
     const fields = Object.keys(firstEntry).filter(
       (field) => field !== "kpi" && field !== "goal"
     );
+
     // Convert date strings to Date objects and sort them
     const dateFields = fields
       .filter(field => !["kpi", "goal"].includes(field))
       .map(field => ({ field, date: new Date(field) }))
       .sort((a, b) => b.date - a.date)
       .map(item => item.field);
-    const sortedFields = ["kpi", "goal", ...dateFields]; // Ensure KPI and Goal are first
+    const includesGoal = Object.keys(firstEntry).includes("goal");
+
+    // Build the sorted fields array based on the presence of "goal"
+    const sortedFields = ["kpi", ...(includesGoal ? ["goal"] : []), ...dateFields];
     tableHead.innerHTML = ""; // Clear existing headers
+
     // Add headers for each dynamic field
-    sortedFields.forEach((field) => {
+    sortedFields.forEach((field, index) => {
+      headerFieldToIndex.set(field, index);
       const header = document.createElement("th");
-      header.classList.add("header-cell");
-      header.textContent = field === "kpi" ? field.toUpperCase() : field === "goal" ? "Goal" : field === "MM/DD/YY" ? "MM/DD/YY" : formatDateString(field);
+      header.classList.add("header-cell-container");
+
+      // Create a container for the header text and the trash icon
+      const headerContent = document.createElement("div");
+      headerContent.style.display = "flex";
+      headerContent.style.alignItems = "center";
+      headerContent.style.justifyContent = "space-between";
+      headerContent.style.width = "100%";
+
+      const headerText = document.createElement("span");
+      headerText.textContent = field === "kpi" ? field.toUpperCase() : field === "goal" ? "Goal" : field === "MM/DD/YY" ? "MM/DD/YY" : formatDateString(field);
+
+      // Create a trash icon for deleting the column (skip for "kpi")
+      if (field !== "kpi" && field !== "goal") {
+        const trashIcon = document.createElement("i");
+        trashIcon.className = "fas fa-trash trash-icon";
+        trashIcon.addEventListener("click", () => deleteColumn(field)); // Delete column using field name
+        headerContent.appendChild(trashIcon);
+      }
+
+      headerContent.appendChild(headerText);
+      header.appendChild(headerContent);
       tableHead.appendChild(header);
 
+      // Initialize Flatpickr only for non-KPI and non-Goal headers
       if (field !== "kpi" && field !== "goal") {
-        flatpickr(header, {
+        const flatpickrInstance = flatpickr(headerContent, {
           enableTime: false,
           dateFormat: "m/d/Y",
           defaultDate: field, // Set the initial date if available
           onChange: function (selectedDates, dateStr, instance) {
             console.log(`Date selected: ${dateStr}`);
-            header.textContent = dateStr; // Update header text with selected date
+            headerText.textContent = dateStr; // Update header text with selected date
           },
         });
+        flatpickrInstances.set(field, flatpickrInstance);
       }
     });
 
@@ -686,11 +1077,19 @@ function updateTableWithKPIData(kpiData) {
 
         sortedFields.forEach((field) => {
           const cell = document.createElement("td");
-
+          cell.classList.add("cell-trash-parent");
           if (Array.isArray(data.table[field])) {
             cell.textContent = data.table[field][rowIndex] || "";
           } else {
             cell.textContent = data.table[field] || "";
+          }
+
+          // Add trash icon to the first cell of each row (except KPI)
+          if (field === "kpi") {
+            const trashIcon = document.createElement("i");
+            trashIcon.className = "fas fa-trash cell-trash-icon ";
+            trashIcon.addEventListener("click", () => deleteRow(row)); // Pass the row element directly
+            cell.appendChild(trashIcon);
           }
 
           cell.contentEditable = true; // Make cell editable
@@ -698,34 +1097,73 @@ function updateTableWithKPIData(kpiData) {
         });
 
         tableBody.appendChild(row);
-
-        document
-          .getElementById("save-button")
-          .addEventListener("click", async function () {
-            document.getElementById("loader1").style.display = "flex";
-            const status = await storeData();
-            const alertBox = document.getElementById('alert-box1');
-            if (status === true) {
-              alertBox.innerHTML = 'Data saved successfully!';
-              alertBox.classList.remove('failed');
-              alertBox.classList.add('success');
-            } else {
-              alertBox.classList.remove('success');
-              alertBox.classList.add('failed');
-              alertBox.innerHTML = 'Failed to save data. Please select date in header!';
-            }
-            document.getElementById("loader1").style.display = "none";
-            alertBox.style.display = 'flex';
-            setTimeout(() => {
-              alertBox.style.display = 'none';
-            }, 3000);
-          });
       }
+    });
+
+    document.getElementById("save-button").addEventListener("click", async function () {
+      document.getElementById("loader1").style.display = "flex";
+      const status = await storeData(true);
+      const alertBox = document.getElementById('alert-box1');
+      if (status === true) {
+        alertBox.innerHTML = 'Data saved successfully!';
+        alertBox.classList.remove('failed');
+        alertBox.classList.add('success');
+      } else {
+        alertBox.classList.remove('success');
+        alertBox.classList.add('failed');
+        alertBox.innerHTML = 'Failed to save data. Please select date in header!';
+      }
+      document.getElementById("loader1").style.display = "none";
+      alertBox.style.display = 'flex';
+      setTimeout(() => {
+        alertBox.style.display = 'none';
+      }, 3000);
     });
   } else {
     console.log("No KPI data available.");
   }
 }
+
+// Function to delete a column
+export function deleteColumn(field) {
+  const index = headerFieldToIndex.get(field);
+  const flatpickrInstance = flatpickrInstances.get(field);
+  if (flatpickrInstance) {
+    flatpickrInstance.destroy();
+    flatpickrInstances.delete(field);
+  }
+  const tableHead = document.querySelector("#kpi-table thead tr");
+  const tableBody = document.querySelector("#kpi-table tbody");
+
+  // Remove the header
+  tableHead.querySelectorAll("th")[index].remove();
+
+  // Remove each cell in the column
+  tableBody.querySelectorAll("tr").forEach(row => {
+    row.querySelectorAll("td")[index].remove();
+  });
+
+  // Update column indexes
+  headerFieldToIndex.delete(field);
+  headerFieldToIndex.forEach((value, key) => {
+    if (value > index) {
+      headerFieldToIndex.set(key, value - 1);
+    }
+  });
+
+  storeData(false);
+}
+
+// Function to delete a row
+export function deleteRow(row) {
+  const tableBody = document.querySelector("#kpi-table tbody");
+
+  // Remove the row
+  tableBody.removeChild(row);
+
+  storeData(false);
+}
+
 
 // Helper function to format date strings if needed
 function formatDateString(dateStr) {
@@ -734,7 +1172,8 @@ function formatDateString(dateStr) {
   return date.toLocaleDateString(undefined, options);
 }
 
-async function storeData() {
+
+async function storeData(param) {
   const tableData = {};
   const tableRows = document.querySelectorAll("#kpi-table tbody tr");
 
@@ -773,8 +1212,10 @@ async function storeData() {
     });
   });
 
-  if (status == false) {
-    return false;
+  if (param == true) {
+    if (status == false) {
+      return false;
+    }
   }
 
   console.log(tableData);
@@ -820,6 +1261,7 @@ async function storeData() {
   }
 }
 
+
 let selectElementChangeHandler = null; // Variable to store the current event handler
 export async function generateBrands(func) {
   const selectElement = document.getElementById("brand-select");
@@ -839,7 +1281,7 @@ export async function generateBrands(func) {
     option.setAttribute("data-brandid", brandId); // Store brand ID in data attribute
     option.setAttribute("data-brandlogo", brandLogo); // Store brand logo in data attribute
     option.classList.add("brand-option");
-   
+
     // If this is the stored selected brand, mark it as selected
     if (brandId === storedSelectedBrandId) {
       option.selected = true;
@@ -860,8 +1302,8 @@ export async function generateBrands(func) {
   if (brandsArray.length > 0) {
     const selectedBrandId = globalOptionselected || storedSelectedBrandId;
     globalSelectedValue = selectedBrandId;
-    if(!selectedBrandId) {
-      const x=localStorage.getItem("brandsData");
+    if (!selectedBrandId) {
+      const x = localStorage.getItem("brandsData");
       selectedBrandId = JSON.parse(x)[0].id || JSON.parse(x)[0].brandId;
     }
     if (selectedBrandId) {
@@ -915,6 +1357,13 @@ async function fetchDataForFunc(func, brandId) {
     case "vision":
       await fetchVisionData(brandId);
       break;
+    case "data":
+      await initializeDataPage();
+      if (JSON.parse(localStorage.getItem("userData")).role == "Admin" || JSON.parse(localStorage.getItem("userData")).role == "Team") {
+        document.getElementById('google-sheet').style.display = 'block';
+
+      }
+      break;
     default:
       console.error("Invalid function type.");
       break;
@@ -941,6 +1390,10 @@ function meetingLoad() {
 }
 function visionLoad() {
   generateBrands("vision");
+
+}
+function loadDataPage() {
+  generateBrands("data");
 
 }
 
@@ -1177,7 +1630,12 @@ window.loadContent = function (event, url) {
       else if (url === "vision.html") {
         visionLoad();
       }
-
+      else if (url === "admin.html") {
+        loadAdminData();
+      }
+      else if (url === "data.html") {
+        loadDataPage();
+      }
       // General initialization
       setTimeout(() => {
         if (url.includes("quarterly-goals.html")) {
@@ -1242,37 +1700,3 @@ function clearSampleText(event) {
 //         </div>
 //     `;
 // }
-
-document.addEventListener('click', async function (event) {
-  // Handle client deletion
-  if (event.target.classList.contains('delete-client-button')) {
-      const row = event.target.closest('tr');
-      const clientId = row.getAttribute('data-id');
-      if (clientId) {
-          try {
-              await deleteDoc(doc(db, "users", clientId)); // Delete the document from Firestore
-              row.remove(); // Remove the row from the table
-              alert('Client deleted successfully!');
-          } catch (error) {
-              console.error("Error deleting client document:", error);
-              alert('Failed to delete the client. Please try again.');
-          }
-      }
-  }
-
-  // Handle team member deletion
-  if (event.target.classList.contains('delete-team-button')) {
-      const row = event.target.closest('tr');
-      const teamId = row.getAttribute('data-id');
-      if (teamId) {
-          try {
-              await deleteDoc(doc(db, "users", teamId)); // Delete the document from Firestore
-              row.remove(); // Remove the row from the table
-              alert('Team member deleted successfully!');
-          } catch (error) {
-              console.error("Error deleting team member document:", error);
-              alert('Failed to delete the team member. Please try again.');
-          }
-      }
-  }
-});

@@ -1,5 +1,6 @@
 import { db } from "./script.js";
-
+import {deleteColumn,deleteRow} from "./script.js";
+import { flatpickrInstances,headerFieldToIndex } from "./script.js";
 console.log("kpis.js is loading");
 window.addWeekColumn = addWeekColumn;
 window.addKpiRow = addKpiRow;
@@ -36,68 +37,92 @@ function initializeFlatpickr() {
 }
 
 function addWeekColumn() {
-    console.log("addWeekColumn called");
     const table = document.getElementById("kpi-table");
     const headerRow = table.querySelector("thead tr");
+    const columnIndex = headerRow.children.length; // This will give the new column index
+    const fieldName = `date-${Date.now()}`; // Generate a unique field name
 
+    // Create a new header cell
     const newHeaderCell = document.createElement("th");
-    newHeaderCell.className = "date-cell";
+    newHeaderCell.className = "header-cell-container date-cell";
+    newHeaderCell.setAttribute("data-column-index", columnIndex); // Store the index
     newHeaderCell.contentEditable = true;
-    newHeaderCell.innerHTML = "MM/DD/YY";
 
-    const kpiGoalCellsCount = 2; // Assuming KPI and Goal are the first two columns
-    headerRow.insertBefore(newHeaderCell, headerRow.children[kpiGoalCellsCount]);
+    // Create a container for the header text and the trash icon
+    const headerContent = document.createElement("div");
+    headerContent.style.display = "flex";
+    headerContent.style.alignItems = "center";
+    headerContent.style.justifyContent = "space-between";
+    headerContent.style.width = "100%";
 
-    flatpickr(newHeaderCell, {
+    const headerText = document.createElement("span");
+    headerText.textContent = "MM/DD/YY"; // Default text for the new column header
+
+    // Create a trash icon for deleting the column
+    const trashIcon = document.createElement("i");
+    trashIcon.className = "fas fa-trash trash-icon";
+    trashIcon.addEventListener("click", () => deleteColumn(fieldName)); // Use the field name for deletion
+
+    headerContent.appendChild(headerText);
+    headerContent.appendChild(trashIcon);
+    newHeaderCell.appendChild(headerContent);
+    headerRow.appendChild(newHeaderCell);
+
+    // Update the headerFieldToIndex map with the new column
+    headerFieldToIndex.set(fieldName, columnIndex);
+
+    // Initialize Flatpickr on the new header cell
+    const flatpickrInstance = flatpickr(newHeaderCell, {
         enableTime: false,
         dateFormat: "m/d/Y",
         onChange: function (selectedDates, dateStr, instance) {
             console.log(`Date selected: ${dateStr}`);
-            instance.element.innerHTML = dateStr;
+            headerText.textContent = dateStr; // Update header text with selected date
         },
     });
+    flatpickrInstances.set(fieldName, flatpickrInstance);
 
+    // Add a new cell in each row of the body
     const bodyRows = table.querySelectorAll("tbody tr");
     bodyRows.forEach((row) => {
-        if (row.children.length === headerRow.children.length - 1) {
-            const newCell = document.createElement("td");
-            newCell.contentEditable = true;
-            row.insertBefore(newCell, row.children[kpiGoalCellsCount]);
-        }
+        const newCell = document.createElement("td");
+        newCell.contentEditable = true;
+        row.appendChild(newCell);
     });
 }
 
 function addKpiRow() {
-  console.log("addKpiRow called");
-  const table = document.getElementById("kpi-table");
-  const numOfWeeks = table.querySelector("thead tr").children.length - 2; // Subtract KPI and Goal columns
-  const newRow = document.createElement("tr");
+    console.log("addKpiRow called");
+    const table = document.getElementById("kpi-table");
+    const numOfWeeks = table.querySelector("thead tr").children.length - 1; // Subtract KPI and Goal columns
+    const newRow = document.createElement("tr");
 
-  // Add KPI and Goal cells
-  newRow.innerHTML = `
-      <td contenteditable="true">New KPI</td>
-      <td contenteditable="true">New Goal</td>
-  `;
+    // Add KPI cell with trash icon
+    const kpiCell = document.createElement("td");
+    kpiCell.contentEditable = true;
+    kpiCell.textContent = "New KPI";
+    kpiCell.classList.add("cell-trash-parent");
 
-  // Add cells for each week
-  for (let i = 0; i < numOfWeeks; i++) {
-      const newCell = document.createElement("td");
-      newCell.contentEditable = true;
-      newRow.appendChild(newCell);
-  }
+    // Create and add the trash icon for the KPI cell
+    const trashIcon = document.createElement("i");
+    trashIcon.className = "fas fa-trash cell-trash-icon ";
+    trashIcon.style.cursor = "pointer"; // Make the trash icon clickable
+    trashIcon.addEventListener("click", function(event) {
+        handleDeleteRow(event);
+        deleteRow();
+    });
+    kpiCell.appendChild(trashIcon);
+    newRow.appendChild(kpiCell);
 
-  // Add delete button cell
-  const deleteCell = document.createElement("td");
-  const deleteButton = document.createElement("button");
-  deleteButton.textContent = "Delete";
-  deleteButton.className = "delete-button";
-  deleteButton.onclick = function() {
-      table.querySelector("tbody").removeChild(newRow);
-  };
-  deleteCell.appendChild(deleteButton);
-  newRow.appendChild(deleteCell);
+    // Add cells for each week
+    for (let i = 0; i < numOfWeeks; i++) {
+        const newCell = document.createElement("td");
+        newCell.contentEditable = true;
+        newRow.appendChild(newCell);
+    }
 
-  table.querySelector("tbody").appendChild(newRow);
+    // Append the new row to the table body
+    table.querySelector("tbody").appendChild(newRow);
 }
 
 
@@ -118,21 +143,8 @@ function handleDeleteRow(event) {
 function saveKpiTable() {
     const table = document.getElementById('kpi-table');
     const tableHTML = table.innerHTML;
-
-    localStorage.setItem('kpiTable', tableHTML);
-    console.log("KPI table saved to localStorage.");
 }
 
-function loadKpiTable() {
-    const savedTableHTML = localStorage.getItem('kpiTable');
-    if (savedTableHTML) {
-        document.getElementById('kpi-table').innerHTML = savedTableHTML;
-        attachDeleteButtons(); // Attach delete buttons to all loaded rows
-        console.log("KPI table loaded from localStorage.");
-    } else {
-        console.log("No saved KPI table found in localStorage.");
-    }
-}
 
 // Ensure this function runs after DOMContentLoaded
 document.addEventListener("DOMContentLoaded", function () {

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Document</title>
+    <script type="module" src="script.js" defer></script>
+
+</head>
+<body>
+    <!-- Brand Delete Modal -->
+    <div id="brand-delete-modal" style="display: none;">
+        <div class="modal-content">
+          <h2>Delete Brand</h2>
+          <label for="brand-select1">Select Brand to Delete:</label>
+          <select id="brand-select1">
+            <option value="">456</option>
+          </select>
+          <button id="delete-brand-confirm">Delete Brand</button>
+          <button id="cancel-brand-delete">Cancel</button>
+        </div>
+      </div>
+      
+  
+    <div id="brands-container">
+        <h1>Brands</h1>
+        <div class="brands-list" id="brands-list">
+        </div>
+        <h2>Add New Brand</h2>
+        <form id="add-brand-form">
+                <label for="brand-name">Brand Name</label>
+                <input type="text" id="brand-name" name="brand-name" placeholder="Enter brand" required>
+                <label for="brand-logo">Brand Logo</label>
+                <input type="file" id="brand-logo" name="brand-logo" accept="image/*" required>
+            <button id="add-brand-button" type="submit">Add Brand</button>
+        </form>
+
+    </div>
+    <div id="clients-content">
+        <!-- Static headers, dynamic rows -->
+        <h1>Clients Info</h1>
+        <div class="header-info">
+            <select name="clients" id="client-info">
+            </select>
+            <select name="brands1" id="brand-info-1">
+            </select>
+            <button id="add-client-button">Save</button>
+        </div>
+        <table id="clients-table" class="kpi-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Brands</th>
+                </tr>
+            </thead>
+            <tbody id="clients-tbody">
+                <!-- Dynamic rows will be inserted here -->
+            </tbody>
+        </table>
+    </div>
+
+    <div id="team-content">
+        <!-- Static headers, dynamic rows -->
+        <h1>Team Members Info</h1>
+        <div class="header-info">
+            <select name="team" id="team-info">
+            </select>
+            <select name="brands" id="brand-info">
+            </select>
+            <button id="add-team-button">Save</button>
+        </div>
+        <table id="team-table" class="kpi-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Brands</th>
+                </tr>
+            </thead>
+            <tbody id="team-tbody">
+                <!-- Dynamic rows will be inserted here -->
+
+
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

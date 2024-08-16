@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client-Specific Data</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div id="data-page">
+        <h1>Embed Client-Specific Google Sheet</h1>
+        <div id="iframe-container">
+            <!-- iframe will be inserted here -->
+        </div>
+        <div id="google-sheet">
+            <label class="Google" for="sheet-url">Enter Google Sheet URL:</label>
+            <input class="Google" type="text" id="sheet-url" placeholder="Paste Google Sheet URL here">
+            <button id="embed-btn">Embed Google Sheet</button>
+        </div>
+        <!-- Container for the embedded Google Sheet -->
+
+    </div>
+
+    <script defer type="module" src="data.js"></script>
+</body>
+
+</html>
