@@ -62,7 +62,10 @@ function addWeekColumn() {
     // Create a trash icon for deleting the column
     const trashIcon = document.createElement("i");
     trashIcon.className = "fas fa-trash trash-icon";
-    trashIcon.addEventListener("click", () => deleteColumn(fieldName));
+    trashIcon.addEventListener("click", (event) => {
+        event.stopPropagation(); // Prevent the click from triggering the Flatpickr
+        deleteColumn(fieldName);
+    });
 
     headerContent.appendChild(headerText);
     headerContent.appendChild(trashIcon);
@@ -75,10 +78,10 @@ function addWeekColumn() {
         headerRow.appendChild(newHeaderCell);
     }
 
-    // Update the data-column-index attributes for all header cells after the inserted column
-    for (let i = insertIndex + 1; i < headerRow.children.length; i++) {
-        headerRow.children[i].setAttribute("data-column-index", i);
-    }
+    // Update the data-column-index attributes for all header cells
+    headerRow.querySelectorAll('th').forEach((th, index) => {
+        th.setAttribute("data-column-index", index);
+    });
 
     // Update the headerFieldToIndex map
     headerFieldToIndex.clear(); // Clear existing mappings
