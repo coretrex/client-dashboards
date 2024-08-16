@@ -142,23 +142,33 @@ function formatTable() {
 
             if (kpiName === 'Revenue' || kpiName === 'Ad Revenue') {
                 cell.textContent = formatCurrency(cell.textContent);
-            } else if (kpiName === 'Buy Box%') {
+            } else if (
+                kpiName === 'Buy Box %' || 
+                kpiName === 'ACoS' || 
+                kpiName === 'TACoS' || 
+                kpiName === 'Conversion Rate'
+            ) {
                 cell.textContent = formatPercentage(cell.textContent);
+            } else if (kpiName === 'Page Views') {
+                cell.textContent = formatWithCommas(cell.textContent);
             }
         });
     });
 }
-
 
 function formatCurrency(value) {
     const number = parseFloat(value.replace(/[^0-9.-]+/g,""));
     return isNaN(number) ? value : `$${number.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
-
 function formatPercentage(value) {
     const number = parseFloat(value.replace(/[^0-9.-]+/g,""));
     return isNaN(number) ? value : `${number.toFixed(2)}%`;
+}
+
+function formatWithCommas(value) {
+    const number = parseFloat(value.replace(/[^0-9.-]+/g,""));
+    return isNaN(number) ? value : number.toLocaleString('en-US');
 }
 
 function attachDeleteButtons() {
