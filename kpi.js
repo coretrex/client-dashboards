@@ -140,7 +140,7 @@ function formatTable() {
         row.querySelectorAll('td').forEach((cell, index) => {
             if (index === 0) return; // Skip the KPI name column
 
-            if (kpiName === 'Revenue') {
+            if (kpiName === 'Revenue' || kpiName === 'Ad Revenue') {
                 cell.textContent = formatCurrency(cell.textContent);
             } else if (kpiName === 'Buy Box %') {
                 cell.textContent = formatPercentage(cell.textContent);
@@ -148,6 +148,7 @@ function formatTable() {
         });
     });
 }
+
 
 function formatCurrency(value) {
     const number = parseFloat(value.replace(/[^0-9.-]+/g,""));
