@@ -142,7 +142,7 @@ function formatTable() {
 
             if (kpiName === 'Revenue' || kpiName === 'Ad Revenue') {
                 cell.textContent = formatCurrency(cell.textContent);
-            } else if (kpiName === 'Buy Box %') {
+            } else if (kpiName === 'Buy Box%') {
                 cell.textContent = formatPercentage(cell.textContent);
             }
         });
