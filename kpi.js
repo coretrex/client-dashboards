@@ -40,13 +40,13 @@ function initializeFlatpickr() {
 function addWeekColumn() {
     const table = document.getElementById("kpi-table");
     const headerRow = table.querySelector("thead tr");
-    const columnIndex = headerRow.children.length; // This will give the new column index
+    const insertIndex = 1; // Insert after the KPI column
     const fieldName = `date-${Date.now()}`; // Generate a unique field name
 
     // Create a new header cell
     const newHeaderCell = document.createElement("th");
     newHeaderCell.className = "header-cell-container date-cell";
-    newHeaderCell.setAttribute("data-column-index", columnIndex); // Store the index
+    newHeaderCell.setAttribute("data-column-index", insertIndex);
     newHeaderCell.contentEditable = true;
 
     // Create a container for the header text and the trash icon
@@ -62,15 +62,26 @@ function addWeekColumn() {
     // Create a trash icon for deleting the column
     const trashIcon = document.createElement("i");
     trashIcon.className = "fas fa-trash trash-icon";
-    trashIcon.addEventListener("click", () => deleteColumn(fieldName)); // Use the field name for deletion
+    trashIcon.addEventListener("click", () => deleteColumn(fieldName));
 
     headerContent.appendChild(headerText);
     headerContent.appendChild(trashIcon);
     newHeaderCell.appendChild(headerContent);
-    headerRow.appendChild(newHeaderCell);
+    
+    // Insert the new header cell at the specified index
+    headerRow.insertBefore(newHeaderCell, headerRow.children[insertIndex]);
 
-    // Update the headerFieldToIndex map with the new column
-    headerFieldToIndex.set(fieldName, columnIndex);
+    // Update the data-column-index attributes for all header cells after the inserted column
+    for (let i = insertIndex + 1; i < headerRow.children.length; i++) {
+        headerRow.children[i].setAttribute("data-column-index", i);
+    }
+
+    // Update the headerFieldToIndex map
+    headerFieldToIndex.clear(); // Clear existing mappings
+    headerRow.querySelectorAll('th').forEach((th, index) => {
+        const field = th.getAttribute('data-field') || `date-${index}`;
+        headerFieldToIndex.set(field, index);
+    });
 
     // Initialize Flatpickr on the new header cell
     const flatpickrInstance = flatpickr(newHeaderCell, {
@@ -88,7 +99,7 @@ function addWeekColumn() {
     bodyRows.forEach((row) => {
         const newCell = document.createElement("td");
         newCell.contentEditable = true;
-        row.appendChild(newCell);
+        row.insertBefore(newCell, row.children[insertIndex]);
     });
 
     formatTable(); // Reapply formatting after adding a column
