@@ -27,8 +27,8 @@ export async function initializeDataPage() {
             // Create iframe element with the retrieved URL
             const iframe = document.createElement("iframe");
             iframe.src = url;
-            iframe.width = "100%";
-            iframe.height = "600px"; // Adjust height as needed
+            iframe.width = "95%";
+            iframe.height = "800px"; // Adjust height as needed
             iframe.style.border = "none";
     
             // Insert the iframe into the container
