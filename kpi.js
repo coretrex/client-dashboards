@@ -40,7 +40,7 @@ function initializeFlatpickr() {
 function addWeekColumn() {
     const table = document.getElementById("kpi-table");
     const headerRow = table.querySelector("thead tr");
-    const insertIndex = 1; // Insert after the KPI column
+    const insertIndex = 2; // Insert after the KPI and Goal columns
     const fieldName = `date-${Date.now()}`; // Generate a unique field name
 
     // Create a new header cell
@@ -69,7 +69,11 @@ function addWeekColumn() {
     newHeaderCell.appendChild(headerContent);
     
     // Insert the new header cell at the specified index
-    headerRow.insertBefore(newHeaderCell, headerRow.children[insertIndex]);
+    if (headerRow.children.length > insertIndex) {
+        headerRow.insertBefore(newHeaderCell, headerRow.children[insertIndex]);
+    } else {
+        headerRow.appendChild(newHeaderCell);
+    }
 
     // Update the data-column-index attributes for all header cells after the inserted column
     for (let i = insertIndex + 1; i < headerRow.children.length; i++) {
@@ -99,7 +103,11 @@ function addWeekColumn() {
     bodyRows.forEach((row) => {
         const newCell = document.createElement("td");
         newCell.contentEditable = true;
-        row.insertBefore(newCell, row.children[insertIndex]);
+        if (row.children.length > insertIndex) {
+            row.insertBefore(newCell, row.children[insertIndex]);
+        } else {
+            row.appendChild(newCell);
+        }
     });
 
     formatTable(); // Reapply formatting after adding a column
