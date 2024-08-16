@@ -12,10 +12,11 @@ body {
 
 #embed-btn {
     width: 400px; /* Adjust the width as needed */
+        vertical-align: middle;
 }
 
 .Google {
-    width: 600px !important; /* Adjust the width as needed */
+    width: 95% !important;
 }
 
 
