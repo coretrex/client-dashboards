@@ -436,14 +436,14 @@ async function addNewBrand(brandName, brandLogo, uniqueFileName) {
       brandId: brandDocRef,
       table: {
         goal: [
-          "Goal 1",
-          "Goal 2",
-          "Goal 3",
-          "Goal 4",
-          "Goal 5",
-          "Goal 6",
-          "Goal 7",
-          "Goal 8",
+          "Enter Goal",
+          "Enter Goal",
+          "Enter Goal",
+          "Enter Goal",
+          "Enter Goal",
+          "Enter Goal",
+          "Enter Goal",
+          "Enter Goal",
         ],
         kpi: [
           "Revenue",
