@@ -447,10 +447,10 @@ async function addNewBrand(brandName, brandLogo, uniqueFileName) {
         ],
         kpi: [
           "Revenue",
-          "Buy Box%",
+          "Buy Box %",
           "Optimization Score",
           "Page Views",
-          "Conversation Rate",
+          "Conversion Rate",
           "Ad Revenue",
           "ACoS",
           "TACoS",
