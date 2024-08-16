@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 function initializeChecklistPage() {
   document.querySelectorAll(".task-list").forEach(list => {
-      list.innerHTML = "";
+    list.innerHTML = "";
   });
   const addTaskBtn = document.querySelector(".add-task-btn");
   const closeBtn = document.querySelector(".close-btn");
@@ -17,38 +17,31 @@ function initializeChecklistPage() {
   const taskBuckets = document.querySelectorAll(".task-bucket");
 
   if (addTaskBtn) {
-      addTaskBtn.addEventListener("click", showAddTaskModal);
+    addTaskBtn.addEventListener("click", showAddTaskModal);
   }
   if (closeBtn) {
-      closeBtn.addEventListener("click", hideAddTaskModal);
+    closeBtn.addEventListener("click", hideAddTaskModal);
   }
   if (newTaskInput) {
-      newTaskInput.addEventListener("keypress", handleAddTask);
+    newTaskInput.addEventListener("keypress", handleAddTask);
   }
   taskBuckets.forEach((bucket) => {
-      bucket.addEventListener("drop", drop);
-      bucket.addEventListener("dragover", allowDrop);
+    bucket.addEventListener("drop", drop);
+    bucket.addEventListener("dragover", allowDrop);
   });
 
-  const onboardingTasksBtn = document.getElementById("onboarding-tasks-btn");
-  const croIncreaseBtn = document.getElementById("cro-increase-btn");
-  const campaignScaffoldingBtn = document.getElementById("campaign-scaffolding-btn");
+  document.querySelectorAll(".on-hold-btn").forEach((button) => {
+    button.addEventListener("click", moveToOnHold);
+  });
 
-  if (onboardingTasksBtn) {
-      onboardingTasksBtn.addEventListener("click", createOnboardingTasks);
-  }
-  if (croIncreaseBtn) {
-      croIncreaseBtn.addEventListener("click", function () {
-          // Define the tasks to be created for CRO Increase here
-      });
-  }
-  if (campaignScaffoldingBtn) {
-      campaignScaffoldingBtn.addEventListener("click", function () {
-          // Define the tasks to be created for Campaign Scaffolding here
-      });
-  }
+  document.querySelectorAll(".done-btn").forEach((button) => {
+    button.addEventListener("click", markAsCompleted);
+  });
+
+  document.querySelectorAll(".delete-task-btn").forEach((button) => {
+    button.addEventListener("click", deleteTask);
+  });
 }
-
 
 function handleAddTask(event) {
   if (event.key === "Enter") {
@@ -86,8 +79,7 @@ async function addTask(taskText, listId) {
   taskItem.querySelector(".delete-task-btn").addEventListener("click", () => deleteTask(taskItem));
 
   taskList.appendChild(taskItem);
-  console.log(taskId);
-
+console.log(taskId);
   // Store the new task in Firestore and update the globalTasksObject
   try {
     const taskData = {
@@ -95,9 +87,11 @@ async function addTask(taskText, listId) {
       name: taskText,
       status: "active"  // Default status; can be updated based on user action
     };
-    console.log(taskData);
+console.log(taskData);
 
     // Query to find the correct checklist document
+    // globalTasksObject.add(taskData);
+    // console.log(globalTasksObject,taskId)
     globalTasksObject[taskId] = taskData;
     const checklistsRef = collection(db, "checklists");
     const q = query(checklistsRef, where("brandId", "==", doc(db, "brands", selectedId)));
@@ -154,7 +148,7 @@ async function moveToOnHold(taskItem, status) {
   console.log(status);
   const taskId = taskItem.id.replace(/^task-/, ''); // Remove "task-" prefix if it exists
   if (status === "completed") {
-    taskItem.classList.remove("completed");
+    taskItem.classList.remove("completed"); 
     globalTasksObject[`${taskId}`].status = "completed";
   }
   if (taskItem.status === "onhold") return;
@@ -170,8 +164,9 @@ async function moveToOnHold(taskItem, status) {
   };
 
   if (globalTasksObject[`${taskId}`]) {
-    globalTasksObject[`${taskId}`].status = "onhold";
+  globalTasksObject[`${taskId}`].status = "onhold";
   }
+
 
   await updateTaskStatusInFirestore(taskId, taskData);
 }
@@ -195,9 +190,10 @@ async function markAsCompleted(taskItem, status) {
   };
 
   // Update the globalTasksObject
+ 
   if (globalTasksObject[`${taskId}`]) {
     globalTasksObject[`${taskId}`].status = "completed";
-  }
+    }
 
   await updateTaskStatusInFirestore(taskId, taskData);
 }
@@ -268,24 +264,9 @@ function hideAddTaskModal() {
     document.body.classList.remove("modal-open");
   }
 }
-
-function createOnboardingTasks() {
-  console.log("Onboarding Tasks button clicked");
-  const onboardingTasks = [
-      "Dashboard Walkthrough",
-      "VTO Submission",
-      "1, 3, 5 Year Plan Review",
-      "Quarterly Rocks Created"
-  ];
-
-  onboardingTasks.forEach(task => {
-      addTask(task, "active-task-list");
-  });
-}
-
-
 export async function fetchChecklistData(selectedId) {
   try {
+    // Reference to the brand document
     const brandRef = doc(db, "brands", selectedId);
     const checklistsRef = collection(db, "checklists");
     const q = query(checklistsRef, where("brandId", "==", brandRef));
@@ -293,10 +274,16 @@ export async function fetchChecklistData(selectedId) {
     querySnapshot.forEach(doc => {
       const data = doc.data();
       console.log("Fetched checklist data:", data);
+      // Assuming data is an object where each key is a task
       const tasksObject = data.tasks;
       console.log("Fetched checklist data:", tasksObject);
-      globalTasksObject = tasksObject || {};
+      // Update DOM with tasks
+      if(!tasksObject){ 
+        updateTaskBuckets(tasksObject);
+        return;}
+      globalTasksObject = tasksObject;
       updateTaskBuckets(tasksObject);
+
     });
     console.log("Checklist data fetched successfully.");
 
@@ -305,18 +292,22 @@ export async function fetchChecklistData(selectedId) {
   }
 }
 
+
 function updateTaskBuckets(tasksObject) {
+  // Clear existing tasks from buckets
   document.querySelectorAll(".task-list").forEach(list => {
     list.innerHTML = "";
   });
 
-  const tasks = Object.values(tasksObject || {});
+  // Convert the tasks object to an array
+  const tasks = Object.values(tasksObject);
 
+  // Update the task buckets with fetched tasks
   tasks.forEach(task => {
     const taskItem = document.createElement("li");
     taskItem.className = "task-item";
     taskItem.draggable = true;
-    taskItem.id = `task-${task.id}`;
+    taskItem.id = `task-${task.id}`; // unique id
     taskItem.addEventListener("dragstart", drag);
     taskItem.innerHTML = `
           <span>${task.name}</span>
@@ -329,15 +320,22 @@ function updateTaskBuckets(tasksObject) {
     if (task.status === "completed") {
       taskItem.classList.add("completed");
     }
-    taskItem.querySelector(".on-hold-btn").addEventListener("click", () => moveToOnHold(taskItem, task.status));
-    taskItem.querySelector(".done-btn").addEventListener("click", () => markAsCompleted(taskItem, task.status));
-    taskItem.querySelector(".delete-task-btn").addEventListener("click", () => deleteTask(taskItem));
+    // Add event listeners for the new task's action buttons
+    taskItem
+      .querySelector(".on-hold-btn")
+      .addEventListener("click", () => moveToOnHold(taskItem, task.status));
+    taskItem
+      .querySelector(".done-btn")
+      .addEventListener("click", () => markAsCompleted(taskItem, task.status));
+    taskItem
+      .querySelector(".delete-task-btn")
+      .addEventListener("click", () => deleteTask(taskItem));
 
+    // Append task to the appropriate bucket based on status
     const bucketId = `${task.status}-task-list`;
     document.getElementById(bucketId).appendChild(taskItem);
   });
 }
-
 // Attach functions to the window object for global access
 window.showAddTaskModal = showAddTaskModal;
 window.hideAddTaskModal = hideAddTaskModal;
