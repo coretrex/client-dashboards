@@ -134,7 +134,7 @@ export function initializeGoalInput() {
 
     goalInput.addEventListener('blur', function() {
         if (goalInput.value.trim() === '') {
-            goalInput.placeholder = 'Deploy A+ across all SKUs...';
+            goalInput.placeholder = 'Example: Deploy A+ across all SKUs...';
         }
     });
 
