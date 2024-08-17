@@ -13,6 +13,7 @@ body {
 #zoom-slider-container {
     display: flex;
     align-items: center;
+    padding-bottom: 7px;
 }
 
 #zoom-slider {
