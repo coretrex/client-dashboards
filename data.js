@@ -13,7 +13,15 @@ export async function initializeDataPage() {
     const iframeContainer = document.getElementById("iframe-container");
     const zoomSlider = document.getElementById("zoom-slider");
 
-    let iframe;
+    let iframe = document.getElementById("google-sheet-iframe");
+
+    if (iframe) {
+        document.getElementById("loader1").style.display = "none";
+        return; // If iframe exists, do nothing further
+    }
+
+    iframe = document.createElement("iframe");
+    iframe.id = "google-sheet-iframe";
 
     // Check if there's a cached URL in sessionStorage
     let cachedUrl = sessionStorage.getItem("cachedGoogleSheetUrl");
@@ -77,7 +85,6 @@ export async function initializeDataPage() {
     });
 
     function loadIframe(url) {
-        iframe = document.createElement("iframe");
         iframe.src = url;
         iframe.width = "125%";
         iframe.height = "850px";
