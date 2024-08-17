@@ -10,6 +10,16 @@ body {
     color: white;
 }
 
+#zoom-slider-container {
+    display: flex;
+    align-items: center;
+}
+
+#zoom-slider {
+    margin-left: 10px;
+}
+
+
 #embed-btn {
     width: 400px; /* Adjust the width as needed */
         vertical-align: middle;
