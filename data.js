@@ -27,10 +27,9 @@ export async function initializeDataPage() {
         if (url) {
             iframe = document.createElement("iframe");
             iframe.src = url;
-            iframe.width = "125%";
-            iframe.height = "750px";
+            iframe.width = "95%";
+            iframe.height = "850px";
             iframe.style.border = "none";
-            iframe.style.transform = "scale(0.8)";
             iframe.style.transformOrigin = "0 0";
 
             iframeContainer.innerHTML = "";
