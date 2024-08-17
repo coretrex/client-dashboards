@@ -29,7 +29,7 @@ export async function initializeDataPage() {
     // Create iframe element with the retrieved URLconst iframe = document.createElement("iframe");
     iframe.src = url;
     iframe.width = "125%"; // Adjust to account for the scale
-    iframe.height = "750px"; // Adjust height to account for the scale
+    iframe.height = "950px"; // Adjust height to account for the scale
     iframe.style.border = "none";
     iframe.style.transform = "scale(0.8)";
     iframe.style.transformOrigin = "0 0";
