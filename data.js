@@ -26,10 +26,13 @@ export async function initializeDataPage() {
         if (url) {
             // Create iframe element with the retrieved URL
             const iframe = document.createElement("iframe");
-            iframe.src = url;
-            iframe.width = "95%";
-            iframe.height = "800px"; // Adjust height as needed
-            iframe.style.border = "none";
+    // Create iframe element with the retrieved URLconst iframe = document.createElement("iframe");
+    iframe.src = url;
+    iframe.width = "125%"; // Adjust to account for the scale
+    iframe.height = "750px"; // Adjust height to account for the scale
+    iframe.style.border = "none";
+    iframe.style.transform = "scale(0.8)";
+    iframe.style.transformOrigin = "0 0";
     
             // Insert the iframe into the container
             iframeContainer.innerHTML = "";
@@ -68,8 +71,8 @@ export async function initializeDataPage() {
             }
             const iframe = document.createElement("iframe");
             iframe.src = url;
-            iframe.width = "100%";
-            iframe.height = "600px"; // Adjust height as needed
+            iframe.width = "95%";
+            iframe.height = "800px"; // Adjust height as needed
             iframe.style.border = "none";
             iframeContainer.innerHTML = "";
             iframeContainer.appendChild(iframe);
