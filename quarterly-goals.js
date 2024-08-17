@@ -1,10 +1,12 @@
-import {updateDoc,db,doc,collection,query,where,getDocs} from "./script.js";
-import { globalSelectedValue as selectedId,initializePage } from "./script.js";
+import { deleteField, updateDoc, db, doc, getDocs, collection, query, where } from "./script.js";
+import { globalSelectedValue as selectedId, initializePage } from "./script.js";
+
 document.addEventListener('DOMContentLoaded', function() {
     console.log('DOMContentLoaded event fired');
     initializeQuarterlyCountdownTimer();
     initializeGoalInput();
 });
+
 export async function fetchQuarterlyGoalsData() {
     try {
         const brandRef = doc(db, "brands", selectedId);
@@ -22,17 +24,21 @@ export async function fetchQuarterlyGoalsData() {
                             const goal = data[key];
                             if (goal && goal.name && goal.status !== undefined) {
                                 const goalItem = document.createElement('li');
-                                goalItem.className = `goal-item ${goal.status} ${goal.completed?'completed':''}`; 
-                                goalItem.style.order = goal.completed?'1':'';
+                                goalItem.className = `goal-item ${goal.status} ${goal.completed ? 'completed' : ''}`;
+                                goalItem.style.order = goal.completed ? '1' : '';
                                 goalItem.innerHTML = `
+                                
                                     <span class="goal-text">${goal.name}</span>
+                                    
                                     <div class="goal-status">
-                                        <select class="status-dropdown ${goal.status} " onchange="setGoalStatusDropdown(this,${key})">
+                                    <button class="delete-button" onclick="deleteGoal('${key}')"><i class="fas fa-trash"></i></button>
+                                        <select class="status-dropdown ${goal.status}" onchange="setGoalStatusDropdown(this, '${key}')">
                                             <option value="on-track" ${goal.status === 'on-track' ? 'selected' : ''}>On-Track</option>
                                             <option value="on-hold" ${goal.status === 'on-hold' ? 'selected' : ''}>On-Hold</option>
                                             <option value="off-track" ${goal.status === 'off-track' ? 'selected' : ''}>Off-Track</option>
                                         </select>
-                                        <button class="status-button complete-button" onclick="completeGoal(this,${key})"><i class="fas fa-check"></i></button>
+                                        <button class="status-button complete-button" onclick="completeGoal(this, '${key}')"><i class="fas fa-check"></i></button>
+                                        
                                     </div>
                                 `;
                                 goalList.appendChild(goalItem);
@@ -53,6 +59,7 @@ export async function fetchQuarterlyGoalsData() {
         console.error("Error fetching quarterly goals data:", error);
     }
 }
+
 async function addGoal(name) {
     try {
         const brandRef = doc(db, "brands", selectedId);
@@ -70,28 +77,30 @@ async function addGoal(name) {
             querySnapshot.forEach(async (docSnapshot) => {
                 const data = docSnapshot.data();
 
-                // if (data && typeof data === 'object') {
-                    const updatedData = { ...data, [newGoalId]: newGoal };
+                const updatedData = { ...data, [newGoalId]: newGoal };
 
-                    await updateDoc(docSnapshot.ref, updatedData);
-                    // fetchQuarterlyGoalsData(); // Fetch and update goals list after adding new goal
-                    const goalList = document.getElementById('goal-list');
-                    const goalItem = document.createElement('li');
-                    goalItem.className = 'goal-item on-track'; // Default status
-                    goalItem.innerHTML = `
-                        <span class="goal-text">${name}</span>
-                        <div class="goal-status">
-                            <select class="status-dropdown on-track" onchange="setGoalStatusDropdown(this,${newGoalId})">
-                                <option value="on-track" selected>On-Track</option>
-                                <option value="on-hold">On-Hold</option>
-                                <option value="off-track">Off-Track</option>
-                            </select>
-                            <button class="status-button complete-button" onclick="completeGoal(this,${newGoalId})"><i class="fas fa-check"></i></button>
-                        </div>
-                    `;
-                    goalList.appendChild(goalItem);
-                    updateDropdownColor(goalItem.querySelector('.status-dropdown'), 'on-track');
-                // }
+                await updateDoc(docSnapshot.ref, updatedData);
+
+                const goalList = document.getElementById('goal-list');
+                const goalItem = document.createElement('li');
+                goalItem.className = 'goal-item on-track'; // Default status
+                goalItem.innerHTML = `
+                
+                    <span class="goal-text">${name}</span>
+                    
+                    <div class="goal-status">
+                     <button class="delete-button" onclick="deleteGoal('${newGoalId}')"><i class="fas fa-trash"></i></button> 
+                        <select class="status-dropdown on-track" onchange="setGoalStatusDropdown(this, '${newGoalId}')">
+                            <option value="on-track" selected>On-Track</option>
+                            <option value="on-hold">On-Hold</option>
+                            <option value="off-track">Off-Track</option>
+                        </select>
+                        <button class="status-button complete-button" onclick="completeGoal(this, '${newGoalId}')"><i class="fas fa-check"></i></button>
+                      
+                    </div>
+                `;
+                goalList.appendChild(goalItem);
+                updateDropdownColor(goalItem.querySelector('.status-dropdown'), 'on-track');
             });
         } else {
             console.log("No matching quarterly goals found to update.");
@@ -180,29 +189,8 @@ function startQuarterlyCountdown() {
     updateCountdown();
 }
 
-// function addGoal(goalText) {
-//     if (goalText.trim() !== '') {
-//         const goalList = document.getElementById('goal-list');
-//         const goalItem = document.createElement('li');
-//         goalItem.className = 'goal-item on-track'; // Default status
-//         goalItem.innerHTML = `
-//             <span class="goal-text">${goalText}</span>
-//             <div class="goal-status">
-//                 <select class="status-dropdown on-track" onchange="setGoalStatusDropdown(this)">
-//                     <option value="on-track" selected>On-Track</option>
-//                     <option value="on-hold">On-Hold</option>
-//                     <option value="off-track">Off-Track</option>
-//                 </select>
-//                 <button class="status-button complete-button" onclick="completeGoal(this)"><i class="fas fa-check"></i></button>
-//             </div>
-//         `;
-//         goalList.appendChild(goalItem);
-//         updateDropdownColor(goalItem.querySelector('.status-dropdown'), 'on-track');
-//     }
-// }
-
-async function setGoalStatusDropdown(select,newGoalId) {
-    console.log(select.value,newGoalId);
+async function setGoalStatusDropdown(select, goalId) {
+    console.log(select.value, goalId);
     const goalItem = select.closest('.goal-item');
     goalItem.className = `goal-item ${select.value}`;
     updateDropdownColor(select, select.value);
@@ -213,15 +201,15 @@ async function setGoalStatusDropdown(select,newGoalId) {
         const querySnapshot = await getDocs(q);
         if (!querySnapshot.empty) {
             querySnapshot.forEach(async (docSnapshot) => {
-                const data = docSnapshot.data();                
+                const data = docSnapshot.data();
                 if (data && typeof data === 'object') {
                     // Update the status of the specific goal
                     const updatedData = {
                         ...data,
-                        [newGoalId]: {
-                            ...data[newGoalId],
+                        [goalId]: {
+                            ...data[goalId],
                             status: select.value,
-                            completed:false,
+                            completed: false,
                         }
                     };
                     await updateDoc(docSnapshot.ref, updatedData);
@@ -235,29 +223,18 @@ async function setGoalStatusDropdown(select,newGoalId) {
         console.error("Error updating goal status:", error);
     }
 }
-function updateDropdownColor(select, status) {
-    const colorMap = {
-        'on-track': 'darkgreen',
-        'on-hold': 'darkorange',
-        'off-track': 'darkred'
-    };
-    select.style.backgroundColor = colorMap[status];
-}
 
-async function completeGoal(button, newGoalId) {
-    console.log(button, newGoalId);
-    
+async function completeGoal(button, goalId) {
+    console.log(button, goalId);
+
     const goalItem = button.closest('.goal-item');
-    
+
     // Update the UI to show the goal as completed
     goalItem.className = 'goal-item completed';
     goalItem.style.order = '1'; // Move completed items to the bottom
 
     try {
-        // Reference to the brand document
         const brandRef = doc(db, "brands", selectedId);
-
-        // Reference to the quarterly-goals collection
         const quarterlyGoalsRef = collection(db, "quarterly-goals");
         const q = query(quarterlyGoalsRef, where("brandId", "==", brandRef));
         const querySnapshot = await getDocs(q);
@@ -265,13 +242,12 @@ async function completeGoal(button, newGoalId) {
         if (!querySnapshot.empty) {
             querySnapshot.forEach(async (docSnapshot) => {
                 const data = docSnapshot.data();
-                
+
                 if (data && typeof data === 'object') {
-                    // Update the completed status of the specific goal
                     const updatedData = {
                         ...data,
-                        [newGoalId]: {
-                            ...data[newGoalId],
+                        [goalId]: {
+                            ...data[goalId],
                             completed: true
                         }
                     };
@@ -288,10 +264,57 @@ async function completeGoal(button, newGoalId) {
     }
 }
 
-window.completeGoal=completeGoal;
-window.setGoalStatusDropdown=setGoalStatusDropdown;
-window.initializeGoalInput=initializeGoalInput;
-window.initializeQuarterlyCountdownTimer=initializeQuarterlyCountdownTimer;
-window.addGoal=addGoal;
-window.startQuarterlyCountdown=startQuarterlyCountdown;
-window.updateDropdownColor=updateDropdownColor;
+async function deleteGoal(goalId) {
+    try {
+        const brandRef = doc(db, "brands", selectedId);
+        const quarterlyGoalsRef = collection(db, "quarterly-goals");
+        const q = query(quarterlyGoalsRef, where("brandId", "==", brandRef));
+        const querySnapshot = await getDocs(q);
+
+        if (!querySnapshot.empty) {
+            for (const docSnapshot of querySnapshot.docs) {
+                const docRef = docSnapshot.ref;
+
+                // Use deleteField to remove the goal from Firestore
+                const updatedData = {
+                    [goalId]: deleteField()
+                };
+
+                await updateDoc(docRef, updatedData);
+
+                console.log(`Goal with ID ${goalId} deleted successfully from Firestore.`);
+
+                // Remove the goal item from the DOM if it exists
+                const goalItem = document.querySelector(`[onclick="deleteGoal('${goalId}')"]`);
+                if (goalItem && goalItem.closest('li')) {
+                    goalItem.closest('li').remove();
+                } else {
+                    console.log("Goal item not found in the DOM.");
+                }
+            }
+        } else {
+            console.log("No matching quarterly goals found to delete.");
+        }
+    } catch (error) {
+        console.error("Error deleting goal from Firestore:", error);
+    }
+}
+
+
+function updateDropdownColor(select, status) {
+    const colorMap = {
+        'on-track': 'darkgreen',
+        'on-hold': 'darkorange',
+        'off-track': 'darkred'
+    };
+    select.style.backgroundColor = colorMap[status];
+}
+
+window.completeGoal = completeGoal;
+window.setGoalStatusDropdown = setGoalStatusDropdown;
+window.initializeGoalInput = initializeGoalInput;
+window.initializeQuarterlyCountdownTimer = initializeQuarterlyCountdownTimer;
+window.addGoal = addGoal;
+window.startQuarterlyCountdown = startQuarterlyCountdown;
+window.updateDropdownColor = updateDropdownColor;
+window.deleteGoal = deleteGoal;
