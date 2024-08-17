@@ -13,40 +13,33 @@ export async function initializeDataPage() {
     const iframeContainer = document.getElementById("iframe-container");
     const zoomSlider = document.getElementById("zoom-slider");
 
-    let iframe = document.getElementById("google-sheet-iframe");
+    let iframe;
 
-    if (iframe) {
-        document.getElementById("loader1").style.display = "none";
-        return; // If iframe exists, do nothing further
-    }
+    const brandRef = doc(db, "brands", selectedId);
+    const quarterlyGoalsRef = collection(db, "googleSheetLink");
+    const q = query(quarterlyGoalsRef, where("brandId", "==", brandRef));
+    const querySnapshot = await getDocs(q);
 
-    iframe = document.createElement("iframe");
-    iframe.id = "google-sheet-iframe";
+    if (!querySnapshot.empty) {
+        const docData = querySnapshot.docs[0].data();
+        const url = docData.link;
 
-    // Check if there's a cached URL in sessionStorage
-    let cachedUrl = sessionStorage.getItem("cachedGoogleSheetUrl");
+        if (url) {
+            iframe = document.createElement("iframe");
+            iframe.src = url;
+            iframe.width = "125%";
+            iframe.height = "850px";
+            iframe.style.border = "none";
+            iframe.style.transform = "scale(0.8)";
+            iframe.style.transformOrigin = "0 0";
 
-    if (cachedUrl) {
-        loadIframe(cachedUrl);
-    } else {
-        const brandRef = doc(db, "brands", selectedId);
-        const quarterlyGoalsRef = collection(db, "googleSheetLink");
-        const q = query(quarterlyGoalsRef, where("brandId", "==", brandRef));
-        const querySnapshot = await getDocs(q);
-
-        if (!querySnapshot.empty) {
-            const docData = querySnapshot.docs[0].data();
-            const url = docData.link;
-
-            if (url) {
-                sessionStorage.setItem("cachedGoogleSheetUrl", url); // Cache the URL
-                loadIframe(url);
-            } else {
-                iframeContainer.innerHTML = "<p>No link available</p>";
-            }
+            iframeContainer.innerHTML = "";
+            iframeContainer.appendChild(iframe);
         } else {
             iframeContainer.innerHTML = "<p>No link available</p>";
         }
+    } else {
+        iframeContainer.innerHTML = "<p>No link available</p>";
     }
     document.getElementById("loader1").style.display = "none";
 
@@ -55,7 +48,6 @@ export async function initializeDataPage() {
         const url = sheetUrlInput.value.trim();
 
         if (url) {
-            sessionStorage.setItem("cachedGoogleSheetUrl", url); // Cache the new URL
             const brandRef = doc(db, "brands", selectedId);
             const quarterlyGoalsRef = collection(db, "googleSheetLink");
             const q = query(quarterlyGoalsRef, where("brandId", "==", brandRef));
@@ -70,7 +62,16 @@ export async function initializeDataPage() {
                     link: url
                 });
             }
-            loadIframe(url);
+            iframe = document.createElement("iframe");
+            iframe.src = url;
+            iframe.width = "125%";
+            iframe.height = "850px";
+            iframe.style.border = "none";
+            iframe.style.transform = `scale(${zoomSlider.value / 100})`;
+            iframe.style.transformOrigin = "0 0";
+
+            iframeContainer.innerHTML = "";
+            iframeContainer.appendChild(iframe);
         } else {
             alert("Please enter a valid Google Sheet URL.");
         }
@@ -83,18 +84,6 @@ export async function initializeDataPage() {
             iframe.style.transform = `scale(${scale})`;
         }
     });
-
-    function loadIframe(url) {
-        iframe.src = url;
-        iframe.width = "125%";
-        iframe.height = "850px";
-        iframe.style.border = "none";
-        iframe.style.transform = `scale(${zoomSlider.value / 100})`;
-        iframe.style.transformOrigin = "0 0";
-
-        iframeContainer.innerHTML = "";
-        iframeContainer.appendChild(iframe);
-    }
 }
 
 window.initializeDataPage = initializeDataPage;
