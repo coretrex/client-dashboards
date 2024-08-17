@@ -192,8 +192,14 @@ function startQuarterlyCountdown() {
 async function setGoalStatusDropdown(select, goalId) {
     console.log(select.value, goalId);
     const goalItem = select.closest('.goal-item');
+    const completeButton = goalItem.querySelector('.complete-button');
+    
     goalItem.className = `goal-item ${select.value}`;
     updateDropdownColor(select, select.value);
+    
+    // Update the color of the complete button
+    updateButtonColor(completeButton, select.value);
+
     try {
         const brandRef = doc(db, "brands", selectedId);
         const quarterlyGoalsRef = collection(db, "quarterly-goals");
@@ -223,6 +229,17 @@ async function setGoalStatusDropdown(select, goalId) {
         console.error("Error updating goal status:", error);
     }
 }
+
+function updateButtonColor(button, status) {
+    const colorMap = {
+        'on-track': 'darkgreen',
+        'on-hold': 'darkorange',
+        'off-track': 'darkred',
+        'completed': 'grey'
+    };
+    button.style.backgroundColor = colorMap[status];
+}
+
 
 async function completeGoal(button, goalId) {
     console.log(button, goalId);
