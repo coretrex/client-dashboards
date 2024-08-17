@@ -65,7 +65,7 @@ export async function initializeDataPage() {
             iframe = document.createElement("iframe");
             iframe.src = url;
             iframe.width = "125%";
-            iframe.height = "750px";
+            iframe.height = "850px";
             iframe.style.border = "none";
             iframe.style.transform = `scale(${zoomSlider.value / 100})`;
             iframe.style.transformOrigin = "0 0";
