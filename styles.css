@@ -299,12 +299,11 @@ body.modal-open {
 }
 
 .on-hold-btn, .done-btn, .delete-task-btn {
-    background-color: #007bff; /* Blue background */
     color: white;              /* White text */
     border: none;
     border-radius: 4px;        /* Optional: rounded corners */
-    width: 30px;               /* Fixed width */
-    height: 30px;              /* Fixed height */
+    width: 27px;               /* Fixed width */
+    height: 27px;              /* Fixed height */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -313,13 +312,22 @@ body.modal-open {
     margin-left: 0px;          /* Space between buttons */
 }
 
+.done-btn { 
+    background-color: #038603;
+}
+
+.on-hold-btn {
+    background-color: #e49400;
+}
+
+.delete-task-btn { 
+    background-color: #c50000;
+}
+
 .on-hold-btn i, .done-btn i, .delete-task-btn i {
     pointer-events: none;      /* Prevent click events on the icon */
 }
 
-.on-hold-btn:hover, .done-btn:hover, .delete-task-btn:hover {
-    background-color: #0056b3; /* Darker blue on hover */
-}
 
 .checklist-container .task-bucket:hover {
     background-color: #f0f0f0;
@@ -364,6 +372,7 @@ body.modal-open {
 .checklist-container .task-item {
     background-color: #f9f9f9;
     margin-bottom: 5px;
+    font-size: 14px;
     padding: 5px 10px; /* Reduced padding */
     border-radius: 4px;
     display: flex;
