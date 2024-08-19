@@ -18,6 +18,11 @@ body {
     padding-bottom: 7px;
 }
 
+
+.move-down-btn:hover {
+    color: #007bff;
+}
+
 #zoom-slider {
     margin-left: 10px;
 }
@@ -2195,6 +2200,22 @@ margin-right: 5px;
     border: none;
     cursor: pointer;
 }
+
+.meeting-task-actions .meeting-move-up-btn,
+.meeting-task-actions .meeting-move-down-btn {
+    background: none;
+    border: none;
+    color: grey;
+    cursor: pointer;
+    padding: 0;
+}
+
+.meeting-task-actions .meeting-move-up-btn:hover,
+.meeting-task-actions .meeting-move-down-btn:hover {
+    color: darkgrey;
+}
+
+
 
 .hyperlink-dropdown {
     position: absolute;

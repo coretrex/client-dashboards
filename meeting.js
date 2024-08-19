@@ -36,19 +36,22 @@ function populateMeetingTasks(data) {
     meetingTopicList.innerHTML = '';
     completedTopicsList.innerHTML = '';
 
-    for (const taskId in data) {
-        if (taskId === 'brandId') continue;
-        if (data.hasOwnProperty(taskId)) {
-            const task = data[taskId];
-            console.log(task);
-            if (task.completed) {
-                addTaskToList(task, completedTopicsList, true, taskId);
-            } else {
-                addTaskToList(task, meetingTopicList, false, taskId);
-            }
+    const order = data.order || {}; // Fetch the order object
+
+    const sortedTasks = Object.keys(data).filter(key => key !== 'brandId' && key !== 'order').sort((a, b) => {
+        return (order[a] || 0) - (order[b] || 0);
+    });
+
+    sortedTasks.forEach(taskId => {
+        const task = data[taskId];
+        if (task.completed) {
+            addTaskToList(task, completedTopicsList, true, taskId);
+        } else {
+            addTaskToList(task, meetingTopicList, false, taskId);
         }
-    }
+    });
 }
+
 
 function addTaskToList(task, listElement, isCompleted, key) {
     const taskItem = document.createElement('li');
@@ -77,6 +80,8 @@ function addTaskToList(task, listElement, isCompleted, key) {
             <button class="meeting-start-btn" onclick="startDiscussion(this)"><i class="fas fa-play"></i></button>
             <button class="meeting-done-btn" onclick="markAsMeetingCompleted(this)"><i class="fas fa-check"></i></button>
             <button class="meeting-delete-task-btn" onclick="deleteMeetingTask(this)"><i class="fas fa-times"></i></button>
+                        <button class="meeting-move-up-btn" onclick="moveTaskUp(this)"><i class="fas fa-arrow-up"></i></button> <!-- Up Arrow Button -->
+            <button class="meeting-move-down-btn" onclick="moveTaskDown(this)"><i class="fas fa-arrow-down"></i></button> <!-- Down Arrow Button -->
         </div>
     `;
 
@@ -86,6 +91,37 @@ function addTaskToList(task, listElement, isCompleted, key) {
 
     listElement.appendChild(taskItem);
 }
+
+function moveTaskUp(button) {
+    const taskItem = button.parentElement.parentElement;
+    const previousSibling = taskItem.previousElementSibling;
+
+    if (previousSibling) {
+        taskItem.parentElement.insertBefore(taskItem, previousSibling);
+        saveMeetingTaskOrder(taskItem.parentElement);  // Save the new order to the database
+    }
+}
+
+// Attach the function to the window object
+window.moveTaskUp = moveTaskUp;
+window.moveTaskDown = moveTaskDown;
+
+
+function moveTaskDown(button) {
+    const taskItem = button.parentElement.parentElement;
+    const nextSibling = taskItem.nextElementSibling;
+
+    if (nextSibling) {
+        taskItem.parentElement.insertBefore(nextSibling, taskItem);
+        saveMeetingTaskOrder(taskItem.parentElement);  // Save the new order to the database
+    }
+}
+
+// Attach the function to the window object
+window.moveTaskDown = moveTaskDown;
+
+
+
 
 async function handleAddMeetingTask(event) {
     if (event.key === 'Enter') {
@@ -240,16 +276,56 @@ function dragMeeting(event) {
     event.dataTransfer.setData("text", event.target.id);
 }
 
-function dropMeeting(event) {
-    event.preventDefault();
-    const data = event.dataTransfer.getData("text");
-    const taskItem = document.getElementById(data);
-    if (event.target.tagName === 'UL') {
-        event.target.appendChild(taskItem);
-    } else if (event.target.closest('.meeting-task-bucket')) {
-        event.target.closest('.meeting-task-bucket').querySelector('.meeting-task-list').appendChild(taskItem);
+async function saveMeetingTaskOrder(listElement) {
+    const taskItems = listElement.children;
+    const newOrder = {};
+
+    for (let i = 0; i < taskItems.length; i++) {
+        const taskId = taskItems[i].id.replace('meeting-task-', '');
+        newOrder[taskId] = i; // Save the order index
+    }
+
+    try {
+        const brandRef = doc(db, "brands", selectedId);
+        const quarterlyGoalsRef = collection(db, "meeting");
+        const q = query(quarterlyGoalsRef, where("brandId", "==", brandRef));
+        const querySnapshot = await getDocs(q);
+
+        if (!querySnapshot.empty) {
+            const meetingDocRef = querySnapshot.docs[0].ref;
+
+            // Update the order in Firestore
+            await updateDoc(meetingDocRef, {
+                order: newOrder
+            });
+
+            console.log("Meeting task order updated in Firestore:", newOrder);
+        } else {
+            console.log("No meeting document found for the selected brand.");
+        }
+    } catch (error) {
+        console.error("Error saving meeting task order:", error);
     }
 }
+
+
+function dropMeeting(event) {
+    event.preventDefault();
+    const data = event.dataTransfer.getData("text/plain");
+    const draggedElement = document.getElementById(data);
+    const targetElement = event.target.closest('.meeting-task-item');
+    const listElement = event.target.closest('ul');
+
+    if (targetElement && listElement) {
+        listElement.insertBefore(draggedElement, targetElement.nextSibling);
+    } else if (listElement) {
+        listElement.appendChild(draggedElement);
+    }
+
+    // Save the new order
+    saveMeetingTaskOrder(listElement);
+}
+
 
 function showAddMeetingTaskModal() {
     document.getElementById('add-meeting-task-modal').style.display = 'flex';
