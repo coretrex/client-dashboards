@@ -2210,12 +2210,21 @@ margin-right: 5px;
 .hyperlink-dropdown button {
     display: block;
     width: 100%;
+    font-weight:normal;
     padding: 8px;
     border: none;
     background: none;
     cursor: pointer;
     text-align: left;
     color: grey;
+}
+
+.hyperlink-dropdown button:hover {
+    background-color: #f0f0f0;
+}
+
+.hyperlink-btn :hover  {
+ color:#fff !important;
 }
 
 .hyperlink-dropdown button:hover {
