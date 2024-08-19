@@ -20,6 +20,7 @@ export async function initializeMeetingPage() {
                 const data = docSnapshot.data();
                 console.log("Fetched Meeting data:", data);
                 populateMeetingTasks(data);
+                applySortingToExistingTasks(); // Apply sorting after tasks are loaded
             });
         } else {
             console.log("No meeting data found for the selected brand.");
@@ -50,6 +51,13 @@ function populateMeetingTasks(data) {
             addTaskToList(task, meetingTopicList, false, taskId);
         }
     });
+
+    saveMeetingTaskOrder(meetingTopicList);  // Ensure the order is saved after initial population
+}
+
+function applySortingToExistingTasks() {
+    const meetingTopicList = document.getElementById('meeting-topic-list');
+    saveMeetingTaskOrder(meetingTopicList);  // Save the order in case it wasn't properly initialized
 }
 
 
@@ -187,11 +195,15 @@ function addMeetingTaskToUI(task, listId, taskId) {
             <button class="meeting-start-btn" onclick="startDiscussion(this)"><i class="fas fa-play"></i></button>
             <button class="meeting-done-btn" onclick="markAsMeetingCompleted(this)"><i class="fas fa-check"></i></button>
             <button class="meeting-delete-task-btn" onclick="deleteMeetingTask(this)"><i class="fas fa-times"></i></button>
+            <button class="meeting-move-up-btn" onclick="moveTaskUp(this)"><i class="fas fa-arrow-up"></i></button> <!-- Up Arrow Button -->
+            <button class="meeting-move-down-btn" onclick="moveTaskDown(this)"><i class="fas fa-arrow-down"></i></button> <!-- Down Arrow Button -->
         </div>
     `;
 
     taskList.appendChild(taskItem);
+    saveMeetingTaskOrder(taskList);  // Save the order immediately after adding a task
 }
+
 
 async function deleteMeetingTask(button) {
     const taskItem = button.parentElement.parentElement;
