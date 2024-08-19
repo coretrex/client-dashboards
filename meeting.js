@@ -1,5 +1,5 @@
-import {deleteField,updateDoc,db,doc,collection,query,where,getDocs} from "./script.js";
-import { globalSelectedValue as selectedId,initializePage } from "./script.js";
+import { deleteField, updateDoc, db, doc, collection, query, where, getDocs } from "./script.js";
+import { globalSelectedValue as selectedId, initializePage } from "./script.js";
 document.addEventListener('DOMContentLoaded', function() {
     initializeMeetingPage();
 });
@@ -8,7 +8,6 @@ let countdown;
 let timerInterval;
 
 export async function initializeMeetingPage() {
-    
     console.log(selectedId);
     try {
         const brandRef = doc(db, "brands", selectedId);
@@ -20,7 +19,6 @@ export async function initializeMeetingPage() {
             querySnapshot.forEach(docSnapshot => {
                 const data = docSnapshot.data();
                 console.log("Fetched Meeting data:", data);
-                // Now we populate the HTML with the fetched data
                 populateMeetingTasks(data);
             });
         } else {
@@ -30,39 +28,48 @@ export async function initializeMeetingPage() {
         console.error("Error fetching quarterly goals data:", error);
     }
 }
+
 function populateMeetingTasks(data) {
     const meetingTopicList = document.getElementById('meeting-topic-list');
     const completedTopicsList = document.getElementById('completed-topics-list');
-    
-    // Clear existing tasks from the lists
+
     meetingTopicList.innerHTML = '';
     completedTopicsList.innerHTML = '';
-    // Assuming `data` is an object with tasks
+
     for (const taskId in data) {
-        if(taskId === 'brandId') continue;
+        if (taskId === 'brandId') continue;
         if (data.hasOwnProperty(taskId)) {
             const task = data[taskId];
             console.log(task);
             if (task.completed) {
-                addTaskToList(task, completedTopicsList, true,taskId);
+                addTaskToList(task, completedTopicsList, true, taskId);
             } else {
-                addTaskToList(task, meetingTopicList, false,taskId);
+                addTaskToList(task, meetingTopicList, false, taskId);
             }
         }
     }
 }
-function addTaskToList(task, listElement, isCompleted,key) {
+
+function addTaskToList(task, listElement, isCompleted, key) {
     const taskItem = document.createElement('li');
     taskItem.className = 'meeting-task-item';
     taskItem.draggable = true;
-    console.log(task);
     taskItem.id = `meeting-task-${key}`;
     taskItem.ondragstart = dragMeeting;
+
+    const linkColor = task.url ? 'green' : 'lightgrey';
 
     taskItem.innerHTML = `
         <span>${task.name}</span>
         <div class="meeting-task-actions">
-            <select class="discussion-type" onchange="updateTaskBackground(this,${key})">
+            <button class="hyperlink-btn" onclick="toggleHyperlinkMenu(this)">
+                <i class="fas fa-link" style="color: ${linkColor};"></i>
+            </button>
+            <div class="hyperlink-dropdown" style="display: none;">
+                <button onclick="navigateToUrl('${key}')">Navigate to URL</button>
+                <button onclick="addUrl('${key}')">Add URL</button>
+            </div>
+            <select class="discussion-type" onchange="updateTaskBackground(this, ${key})">
                 <option value="inform" ${task.status === 'inform' ? 'selected' : ''}>Inform</option>
                 <option value="discuss" ${task.status === 'discuss' ? 'selected' : ''}>Discuss</option>
                 <option value="solve" ${task.status === 'solve' ? 'selected' : ''}>Solve</option>
@@ -100,12 +107,10 @@ async function handleAddMeetingTask(event) {
                         completed: false
                     };
 
-                    // Update the Firestore document with the new task
                     await updateDoc(meetingDocRef, {
                         [newTaskId]: newTask
                     });
 
-                    // Add the task to the UI
                     addMeetingTaskToUI(newTask, 'meeting-topic-list', newTaskId);
                 });
             } else {
@@ -126,10 +131,19 @@ function addMeetingTaskToUI(task, listId, taskId) {
     taskItem.id = `meeting-task-${taskId}`; // use the generated task ID
     taskItem.ondragstart = dragMeeting;
 
+    const linkColor = task.url ? 'green' : 'lightgrey';
+
     taskItem.innerHTML = `
         <span>${task.name}</span>
         <div class="meeting-task-actions">
-            <select class="discussion-type" onchange="updateTaskBackground(this,${taskId})">
+            <button class="hyperlink-btn" onclick="toggleHyperlinkMenu(this)">
+                <i class="fas fa-link" style="color: ${linkColor};"></i>
+            </button>
+            <div class="hyperlink-dropdown" style="display: none;">
+                <button onclick="navigateToUrl('${taskId}')">Navigate to URL</button>
+                <button onclick="addUrl('${taskId}')">Add URL</button>
+            </div>
+            <select class="discussion-type" onchange="updateTaskBackground(this, ${taskId})">
                 <option value="inform" ${task.status === 'inform' ? 'selected' : ''}>Inform</option>
                 <option value="discuss" ${task.status === 'discuss' ? 'selected' : ''}>Discuss</option>
                 <option value="solve" ${task.status === 'solve' ? 'selected' : ''}>Solve</option>
@@ -146,7 +160,7 @@ function addMeetingTaskToUI(task, listId, taskId) {
 async function deleteMeetingTask(button) {
     const taskItem = button.parentElement.parentElement;
     const taskId = taskItem.id.replace('meeting-task-', '');
-console.log(taskId);
+    console.log(taskId);
     try {
         const brandRef = doc(db, "brands", selectedId);
         const quarterlyGoalsRef = collection(db, "meeting");
@@ -155,12 +169,10 @@ console.log(taskId);
 
         if (!querySnapshot.empty) {
             const meetingDocRef = querySnapshot.docs[0].ref;
-            // Remove the task from the Firestore document
             await updateDoc(meetingDocRef, {
                 [`${taskId}`]: deleteField(),
             });
 
-            // Remove the task from the UI
             taskItem.remove();
         } else {
             console.log("No meeting document found for the selected brand.");
@@ -169,7 +181,6 @@ console.log(taskId);
         console.error("Error deleting meeting task:", error);
     }
 }
-
 
 function startDiscussion(button) {
     const taskItem = button.parentElement.parentElement;
@@ -181,10 +192,9 @@ function startDiscussion(button) {
     document.getElementById('discussion-modal').style.display = 'flex';
     document.querySelector('.content-wrapper').classList.add('blur-background');
 
-    countdown = 600; // 10 minutes in seconds
+    countdown = 600;
     startTimer();
 }
-
 
 async function markAsMeetingCompleted(button) {
     const taskItem = button.parentElement.parentElement;
@@ -199,7 +209,6 @@ async function markAsMeetingCompleted(button) {
         if (!querySnapshot.empty) {
             const meetingDocRef = querySnapshot.docs[0].ref;
 
-            // Update the task's completed status in Firestore
             await updateDoc(meetingDocRef, {
                 [`${taskId}.completed`]: true,
             });
@@ -214,7 +223,6 @@ async function markAsMeetingCompleted(button) {
         console.error("Error marking meeting task as completed:", error);
     }
 }
-
 
 function launchMeetingConfetti() {
     confetti({
@@ -298,7 +306,7 @@ function completeDiscussion() {
 }
 
 function addFiveMinutes() {
-    countdown += 300; // Add 5 minutes in seconds
+    countdown += 300;
 }
 
 async function updateTaskBackground(selectElement, taskId) {
@@ -306,16 +314,15 @@ async function updateTaskBackground(selectElement, taskId) {
     const taskItem = selectElement.parentElement.parentElement;
     const newStatus = selectElement.value;
 
-    // Update the background color based on the selected value
     switch (newStatus) {
         case 'inform':
-            taskItem.style.backgroundColor = '#e7f3ff'; // Light blue
+            taskItem.style.backgroundColor = '#e7f3ff';
             break;
         case 'discuss':
-            taskItem.style.backgroundColor = '#fff4e7'; // Light orange
+            taskItem.style.backgroundColor = '#fff4e7';
             break;
         case 'solve':
-            taskItem.style.backgroundColor = '#e7ffe7'; // Light green
+            taskItem.style.backgroundColor = '#e7ffe7';
             break;
     }
 
@@ -328,7 +335,6 @@ async function updateTaskBackground(selectElement, taskId) {
         if (!querySnapshot.empty) {
             const meetingDocRef = querySnapshot.docs[0].ref;
 
-            // Update the task's status in Firestore
             await updateDoc(meetingDocRef, {
                 [`${taskId}.status`]: newStatus,
             });
@@ -341,16 +347,89 @@ async function updateTaskBackground(selectElement, taskId) {
         console.error("Error updating task background and status:", error);
     }
 }
+
+// Hyperlink management functions
+function toggleHyperlinkMenu(button) {
+    const dropdown = button.nextElementSibling;
+    const isVisible = dropdown.style.display === 'block';
+
+    // Close all dropdowns first
+    document.querySelectorAll('.hyperlink-dropdown').forEach(menu => {
+        menu.style.display = 'none';
+    });
+
+    // Toggle the clicked dropdown visibility
+    if (!isVisible) {
+        dropdown.style.display = 'block';
+
+        // Add event listener to close dropdown when clicking outside
+        const closeDropdown = (event) => {
+            if (!dropdown.contains(event.target) && event.target !== button) {
+                dropdown.style.display = 'none';
+                document.removeEventListener('click', closeDropdown);
+            }
+        };
+
+        // Attach the event listener with a slight delay to prevent immediate closure
+        setTimeout(() => {
+            document.addEventListener('click', closeDropdown);
+        }, 100);
+    }
+}
+
+
+async function navigateToUrl(taskId) {
+    const brandRef = doc(db, "brands", selectedId);
+    const quarterlyGoalsRef = collection(db, "meeting");
+    const q = query(quarterlyGoalsRef, where("brandId", "==", brandRef));
+    const querySnapshot = await getDocs(q);
+
+    if (!querySnapshot.empty) {
+        querySnapshot.forEach(docSnapshot => {
+            const data = docSnapshot.data();
+            const url = data[taskId]?.url;
+            if (url) {
+                window.open(url, '_blank');
+            } else {
+                alert('No URL found for this task.');
+            }
+        });
+    }
+}
+
+async function addUrl(taskId) {
+    const url = prompt("Please enter the URL:");
+    if (url) {
+        const brandRef = doc(db, "brands", selectedId);
+        const quarterlyGoalsRef = collection(db, "meeting");
+        const q = query(quarterlyGoalsRef, where("brandId", "==", brandRef));
+        const querySnapshot = await getDocs(q);
+
+        if (!querySnapshot.empty) {
+            querySnapshot.forEach(async (docSnapshot) => {
+                const meetingDocRef = doc(db, "meeting", docSnapshot.id);
+                await updateDoc(meetingDocRef, {
+                    [`${taskId}.url`]: url
+                });
+                document.querySelector(`#meeting-task-${taskId} .hyperlink-btn i`).style.color = 'green';
+            });
+        }
+    }
+}
+
 window.updateTaskBackground = updateTaskBackground;
-window.addFiveMinutes=addFiveMinutes;
-window.completeDiscussion=completeDiscussion;
-window.resumeTimer=resumeTimer;
-window.pauseTimer=pauseTimer;
-window.showAddMeetingTaskModal=showAddMeetingTaskModal;
-window.hideAddMeetingTaskModal=hideAddMeetingTaskModal;
-window.startDiscussion=startDiscussion;
-window.handleAddMeetingTask=handleAddMeetingTask;
-window.deleteMeetingTask=deleteMeetingTask;
-window.markAsMeetingCompleted=markAsMeetingCompleted;
-window.stopTimer=stopTimer;
-window.populateMeetingTasks=populateMeetingTasks;
+window.addFiveMinutes = addFiveMinutes;
+window.completeDiscussion = completeDiscussion;
+window.resumeTimer = resumeTimer;
+window.pauseTimer = pauseTimer;
+window.showAddMeetingTaskModal = showAddMeetingTaskModal;
+window.hideAddMeetingTaskModal = hideAddMeetingTaskModal;
+window.startDiscussion = startDiscussion;
+window.handleAddMeetingTask = handleAddMeetingTask;
+window.deleteMeetingTask = deleteMeetingTask;
+window.markAsMeetingCompleted = markAsMeetingCompleted;
+window.stopTimer = stopTimer;
+window.populateMeetingTasks = populateMeetingTasks;
+window.toggleHyperlinkMenu = toggleHyperlinkMenu;
+window.navigateToUrl = navigateToUrl;
+window.addUrl = addUrl;
