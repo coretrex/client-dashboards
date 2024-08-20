@@ -55,6 +55,7 @@ function populateMeetingTasks(data) {
     saveMeetingTaskOrder(meetingTopicList);  // Ensure the order is saved after initial population
 }
 
+
 function applySortingToExistingTasks() {
     const meetingTopicList = document.getElementById('meeting-topic-list');
     saveMeetingTaskOrder(meetingTopicList);  // Save the order in case it wasn't properly initialized
@@ -69,6 +70,9 @@ function addTaskToList(task, listElement, isCompleted, key) {
     taskItem.ondragstart = dragMeeting;
 
     const linkColor = task.url ? 'green' : 'lightgrey';
+
+    // Determine if the list is the "Meeting Topics" or "Completed Topics" module
+    const isMeetingTopics = listElement.id === 'meeting-topic-list';
 
     taskItem.innerHTML = `
         <span>${task.name}</span>
@@ -87,9 +91,9 @@ function addTaskToList(task, listElement, isCompleted, key) {
             </select>
             <button class="meeting-start-btn" onclick="startDiscussion(this)"><i class="fas fa-play"></i></button>
             <button class="meeting-done-btn" onclick="markAsMeetingCompleted(this)"><i class="fas fa-check"></i></button>
-            <button class="meeting-delete-task-btn" onclick="deleteMeetingTask(this)"><i class="fas fa-times"></i></button>
-                        <button class="meeting-move-up-btn" onclick="moveTaskUp(this)"><i class="fas fa-arrow-up"></i></button> <!-- Up Arrow Button -->
-            <button class="meeting-move-down-btn" onclick="moveTaskDown(this)"><i class="fas fa-arrow-down"></i></button> <!-- Down Arrow Button -->
+            ${isMeetingTopics ? '' : `<button class="meeting-delete-task-btn" onclick="deleteMeetingTask(this)"><i class="fas fa-times"></i></button>`}
+            <button class="meeting-move-up-btn" onclick="moveTaskUp(this)"><i class="fas fa-arrow-up"></i></button>
+            <button class="meeting-move-down-btn" onclick="moveTaskDown(this)"><i class="fas fa-arrow-down"></i></button>
         </div>
     `;
 
@@ -99,6 +103,8 @@ function addTaskToList(task, listElement, isCompleted, key) {
 
     listElement.appendChild(taskItem);
 }
+
+
 
 function moveTaskUp(button) {
     const taskItem = button.parentElement.parentElement;
@@ -172,10 +178,13 @@ function addMeetingTaskToUI(task, listId, taskId) {
     const taskItem = document.createElement('li');
     taskItem.className = 'meeting-task-item';
     taskItem.draggable = true;
-    taskItem.id = `meeting-task-${taskId}`; // use the generated task ID
+    taskItem.id = `meeting-task-${taskId}`;
     taskItem.ondragstart = dragMeeting;
 
     const linkColor = task.url ? 'green' : 'lightgrey';
+
+    // Determine if the task is being added to the "Meeting Topics" or "Completed Topics"
+    const isMeetingTopics = listId === 'meeting-topic-list';
 
     taskItem.innerHTML = `
         <span>${task.name}</span>
@@ -194,9 +203,9 @@ function addMeetingTaskToUI(task, listId, taskId) {
             </select>
             <button class="meeting-start-btn" onclick="startDiscussion(this)"><i class="fas fa-play"></i></button>
             <button class="meeting-done-btn" onclick="markAsMeetingCompleted(this)"><i class="fas fa-check"></i></button>
-            <button class="meeting-delete-task-btn" onclick="deleteMeetingTask(this)"><i class="fas fa-times"></i></button>
-            <button class="meeting-move-up-btn" onclick="moveTaskUp(this)"><i class="fas fa-arrow-up"></i></button> <!-- Up Arrow Button -->
-            <button class="meeting-move-down-btn" onclick="moveTaskDown(this)"><i class="fas fa-arrow-down"></i></button> <!-- Down Arrow Button -->
+            ${isMeetingTopics ? '' : `<button class="meeting-delete-task-btn" onclick="deleteMeetingTask(this)"><i class="fas fa-times"></i></button>`}
+            <button class="meeting-move-up-btn" onclick="moveTaskUp(this)"><i class="fas fa-arrow-up"></i></button>
+            <button class="meeting-move-down-btn" onclick="moveTaskDown(this)"><i class="fas fa-arrow-down"></i></button>
         </div>
     `;
 
@@ -257,12 +266,24 @@ async function markAsMeetingCompleted(button) {
         if (!querySnapshot.empty) {
             const meetingDocRef = querySnapshot.docs[0].ref;
 
+            // Update the task's completed status in Firestore
             await updateDoc(meetingDocRef, {
                 [`${taskId}.completed`]: true,
             });
-            taskItem.classList.add('meeting-completed');
-            const completedList = document.getElementById('completed-topics-list');
-            completedList.appendChild(taskItem);
+
+            // Remove the task item from the "Meeting Topics" list
+            taskItem.remove();
+
+            // Re-add the task item to the "Completed Topics" list with the delete button
+            const taskData = {
+                name: taskItem.querySelector('span').textContent,
+                status: taskItem.querySelector('.discussion-type').value,
+                completed: true,
+                url: taskItem.querySelector('.hyperlink-btn i').style.color === 'green' ? true : false,
+            };
+            addTaskToList(taskData, document.getElementById('completed-topics-list'), true, taskId);
+
+            // Optionally launch confetti
             launchMeetingConfetti();
         } else {
             console.log("No meeting document found for the selected brand.");
@@ -271,6 +292,7 @@ async function markAsMeetingCompleted(button) {
         console.error("Error marking meeting task as completed:", error);
     }
 }
+
 
 function launchMeetingConfetti() {
     confetti({
