@@ -136,21 +136,22 @@ function calculatePageViews() {
     const resultsElement = document.getElementById("results");
     resultsElement.style.display = "block";
     resultsElement.innerHTML = `
-        <p>To achieve an annual revenue goal of <strong>$${revenueGoal.toLocaleString()}</strong>, with an average order value of <strong>$${aov.toLocaleString()}</strong> and a conversion rate of <strong>${parseFloat(
-        conversionRate * 100
-    ).toFixed(2)}%</strong>, you need approximately:</p>
-        <ul>
-            <li><strong>${Math.round(requiredPageViewsDaily).toLocaleString()}</strong> page views daily</li>
-            <li><strong>${Math.round(requiredPageViewsWeekly).toLocaleString()}</strong> page views weekly</li>
-            <li><strong>${Math.round(requiredPageViewsMonthly).toLocaleString()}</strong> page views monthly</li>
-            <li><strong>${Math.round(requiredPageViewsAnnually).toLocaleString()}</strong> page views annually</li>
-        </ul>
+    <p>To achieve an annual revenue goal of <strong>$${revenueGoal.toLocaleString()}</strong>, with an average order value of <strong>$${aov.toLocaleString()}</strong> and a conversion rate of <strong>${parseFloat(
+conversionRate * 100
+).toFixed(2)}%</strong>, you need approximately:</p>
+<ul>
+    <li><strong>${Math.round(requiredPageViewsDaily).toLocaleString()}</strong> page views daily, generating approximately <strong>$${(requiredPageViewsDaily * aov * conversionRate).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong> in revenue</li>
+    <li><strong>${Math.round(requiredPageViewsWeekly).toLocaleString()}</strong> page views weekly, generating approximately <strong>$${(requiredPageViewsWeekly * aov * conversionRate).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong> in revenue</li>
+    <li><strong>${Math.round(requiredPageViewsMonthly).toLocaleString()}</strong> page views monthly, generating approximately <strong>$${(requiredPageViewsMonthly * aov * conversionRate).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong> in revenue</li>
+    <li><strong>${Math.round(requiredPageViewsAnnually).toLocaleString()}</strong> page views annually, generating approximately <strong>$${(requiredPageViewsAnnually * aov * conversionRate).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong> in revenue</li>
+</ul>
+
         <p>Based on <strong>${(organicRate * 100).toFixed(2)}%</strong> organic page views, an estimated CPC of <strong>$${cpc.toFixed(2)}</strong>, and an ads conversion rate of <strong>${(adsConversionRate * 100).toFixed(2)}%</strong>, to hit your revenue goal of <strong>$${revenueGoal.toLocaleString()}</strong>, your ad spend will be approximately:</p>
         <ul>
-            <li><strong>$${adSpendDaily.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong> daily ad spend to generate <strong>$${dailyRevenueFromPaidVisits.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} daily revenue (${Math.round(requiredNonOrganicPageViewsDaily).toLocaleString()} paid page visits, TACoS: ${tACoSDaily.toFixed(2)}%)</strong></li>
-            <li><strong>$${adSpendWeekly.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong> weekly ad spend to generate <strong>$${weeklyRevenueFromPaidVisits.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} weekly revenue (${Math.round(requiredNonOrganicPageViewsWeekly).toLocaleString()} paid page visits, TACoS: ${tACoSWeekly.toFixed(2)}%)</strong></li>
-            <li><strong>$${adSpendMonthly.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong> monthly ad spend to generate <strong>$${monthlyRevenueFromPaidVisits.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} monthly revenue (${Math.round(requiredNonOrganicPageViewsMonthly).toLocaleString()} paid page visits, TACoS: ${tACoSMonthly.toFixed(2)}%)</strong></li>
-            <li><strong>$${adSpendAnnually.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong> annual ad spend to generate <strong>$${annualRevenueFromPaidVisits.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} annual revenue (${Math.round(requiredNonOrganicPageViewsAnnually).toLocaleString()} paid page visits, TACoS: ${tACoSAnnually.toFixed(2)}%)</strong></li>
+            <li><strong>$${adSpendDaily.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong> daily ad spend to generate <strong>$${dailyRevenueFromPaidVisits.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} daily ad revenue (${Math.round(requiredNonOrganicPageViewsDaily).toLocaleString()} paid page visits, TACoS: ${tACoSDaily.toFixed(2)}%)</strong></li>
+            <li><strong>$${adSpendWeekly.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong> weekly ad spend to generate <strong>$${weeklyRevenueFromPaidVisits.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} weekly ad revenue (${Math.round(requiredNonOrganicPageViewsWeekly).toLocaleString()} paid page visits, TACoS: ${tACoSWeekly.toFixed(2)}%)</strong></li>
+            <li><strong>$${adSpendMonthly.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong> monthly ad spend to generate <strong>$${monthlyRevenueFromPaidVisits.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} monthly ad revenue (${Math.round(requiredNonOrganicPageViewsMonthly).toLocaleString()} paid page visits, TACoS: ${tACoSMonthly.toFixed(2)}%)</strong></li>
+            <li><strong>$${adSpendAnnually.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong> annual ad spend to generate <strong>$${annualRevenueFromPaidVisits.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} annual ad revenue (${Math.round(requiredNonOrganicPageViewsAnnually).toLocaleString()} paid page visits, TACoS: ${tACoSAnnually.toFixed(2)}%)</strong></li>
         </ul>`;
 }
 
