@@ -140,10 +140,10 @@ function calculatePageViews() {
 conversionRate * 100
 ).toFixed(2)}%</strong>, you need approximately:</p>
 <ul>
-    <li><strong>${Math.round(requiredPageViewsDaily).toLocaleString()}</strong> page views daily, generating approximately <strong>$${(requiredPageViewsDaily * aov * conversionRate).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong> in revenue</li>
-    <li><strong>${Math.round(requiredPageViewsWeekly).toLocaleString()}</strong> page views weekly, generating approximately <strong>$${(requiredPageViewsWeekly * aov * conversionRate).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong> in revenue</li>
-    <li><strong>${Math.round(requiredPageViewsMonthly).toLocaleString()}</strong> page views monthly, generating approximately <strong>$${(requiredPageViewsMonthly * aov * conversionRate).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong> in revenue</li>
-    <li><strong>${Math.round(requiredPageViewsAnnually).toLocaleString()}</strong> page views annually, generating approximately <strong>$${(requiredPageViewsAnnually * aov * conversionRate).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong> in revenue</li>
+    <li><strong>${Math.round(requiredPageViewsDaily).toLocaleString()}</strong> page views daily, generating approximately <strong>$${(requiredPageViewsDaily * aov * conversionRate).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong> in daily revenue</li>
+    <li><strong>${Math.round(requiredPageViewsWeekly).toLocaleString()}</strong> page views weekly, generating approximately <strong>$${(requiredPageViewsWeekly * aov * conversionRate).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong> in weekly revenue</li>
+    <li><strong>${Math.round(requiredPageViewsMonthly).toLocaleString()}</strong> page views monthly, generating approximately <strong>$${(requiredPageViewsMonthly * aov * conversionRate).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong> in monthly revenue</li>
+    <li><strong>${Math.round(requiredPageViewsAnnually).toLocaleString()}</strong> page views annually, generating approximately <strong>$${(requiredPageViewsAnnually * aov * conversionRate).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong> in annual revenue</li>
 </ul>
 
         <p>Based on <strong>${(organicRate * 100).toFixed(2)}%</strong> organic page views, an estimated CPC of <strong>$${cpc.toFixed(2)}</strong>, and an ads conversion rate of <strong>${(adsConversionRate * 100).toFixed(2)}%</strong>, to hit your revenue goal of <strong>$${revenueGoal.toLocaleString()}</strong>, your ad spend will be approximately:</p>
