@@ -4,7 +4,40 @@ import { globalSelectedValue as selectedId, initializePage } from "./script.js";
 document.addEventListener('DOMContentLoaded', function() {
     initializePage();
     fetchVisionData();
+
+    const guaranteePreview = document.getElementById('guarantee-preview');
+
+    // Event listener for focus (when the user clicks on the field)
+    guaranteePreview.addEventListener('focus', function() {
+        if (this.textContent === 'e.g., Enjoy or it\'s free—your happiness, our priority.') {
+            this.textContent = ''; // Clear the placeholder text
+        }
+    });
+
+    // Event listener for blur (when the user clicks away)
+    guaranteePreview.addEventListener('blur', function() {
+        if (this.textContent.trim() === '') {
+            this.textContent = 'e.g., Enjoy or it\'s free—your happiness, our priority.'; // Show the placeholder text if nothing is typed
+        } else {
+            // Save the content to the database using the correct docId
+            const docId = this.closest('li').getAttribute('data-doc-id'); // Ensure you store the docId in the DOM
+            updateField(docId, 'market', this.textContent.trim(), 'Guarantee');
+        }
+
+        // Ensure the dropdown menu remains visible
+        this.closest('li').querySelector('.dropdown').style.visibility = 'visible';
+    });
+
+    // Ensure the input field is always visible, even if the list is empty
+    if (!guaranteePreview.textContent.trim()) {
+        guaranteePreview.textContent = 'e.g., Enjoy or it\'s free—your happiness, our priority.';
+    }
 });
+
+
+
+
+
 
 function handleAddItem(event, listId, inputId) {
     if (event.key === 'Enter') {
@@ -43,28 +76,40 @@ export async function fetchVisionData() {
 function populateTextSection(sectionId, text, docId, field) {
     const sectionElement = document.getElementById(sectionId);
     sectionElement.innerHTML = ''; // Clear existing items
-    if (text) {
-        const listItem = document.createElement('li');
-        listItem.innerHTML = `
-            <span class="italic-preview" contenteditable="true">${text}</span>
-            <div class="dropdown">
-                <button class="dropdown-icon"><i class="fas fa-ellipsis-h"></i></button>
-                <div class="dropdown-content">
-                    <a href="#" onclick="editField(this, '${docId}', 'market', '${field}')"><i class="fas fa-edit"></i> Edit</a>
-                    <a href="#" onclick="deleteField(this, '${docId}', 'market', '${field}')"><i class="fas fa-trash"></i> Delete</a>
-                </div>
-            </div>`;
-        sectionElement.appendChild(listItem);
 
-        // Add event listener for direct text edits
-        listItem.querySelector('span[contenteditable]').addEventListener('blur', function() {
+    const listItem = document.createElement('li');
+    listItem.setAttribute('data-doc-id', docId); // Store the docId in a data attribute
+    listItem.innerHTML = `
+        <span id="guarantee-preview" class="italic-preview" contenteditable="true">${text || 'e.g., Enjoy or it\'s free—your happiness, our priority.'}</span>
+        <div class="dropdown">
+            <button class="dropdown-icon"><i class="fas fa-ellipsis-h"></i></button>
+            <div class="dropdown-content">
+                <a href="#" onclick="editField(this, '${docId}', 'market', '${field}')"><i class="fas fa-edit"></i> Edit</a>
+                <a href="#" onclick="deleteField(this, '${docId}', 'market', '${field}')"><i class="fas fa-trash"></i> Delete</a>
+            </div>
+        </div>`;
+    sectionElement.appendChild(listItem);
+
+    // Add event listeners to manage preview text visibility
+    const guaranteePreview = listItem.querySelector('#guarantee-preview');
+    guaranteePreview.addEventListener('focus', function() {
+        if (this.textContent === 'e.g., Enjoy or it\'s free—your happiness, our priority.') {
+            this.textContent = ''; // Clear the placeholder text
+        }
+    });
+
+    guaranteePreview.addEventListener('blur', function() {
+        if (this.textContent.trim() === '') {
+            this.textContent = 'e.g., Enjoy or it\'s free—your happiness, our priority.'; // Show the placeholder text if nothing is typed
+        } else {
+            // Save the content to the database using the correct docId
             updateField(docId, 'market', this.textContent.trim(), field);
-        });
-    } else {
-        console.error('Text is not available for:', sectionId);
-        deleteField1(sectionElement);
-    }
+        }
+    });
 }
+
+
+
 
 function populateList(listId, items, docId, field) {
     const listElement = document.getElementById(listId);
@@ -140,16 +185,14 @@ async function updateField(docId, field, newValue, key) {
                 [`market.${key}`]: newValue
             });
             console.log('Market data updated:', key, newValue);
-        } else if (field === 'coreValues' || field === 'purpose' || field === 'niche') {
-            await updateDoc(visionDocRef, {
-                [`${field}.${key}`]: newValue
-            });
-            console.log(`List ${field} updated:`, key, newValue);
+        } else {
+            console.error('Unsupported field:', field);
         }
     } catch (error) {
         console.error('Error updating field:', error);
     }
 }
+
 
 async function addItem(listId, inputId) {
     const list = document.getElementById(listId);
