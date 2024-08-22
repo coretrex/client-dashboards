@@ -12,8 +12,7 @@
 <body>
     <div class="header">
         <h1>Task Checklist</h1>
-        <p class="subtext">Add or review the status of our most pressing tactics to effectively move your brand forward.
-        </p>
+        <p class="subtext">Add or review the status of our most pressing tactics to effectively move your brand forward.</p>
     </div>
     <div class="checklist-container">
         <div class="task-bucket" id="active-tasks" ondrop="drop(event)" ondragover="allowDrop(event)">
@@ -41,14 +40,21 @@
         <div class="modal-content">
             <span class="close-btn" onclick="hideAddTaskModal()">&times;</span>
             <h3>Add a new task</h3>
-            <input type="text" id="new-task-input" placeholder="Type your task here..."
-                onkeypress="handleAddTask(event)">
+            <input type="text" id="new-task-input" placeholder="Type your task here..." onkeypress="handleAddTask(event)">
+        </div>
+    </div>
+
+    <!-- Notepad Modal -->
+    <div class="note-modal" id="note-modal-template" style="display:none;">
+        <div class="note-modal-content">
+            <span class="close-btn" onclick="closeNoteModal(this)">&times;</span>
+            <textarea id="note-textarea" placeholder="Type your notes here..."></textarea>
+            <button onclick="saveNote()">Save Note</button>
         </div>
     </div>
 
     <!-- Link to the external JavaScript files -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
-
     <script type="module" src="checklist.js"></script>
 
 </body>
