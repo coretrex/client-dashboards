@@ -46,7 +46,6 @@ function initializeChecklistPage() {
 function handleAddTask(event) {
   if (event.key === "Enter") {
     const taskText = event.target.value.trim();
-    console.log(selectedId);
     if (taskText !== "") {
       addTask(taskText, "active-task-list");
       event.target.value = "";
@@ -67,6 +66,7 @@ async function addTask(taskText, listId) {
   taskItem.innerHTML = `
       <span>${taskText}</span>
       <div class="task-actions">
+          <button class="note-task-btn"><i class="fas fa-sticky-note"></i></button>
           <button class="on-hold-btn"><i class="fas fa-hand-paper"></i></button>
           <button class="done-btn"><i class="fas fa-check"></i></button>
           <button class="delete-task-btn"><i class="fas fa-times"></i></button>
@@ -74,30 +74,27 @@ async function addTask(taskText, listId) {
   `;
 
   // Add event listeners for the new task's action buttons
+  taskItem.querySelector(".note-task-btn").addEventListener("click", () => openNoteModal(taskId));
   taskItem.querySelector(".on-hold-btn").addEventListener("click", () => moveToOnHold(taskItem));
   taskItem.querySelector(".done-btn").addEventListener("click", () => markAsCompleted(taskItem));
   taskItem.querySelector(".delete-task-btn").addEventListener("click", () => deleteTask(taskItem));
 
   taskList.appendChild(taskItem);
-console.log(taskId);
+
   // Store the new task in Firestore and update the globalTasksObject
   try {
     const taskData = {
       id: taskId,
       name: taskText,
-      status: "active"  // Default status; can be updated based on user action
+      status: "active",  // Default status; can be updated based on user action
+      note: ""  // Initialize note as an empty string
     };
-console.log(taskData);
 
-    // Query to find the correct checklist document
-    // globalTasksObject.add(taskData);
-    // console.log(globalTasksObject,taskId)
     globalTasksObject[taskId] = taskData;
     const checklistsRef = collection(db, "checklists");
     const q = query(checklistsRef, where("brandId", "==", doc(db, "brands", selectedId)));
     const querySnapshot = await getDocs(q);
     if (!querySnapshot.empty) {
-      // Assuming there's only one document that matches the query
       const checklistDoc = querySnapshot.docs[0].ref;
       await updateDoc(checklistDoc, {
         [`tasks.${taskId}`]: taskData  // Update or add the new task
@@ -113,10 +110,7 @@ console.log(taskData);
 
 async function deleteTask(taskItem) {
   const taskId = taskItem.id.replace(/^task-/, '');
-  console.log("Deleting task with ID:", taskId);
-
   taskItem.remove();
-  console.log("Task removed from UI");
 
   try {
     const checklistsRef = collection(db, "checklists");
@@ -125,7 +119,6 @@ async function deleteTask(taskItem) {
 
     if (!querySnapshot.empty) {
       const checklistDocRef = querySnapshot.docs[0].ref;
-      console.log("Document Reference:", checklistDocRef.path);
 
       if (globalTasksObject[taskId]) {
         delete globalTasksObject[taskId];
@@ -144,13 +137,8 @@ async function deleteTask(taskItem) {
   }
 }
 
-async function moveToOnHold(taskItem, status) {
-  console.log(status);
-  const taskId = taskItem.id.replace(/^task-/, ''); // Remove "task-" prefix if it exists
-  if (status === "completed") {
-    taskItem.classList.remove("completed"); 
-    globalTasksObject[`${taskId}`].status = "completed";
-  }
+async function moveToOnHold(taskItem) {
+  const taskId = taskItem.id.replace(/^task-/, '');
   if (taskItem.status === "onhold") return;
 
   document.getElementById("onhold-task-list").appendChild(taskItem);
@@ -164,23 +152,20 @@ async function moveToOnHold(taskItem, status) {
   };
 
   if (globalTasksObject[`${taskId}`]) {
-  globalTasksObject[`${taskId}`].status = "onhold";
+    globalTasksObject[`${taskId}`].status = "onhold";
   }
-
 
   await updateTaskStatusInFirestore(taskId, taskData);
 }
 
-async function markAsCompleted(taskItem, status) {
-  console.log(status);
-
+async function markAsCompleted(taskItem) {
   if (taskItem.status === "completed") return;
 
   taskItem.classList.add("completed");
   document.getElementById("completed-task-list").appendChild(taskItem);
   launchConfetti();
 
-  const taskId = taskItem.id.replace(/^task-/, ''); // Remove "task-" prefix if it exists
+  const taskId = taskItem.id.replace(/^task-/, '');
   const taskText = taskItem.querySelector("span").textContent;
 
   const taskData = {
@@ -189,11 +174,9 @@ async function markAsCompleted(taskItem, status) {
     status: "completed"
   };
 
-  // Update the globalTasksObject
- 
   if (globalTasksObject[`${taskId}`]) {
     globalTasksObject[`${taskId}`].status = "completed";
-    }
+  }
 
   await updateTaskStatusInFirestore(taskId, taskData);
 }
@@ -207,7 +190,7 @@ async function updateTaskStatusInFirestore(taskId, taskData) {
     if (!querySnapshot.empty) {
       const checklistDocRef = querySnapshot.docs[0].ref;
       await updateDoc(checklistDocRef, {
-        [`tasks.${taskId}`]: taskData // Use the consistent "task-" prefix
+        [`tasks.${taskId}`]: taskData
       });
 
       console.log(`Task status updated to ${taskData.status} and saved to Firestore successfully.`);
@@ -264,79 +247,113 @@ function hideAddTaskModal() {
     document.body.classList.remove("modal-open");
   }
 }
+
+function openNoteModal(taskId) {
+    const modal = document.createElement('div');
+    modal.className = 'note-modal';
+    modal.innerHTML = `
+        <div class="note-modal-content">
+            <span class="close-btn" onclick="closeNoteModal(this)">&times;</span>
+            <textarea id="note-textarea-${taskId}" placeholder="Type your notes here..."></textarea>
+            <button onclick="saveNote('${taskId}')">Save Note</button>
+        </div>
+    `;
+    document.body.appendChild(modal);
+
+    // Load existing note if it exists
+    const existingNote = globalTasksObject[taskId]?.note || '';
+    document.getElementById(`note-textarea-${taskId}`).value = existingNote;
+}
+
+function closeNoteModal(closeButton) {
+    const modal = closeButton.closest('.note-modal');
+    document.body.removeChild(modal);
+}
+
+async function saveNote(taskId) {
+    const noteText = document.getElementById(`note-textarea-${taskId}`).value.trim();
+    globalTasksObject[taskId].note = noteText;
+
+    // Update Firestore with the note
+    try {
+        const checklistsRef = collection(db, "checklists");
+        const q = query(checklistsRef, where("brandId", "==", doc(db, "brands", selectedId)));
+        const querySnapshot = await getDocs(q);
+        if (!querySnapshot.empty) {
+            const checklistDocRef = querySnapshot.docs[0].ref;
+            await updateDoc(checklistDocRef, {
+                [`tasks.${taskId}.note`]: noteText
+            });
+            console.log("Note saved successfully.");
+        } else {
+            console.error("No checklist document found for the selected brand.");
+        }
+    } catch (error) {
+        console.error("Error saving note:", error);
+    }
+
+    closeNoteModal(document.getElementById(`note-textarea-${taskId}`));
+}
+
+// Attach functions to the window object for global access
+window.openNoteModal = openNoteModal;
+window.closeNoteModal = closeNoteModal;
+window.saveNote = saveNote;
+
 export async function fetchChecklistData(selectedId) {
   try {
-    // Reference to the brand document
     const brandRef = doc(db, "brands", selectedId);
     const checklistsRef = collection(db, "checklists");
     const q = query(checklistsRef, where("brandId", "==", brandRef));
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach(doc => {
       const data = doc.data();
-      console.log("Fetched checklist data:", data);
-      // Assuming data is an object where each key is a task
       const tasksObject = data.tasks;
-      console.log("Fetched checklist data:", tasksObject);
-      // Update DOM with tasks
-      if(!tasksObject){ 
-        updateTaskBuckets(tasksObject);
-        return;}
       globalTasksObject = tasksObject;
       updateTaskBuckets(tasksObject);
-
     });
     console.log("Checklist data fetched successfully.");
-
   } catch (error) {
     console.error("Error fetching checklist data:", error);
   }
 }
 
-
 function updateTaskBuckets(tasksObject) {
-  // Clear existing tasks from buckets
   document.querySelectorAll(".task-list").forEach(list => {
     list.innerHTML = "";
   });
 
-  // Convert the tasks object to an array
   const tasks = Object.values(tasksObject);
 
-  // Update the task buckets with fetched tasks
   tasks.forEach(task => {
     const taskItem = document.createElement("li");
     taskItem.className = "task-item";
     taskItem.draggable = true;
-    taskItem.id = `task-${task.id}`; // unique id
+    taskItem.id = `task-${task.id}`;
     taskItem.addEventListener("dragstart", drag);
     taskItem.innerHTML = `
-          <span>${task.name}</span>
-          <div class="task-actions">
-              <button class="on-hold-btn"><i class="fas fa-hand-paper"></i></button>
-              <button class="done-btn"><i class="fas fa-check"></i></button>
-              <button class="delete-task-btn"><i class="fas fa-times"></i></button>
-          </div>
-      `;
+        <span>${task.name}</span>
+        <div class="task-actions">
+            <button class="note-task-btn"><i class="fas fa-sticky-note"></i></button>
+            <button class="on-hold-btn"><i class="fas fa-hand-paper"></i></button>
+            <button class="done-btn"><i class="fas fa-check"></i></button>
+            <button class="delete-task-btn"><i class="fas fa-times"></i></button>
+        </div>
+    `;
     if (task.status === "completed") {
       taskItem.classList.add("completed");
     }
-    // Add event listeners for the new task's action buttons
-    taskItem
-      .querySelector(".on-hold-btn")
-      .addEventListener("click", () => moveToOnHold(taskItem, task.status));
-    taskItem
-      .querySelector(".done-btn")
-      .addEventListener("click", () => markAsCompleted(taskItem, task.status));
-    taskItem
-      .querySelector(".delete-task-btn")
-      .addEventListener("click", () => deleteTask(taskItem));
 
-    // Append task to the appropriate bucket based on status
+    taskItem.querySelector(".note-task-btn").addEventListener("click", () => openNoteModal(task.id));
+    taskItem.querySelector(".on-hold-btn").addEventListener("click", () => moveToOnHold(taskItem, task.status));
+    taskItem.querySelector(".done-btn").addEventListener("click", () => markAsCompleted(taskItem, task.status));
+    taskItem.querySelector(".delete-task-btn").addEventListener("click", () => deleteTask(taskItem));
+
     const bucketId = `${task.status}-task-list`;
     document.getElementById(bucketId).appendChild(taskItem);
   });
 }
-// Attach functions to the window object for global access
+
 window.showAddTaskModal = showAddTaskModal;
 window.hideAddTaskModal = hideAddTaskModal;
 window.handleAddTask = handleAddTask;
