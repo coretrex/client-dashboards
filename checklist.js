@@ -271,29 +271,38 @@ function closeNoteModal(closeButton) {
 }
 
 async function saveNote(taskId) {
-    const noteText = document.getElementById(`note-textarea-${taskId}`).value.trim();
-    globalTasksObject[taskId].note = noteText;
+  const noteText = document.getElementById(`note-textarea-${taskId}`).value.trim();
+  globalTasksObject[taskId].note = noteText;
 
-    // Update Firestore with the note
-    try {
-        const checklistsRef = collection(db, "checklists");
-        const q = query(checklistsRef, where("brandId", "==", doc(db, "brands", selectedId)));
-        const querySnapshot = await getDocs(q);
-        if (!querySnapshot.empty) {
-            const checklistDocRef = querySnapshot.docs[0].ref;
-            await updateDoc(checklistDocRef, {
-                [`tasks.${taskId}.note`]: noteText
-            });
-            console.log("Note saved successfully.");
-        } else {
-            console.error("No checklist document found for the selected brand.");
-        }
-    } catch (error) {
-        console.error("Error saving note:", error);
-    }
+  // Update Firestore with the note
+  try {
+      const checklistsRef = collection(db, "checklists");
+      const q = query(checklistsRef, where("brandId", "==", doc(db, "brands", selectedId)));
+      const querySnapshot = await getDocs(q);
+      if (!querySnapshot.empty) {
+          const checklistDocRef = querySnapshot.docs[0].ref;
+          await updateDoc(checklistDocRef, {
+              [`tasks.${taskId}.note`]: noteText
+          });
+          console.log("Note saved successfully.");
+      } else {
+          console.error("No checklist document found for the selected brand.");
+      }
+  } catch (error) {
+      console.error("Error saving note:", error);
+  }
 
-    closeNoteModal(document.getElementById(`note-textarea-${taskId}`));
+  // Change note icon color based on note presence
+  const noteButton = document.querySelector(`#task-${taskId} .note-task-btn i`);
+  if (noteText) {
+      noteButton.style.color = "green";
+  } else {
+      noteButton.style.color = "";
+  }
+
+  closeNoteModal(document.getElementById(`note-textarea-${taskId}`));
 }
+
 
 // Attach functions to the window object for global access
 window.openNoteModal = openNoteModal;
@@ -344,6 +353,12 @@ function updateTaskBuckets(tasksObject) {
       taskItem.classList.add("completed");
     }
 
+    // Update note icon color based on note presence
+    const noteButton = taskItem.querySelector(".note-task-btn i");
+    if (task.note) {
+        noteButton.style.color = "green";
+    }
+
     taskItem.querySelector(".note-task-btn").addEventListener("click", () => openNoteModal(task.id));
     taskItem.querySelector(".on-hold-btn").addEventListener("click", () => moveToOnHold(taskItem, task.status));
     taskItem.querySelector(".done-btn").addEventListener("click", () => markAsCompleted(taskItem, task.status));
@@ -353,6 +368,7 @@ function updateTaskBuckets(tasksObject) {
     document.getElementById(bucketId).appendChild(taskItem);
   });
 }
+
 
 window.showAddTaskModal = showAddTaskModal;
 window.hideAddTaskModal = hideAddTaskModal;
