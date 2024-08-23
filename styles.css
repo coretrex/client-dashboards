@@ -2324,11 +2324,12 @@ margin-right: 5px;
     cursor: text;
 }
 
-/* Highlight active menu item */
+/* Highlight active menu item with a vertical bar */
 .sidebar-menu li a.active {
-    background-color: rgb(3, 55, 168);
+    border-left: 4px solid rgb(2, 107, 226); /* Vertical bar */
+    background-color: transparent; /* Keep background transparent or as it is */
+    padding-left: 16px; /* Adjust padding to account for the bar */
 }
-
 .sidebar-menu li a:hover {
     background-color: rgb(3, 55, 168);
 }
