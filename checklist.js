@@ -14,6 +14,7 @@ function initializeChecklistPage() {
   const addTaskBtn = document.querySelector(".add-task-btn");
   const closeBtn = document.querySelector(".close-btn");
   const newTaskInput = document.getElementById("new-task-input");
+  const taskBuckets = document.querySelectorAll(".task-bucket");
 
   if (addTaskBtn) {
     addTaskBtn.addEventListener("click", showAddTaskModal);
@@ -24,6 +25,12 @@ function initializeChecklistPage() {
   if (newTaskInput) {
     newTaskInput.addEventListener("keypress", handleAddTask);
   }
+
+  // Add drag and drop functionality
+  taskBuckets.forEach((bucket) => {
+    bucket.addEventListener("drop", drop);
+    bucket.addEventListener("dragover", allowDrop);
+  });
 
   document.querySelectorAll(".on-hold-btn").forEach((button) => {
     button.addEventListener("click", moveToOnHold);
@@ -55,7 +62,9 @@ async function addTask(taskText, listId) {
     const taskId = `${new Date().getTime()}`; // Unique id
 
     taskItem.className = "task-item";
+    taskItem.draggable = true;
     taskItem.id = `task-${taskId}`;
+    taskItem.addEventListener("dragstart", drag);
     taskItem.innerHTML = `
         <span class="task-title" ondblclick="editTaskTitle('${taskId}')">${taskText}</span>
         <div class="task-actions">
@@ -203,6 +212,46 @@ function launchConfetti() {
   });
 }
 
+function allowDrop(event) {
+  event.preventDefault();
+}
+
+function drag(event) {
+  event.dataTransfer.setData("text", event.target.id);
+}
+
+function drop(event) {
+  event.preventDefault();
+  const data = event.dataTransfer.getData("text");
+  const taskItem = document.getElementById(data);
+  const targetListId = event.target.closest(".task-bucket").querySelector(".task-list").id;
+
+  if (event.target.tagName === "UL" || event.target.closest(".task-bucket")) {
+    event.target.closest(".task-bucket").querySelector(".task-list").appendChild(taskItem);
+
+    // Update task status based on where it's dropped
+    let newStatus = "active";
+    if (targetListId === "onhold-task-list") {
+      newStatus = "onhold";
+    } else if (targetListId === "completed-task-list") {
+      newStatus = "completed";
+    } else {
+      // If moving from "Completed" to "Active," remove the completed styling
+      taskItem.classList.remove("completed");
+    }
+
+    globalTasksObject[taskItem.id.replace(/^task-/, '')].status = newStatus;
+
+    // Update Firestore with the new status
+    updateTaskStatusInFirestore(taskItem.id.replace(/^task-/, ''), {
+      id: taskItem.id.replace(/^task-/, ''),
+      name: taskItem.querySelector(".task-title").textContent,
+      status: newStatus,
+      note: globalTasksObject[taskItem.id.replace(/^task-/, '')].note || ''
+    });
+  }
+}
+
 function showAddTaskModal() {
   const modal = document.getElementById("add-task-modal");
   if (modal) {
@@ -345,7 +394,9 @@ function updateTaskBuckets(tasksObject) {
   tasks.forEach(task => {
     const taskItem = document.createElement("li");
     taskItem.className = "task-item";
+    taskItem.draggable = true;
     taskItem.id = `task-${task.id}`;
+    taskItem.addEventListener("dragstart", drag);
     taskItem.innerHTML = `
         <span class="task-title" ondblclick="editTaskTitle('${task.id}')">${task.name}</span>
         <div class="task-actions">
@@ -403,4 +454,6 @@ export async function fetchChecklistData(selectedId) {
 window.showAddTaskModal = showAddTaskModal;
 window.hideAddTaskModal = hideAddTaskModal;
 window.handleAddTask = handleAddTask;
+window.drop = drop;
+window.allowDrop = allowDrop;
 window.fetchChecklistData = fetchChecklistData;
