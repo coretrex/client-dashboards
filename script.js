@@ -997,6 +997,7 @@ async function fetchKPIData(selectedBrandId) {
 export const flatpickrInstances = new Map();
 export const headerFieldToIndex = new Map();
 
+
 function updateTableWithKPIData(kpiData) {
   const tableBody = document.querySelector("#kpi-table tbody");
   const tableHead = document.querySelector("#kpi-table thead tr");
@@ -1396,6 +1397,16 @@ function loadDataPage() {
   generateBrands("data");
 
 }
+function calculatorLoad() {
+  generateBrands("calculator");
+
+}
+function growthchecklistLoad() {
+  generateBrands("growthchecklist");
+
+}
+
+
 
 function saveClientData(clientId, data) {
   const clientDoc = firebase.firestore().collection("clients").doc(clientId);
@@ -1636,6 +1647,12 @@ window.loadContent = function (event, url) {
       else if (url === "data.html") {
         loadDataPage();
       }
+      else if (url === "growth-calculator.html") {
+        calculatorLoad();
+      }
+      else if (url === "growth-checklist.html") {
+        growthchecklistLoad();
+      }
       // General initialization
       setTimeout(() => {
         if (url.includes("quarterly-goals.html")) {
@@ -1700,3 +1717,30 @@ function clearSampleText(event) {
 //         </div>
 //     `;
 // }
+
+document.addEventListener("DOMContentLoaded", function() {
+  const addToChecklistButtons = document.querySelectorAll('.in-progress');
+  const addToRocksButtons = document.querySelectorAll('.add-to-rocks');
+
+  addToRocksButtons.forEach(button => {
+      button.addEventListener('click', function() {
+          alert("Added to Rocks!");
+          // Add additional functionality as needed
+      });
+  });
+
+  addToChecklistButtons.forEach(button => {
+      button.addEventListener('click', function() {
+          // Functionality for "Add to Checklist" button click
+      });
+  });
+
+  document.querySelectorAll('.volume-meter .volume-level').forEach(level => {
+      const width = parseInt(level.style.width);
+      if (width >= 90) {
+          level.classList.add('high-volume');
+      }
+  });
+});
+
+
