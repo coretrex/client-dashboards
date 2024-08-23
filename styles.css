@@ -2308,3 +2308,8 @@ margin-right: 5px;
 .task-actions .note-task-btn:hover i {
     color: darkgrey; /* Slightly darker grey on hover */
 }
+
+/* Checklist task title edit */
+.task-title {
+    cursor: text;
+}
