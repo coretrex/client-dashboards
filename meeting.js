@@ -55,12 +55,10 @@ function populateMeetingTasks(data) {
     saveMeetingTaskOrder(meetingTopicList);  // Ensure the order is saved after initial population
 }
 
-
 function applySortingToExistingTasks() {
     const meetingTopicList = document.getElementById('meeting-topic-list');
     saveMeetingTaskOrder(meetingTopicList);  // Save the order in case it wasn't properly initialized
 }
-
 
 function addTaskToList(task, listElement, isCompleted, key) {
     const taskItem = document.createElement('li');
@@ -75,7 +73,7 @@ function addTaskToList(task, listElement, isCompleted, key) {
     const isMeetingTopics = listElement.id === 'meeting-topic-list';
 
     taskItem.innerHTML = `
-        <span>${task.name}</span>
+        <span class="meeting-title" ondblclick="editMeetingTitle('${key}')">${task.name}</span>
         <div class="meeting-task-actions">
             <button class="hyperlink-btn" onclick="toggleHyperlinkMenu(this)">
                 <i class="fas fa-link" style="color: ${linkColor};"></i>
@@ -104,8 +102,6 @@ function addTaskToList(task, listElement, isCompleted, key) {
     listElement.appendChild(taskItem);
 }
 
-
-
 function moveTaskUp(button) {
     const taskItem = button.parentElement.parentElement;
     const previousSibling = taskItem.previousElementSibling;
@@ -116,11 +112,6 @@ function moveTaskUp(button) {
     }
 }
 
-// Attach the function to the window object
-window.moveTaskUp = moveTaskUp;
-window.moveTaskDown = moveTaskDown;
-
-
 function moveTaskDown(button) {
     const taskItem = button.parentElement.parentElement;
     const nextSibling = taskItem.nextElementSibling;
@@ -130,12 +121,6 @@ function moveTaskDown(button) {
         saveMeetingTaskOrder(taskItem.parentElement);  // Save the new order to the database
     }
 }
-
-// Attach the function to the window object
-window.moveTaskDown = moveTaskDown;
-
-
-
 
 async function handleAddMeetingTask(event) {
     if (event.key === 'Enter') {
@@ -187,7 +172,7 @@ function addMeetingTaskToUI(task, listId, taskId) {
     const isMeetingTopics = listId === 'meeting-topic-list';
 
     taskItem.innerHTML = `
-        <span>${task.name}</span>
+        <span class="meeting-title" ondblclick="editMeetingTitle('${taskId}')">${task.name}</span>
         <div class="meeting-task-actions">
             <button class="hyperlink-btn" onclick="toggleHyperlinkMenu(this)">
                 <i class="fas fa-link" style="color: ${linkColor};"></i>
@@ -212,7 +197,6 @@ function addMeetingTaskToUI(task, listId, taskId) {
     taskList.appendChild(taskItem);
     saveMeetingTaskOrder(taskList);  // Save the order immediately after adding a task
 }
-
 
 async function deleteMeetingTask(button) {
     const taskItem = button.parentElement.parentElement;
@@ -293,7 +277,6 @@ async function markAsMeetingCompleted(button) {
     }
 }
 
-
 function launchMeetingConfetti() {
     confetti({
         particleCount: 100,
@@ -342,24 +325,54 @@ async function saveMeetingTaskOrder(listElement) {
     }
 }
 
-
 function dropMeeting(event) {
     event.preventDefault();
     const data = event.dataTransfer.getData("text/plain");
     const draggedElement = document.getElementById(data);
-    const targetElement = event.target.closest('.meeting-task-item');
-    const listElement = event.target.closest('ul');
+    const targetListId = event.target.closest('ul').id;
 
-    if (targetElement && listElement) {
-        listElement.insertBefore(draggedElement, targetElement.nextSibling);
-    } else if (listElement) {
-        listElement.appendChild(draggedElement);
+    // Move the dragged item to the correct list and update its status
+    const listElement = document.getElementById(targetListId);
+    listElement.appendChild(draggedElement);
+
+    const newStatus = targetListId === "completed-topics-list" ? "completed" : "active";
+
+    if (newStatus === "completed") {
+        draggedElement.classList.add("meeting-completed");
+    } else {
+        draggedElement.classList.remove("meeting-completed");
     }
+
+    const taskId = draggedElement.id.replace("meeting-task-", "");
+
+    updateTaskStatusInFirestore(taskId, newStatus);
 
     // Save the new order
     saveMeetingTaskOrder(listElement);
 }
 
+async function updateTaskStatusInFirestore(taskId, newStatus) {
+    try {
+        const brandRef = doc(db, "brands", selectedId);
+        const quarterlyGoalsRef = collection(db, "meeting");
+        const q = query(quarterlyGoalsRef, where("brandId", "==", brandRef));
+        const querySnapshot = await getDocs(q);
+
+        if (!querySnapshot.empty) {
+            const meetingDocRef = querySnapshot.docs[0].ref;
+
+            await updateDoc(meetingDocRef, {
+                [`${taskId}.completed`]: newStatus === "completed",
+            });
+
+            console.log("Task status updated in Firestore:", newStatus);
+        } else {
+            console.log("No meeting document found for the selected brand.");
+        }
+    } catch (error) {
+        console.error("Error updating task status in Firestore:", error);
+    }
+}
 
 function showAddMeetingTaskModal() {
     document.getElementById('add-meeting-task-modal').style.display = 'flex';
@@ -487,7 +500,6 @@ function toggleHyperlinkMenu(button) {
     }
 }
 
-
 async function navigateToUrl(taskId) {
     const brandRef = doc(db, "brands", selectedId);
     const quarterlyGoalsRef = collection(db, "meeting");
@@ -527,6 +539,69 @@ async function addUrl(taskId) {
     }
 }
 
+// Function to edit meeting title
+function editMeetingTitle(taskId) {
+    const taskItem = document.getElementById(`meeting-task-${taskId}`);
+    const taskTitleSpan = taskItem.querySelector(".meeting-title");
+    const currentTitle = taskTitleSpan.textContent;
+
+    const inputField = document.createElement("input");
+    inputField.type = "text";
+    inputField.value = currentTitle;
+    inputField.className = "edit-title-input";
+
+    taskTitleSpan.replaceWith(inputField);
+    inputField.focus();
+
+    // Save the new title when Enter is pressed or when input loses focus
+    inputField.addEventListener("keypress", function (event) {
+        if (event.key === "Enter") {
+            saveMeetingTitle(taskId, inputField.value);
+        }
+    });
+
+    inputField.addEventListener("blur", function () {
+        saveMeetingTitle(taskId, inputField.value);
+    });
+}
+
+async function saveMeetingTitle(taskId, newTitle) {
+    const taskItem = document.getElementById(`meeting-task-${taskId}`);
+    const inputField = taskItem.querySelector(".edit-title-input");
+
+    if (newTitle.trim() === "") {
+        newTitle = "Untitled Topic"; // Default name if the title is empty
+    }
+
+    const taskTitleSpan = document.createElement("span");
+    taskTitleSpan.className = "meeting-title";
+    taskTitleSpan.textContent = newTitle;
+    taskTitleSpan.ondblclick = () => editMeetingTitle(taskId);
+
+    inputField.replaceWith(taskTitleSpan);
+
+    try {
+        const brandRef = doc(db, "brands", selectedId);
+        const quarterlyGoalsRef = collection(db, "meeting");
+        const q = query(quarterlyGoalsRef, where("brandId", "==", brandRef));
+        const querySnapshot = await getDocs(q);
+
+        if (!querySnapshot.empty) {
+            const meetingDocRef = querySnapshot.docs[0].ref;
+            await updateDoc(meetingDocRef, {
+                [`${taskId}.name`]: newTitle
+            });
+            console.log("Meeting title updated successfully.");
+        } else {
+            console.error("No meeting document found for the selected brand.");
+        }
+    } catch (error) {
+        console.error("Error updating meeting title:", error);
+    }
+}
+
+window.editMeetingTitle = editMeetingTitle;
+window.saveMeetingTitle = saveMeetingTitle;
 window.updateTaskBackground = updateTaskBackground;
 window.addFiveMinutes = addFiveMinutes;
 window.completeDiscussion = completeDiscussion;
@@ -543,3 +618,8 @@ window.populateMeetingTasks = populateMeetingTasks;
 window.toggleHyperlinkMenu = toggleHyperlinkMenu;
 window.navigateToUrl = navigateToUrl;
 window.addUrl = addUrl;
+window.allowDropMeeting = allowDropMeeting; // Ensure this is correctly defined
+window.dragMeeting = dragMeeting;
+window.dropMeeting = dropMeeting;
+window.saveMeetingTaskOrder = saveMeetingTaskOrder;
+window.updateTaskStatusInFirestore = updateTaskStatusInFirestore;
