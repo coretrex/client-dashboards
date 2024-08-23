@@ -74,7 +74,20 @@
     <div class="main-content" id="main-content">
         
     </div>
+<script>
+    document.querySelectorAll('.sidebar-menu li a').forEach(item => {
+    item.addEventListener('click', function() {
+        // Remove the 'active' class from all menu items
+        document.querySelectorAll('.sidebar-menu li a').forEach(link => {
+            link.classList.remove('active');
+        });
 
+        // Add the 'active' class to the clicked menu item
+        this.classList.add('active');
+    });
+});
+
+</script>
         
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
