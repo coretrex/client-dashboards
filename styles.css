@@ -2323,3 +2323,12 @@ margin-right: 5px;
 .meeting-title {
     cursor: text;
 }
+
+/* Highlight active menu item */
+.sidebar-menu li a.active {
+    background-color: rgb(0, 78, 245);
+}
+
+.sidebar-menu li a:hover {
+    background-color: rgb(0, 78, 245);
+}
