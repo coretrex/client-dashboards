@@ -2313,3 +2313,13 @@ margin-right: 5px;
 .task-title {
     cursor: text;
 }
+
+.meeting-completed {
+    text-decoration: line-through;
+    background-color: #f0f0f0;
+    color: #999;
+}
+
+.meeting-title {
+    cursor: text;
+}
