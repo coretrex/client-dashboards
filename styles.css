@@ -2326,9 +2326,9 @@ margin-right: 5px;
 
 /* Highlight active menu item */
 .sidebar-menu li a.active {
-    background-color: rgb(0, 78, 245);
+    background-color: rgb(3, 55, 168);
 }
 
 .sidebar-menu li a:hover {
-    background-color: rgb(1, 40, 126);
+    background-color: rgb(3, 55, 168);
 }
