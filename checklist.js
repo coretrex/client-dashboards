@@ -14,7 +14,6 @@ function initializeChecklistPage() {
   const addTaskBtn = document.querySelector(".add-task-btn");
   const closeBtn = document.querySelector(".close-btn");
   const newTaskInput = document.getElementById("new-task-input");
-  const taskBuckets = document.querySelectorAll(".task-bucket");
 
   if (addTaskBtn) {
     addTaskBtn.addEventListener("click", showAddTaskModal);
@@ -25,10 +24,6 @@ function initializeChecklistPage() {
   if (newTaskInput) {
     newTaskInput.addEventListener("keypress", handleAddTask);
   }
-  taskBuckets.forEach((bucket) => {
-    bucket.addEventListener("drop", drop);
-    bucket.addEventListener("dragover", allowDrop);
-  });
 
   document.querySelectorAll(".on-hold-btn").forEach((button) => {
     button.addEventListener("click", moveToOnHold);
@@ -55,57 +50,55 @@ function handleAddTask(event) {
 }
 
 async function addTask(taskText, listId) {
-  const taskList = document.getElementById(listId);
-  const taskItem = document.createElement("li");
-  const taskId = `${new Date().getTime()}`; // Unique id
+    const taskList = document.getElementById(listId);
+    const taskItem = document.createElement("li");
+    const taskId = `${new Date().getTime()}`; // Unique id
 
-  taskItem.className = "task-item";
-  taskItem.draggable = true;
-  taskItem.id = taskId;
-  taskItem.addEventListener("dragstart", drag);
-  taskItem.innerHTML = `
-      <span>${taskText}</span>
-      <div class="task-actions">
-          <button class="note-task-btn"><i class="fas fa-sticky-note"></i></button>
-          <button class="on-hold-btn"><i class="fas fa-hand-paper"></i></button>
-          <button class="done-btn"><i class="fas fa-check"></i></button>
-          <button class="delete-task-btn"><i class="fas fa-times"></i></button>
-      </div>
-  `;
+    taskItem.className = "task-item";
+    taskItem.id = `task-${taskId}`;
+    taskItem.innerHTML = `
+        <span class="task-title" ondblclick="editTaskTitle('${taskId}')">${taskText}</span>
+        <div class="task-actions">
+            <button class="note-task-btn"><i class="fas fa-sticky-note"></i></button>
+            <button class="on-hold-btn"><i class="fas fa-hand-paper"></i></button>
+            <button class="done-btn"><i class="fas fa-check"></i></button>
+            <button class="delete-task-btn"><i class="fas fa-times"></i></button>
+        </div>
+    `;
 
-  // Add event listeners for the new task's action buttons
-  taskItem.querySelector(".note-task-btn").addEventListener("click", () => openNoteModal(taskId));
-  taskItem.querySelector(".on-hold-btn").addEventListener("click", () => moveToOnHold(taskItem));
-  taskItem.querySelector(".done-btn").addEventListener("click", () => markAsCompleted(taskItem));
-  taskItem.querySelector(".delete-task-btn").addEventListener("click", () => deleteTask(taskItem));
+    // Add event listeners for the new task's action buttons
+    taskItem.querySelector(".note-task-btn").addEventListener("click", () => openNoteModal(taskId));
+    taskItem.querySelector(".on-hold-btn").addEventListener("click", () => moveToOnHold(taskItem));
+    taskItem.querySelector(".done-btn").addEventListener("click", () => markAsCompleted(taskItem));
+    taskItem.querySelector(".delete-task-btn").addEventListener("click", () => deleteTask(taskItem));
 
-  taskList.appendChild(taskItem);
+    taskList.appendChild(taskItem);
 
-  // Store the new task in Firestore and update the globalTasksObject
-  try {
-    const taskData = {
-      id: taskId,
-      name: taskText,
-      status: "active",  // Default status; can be updated based on user action
-      note: ""  // Initialize note as an empty string
-    };
+    // Store the new task in Firestore and update the globalTasksObject
+    try {
+        const taskData = {
+            id: taskId,
+            name: taskText,
+            status: "active",  // Default status; can be updated based on user action
+            note: ""  // Initialize note as an empty string
+        };
 
-    globalTasksObject[taskId] = taskData;
-    const checklistsRef = collection(db, "checklists");
-    const q = query(checklistsRef, where("brandId", "==", doc(db, "brands", selectedId)));
-    const querySnapshot = await getDocs(q);
-    if (!querySnapshot.empty) {
-      const checklistDoc = querySnapshot.docs[0].ref;
-      await updateDoc(checklistDoc, {
-        [`tasks.${taskId}`]: taskData  // Update or add the new task
-      });
-      console.log("Task added and saved to Firestore successfully.");
-    } else {
-      console.error("No checklist document found for the selected brand.");
+        globalTasksObject[taskId] = taskData;
+        const checklistsRef = collection(db, "checklists");
+        const q = query(checklistsRef, where("brandId", "==", doc(db, "brands", selectedId)));
+        const querySnapshot = await getDocs(q);
+        if (!querySnapshot.empty) {
+            const checklistDoc = querySnapshot.docs[0].ref;
+            await updateDoc(checklistDoc, {
+                [`tasks.${taskId}`]: taskData  // Update or add the new task
+            });
+            console.log("Task added and saved to Firestore successfully.");
+        } else {
+            console.error("No checklist document found for the selected brand.");
+        }
+    } catch (error) {
+        console.error("Error adding task to Firestore:", error);
     }
-  } catch (error) {
-    console.error("Error adding task to Firestore:", error);
-  }
 }
 
 async function deleteTask(taskItem) {
@@ -210,28 +203,6 @@ function launchConfetti() {
   });
 }
 
-function allowDrop(event) {
-  event.preventDefault();
-}
-
-function drag(event) {
-  event.dataTransfer.setData("text", event.target.id);
-}
-
-function drop(event) {
-  event.preventDefault();
-  const data = event.dataTransfer.getData("text");
-  const taskItem = document.getElementById(data);
-  if (event.target.tagName === "UL") {
-    event.target.appendChild(taskItem);
-  } else if (event.target.closest(".task-bucket")) {
-    event.target
-      .closest(".task-bucket")
-      .querySelector(".task-list")
-      .appendChild(taskItem);
-  }
-}
-
 function showAddTaskModal() {
   const modal = document.getElementById("add-task-modal");
   if (modal) {
@@ -271,60 +242,97 @@ function closeNoteModal(closeButton) {
 }
 
 async function saveNote(taskId) {
-  const noteText = document.getElementById(`note-textarea-${taskId}`).value.trim();
-  globalTasksObject[taskId].note = noteText;
+    const noteText = document.getElementById(`note-textarea-${taskId}`).value.trim();
+    globalTasksObject[taskId].note = noteText;
 
-  // Update Firestore with the note
-  try {
-      const checklistsRef = collection(db, "checklists");
-      const q = query(checklistsRef, where("brandId", "==", doc(db, "brands", selectedId)));
-      const querySnapshot = await getDocs(q);
-      if (!querySnapshot.empty) {
-          const checklistDocRef = querySnapshot.docs[0].ref;
-          await updateDoc(checklistDocRef, {
-              [`tasks.${taskId}.note`]: noteText
-          });
-          console.log("Note saved successfully.");
-      } else {
-          console.error("No checklist document found for the selected brand.");
-      }
-  } catch (error) {
-      console.error("Error saving note:", error);
-  }
+    // Update Firestore with the note
+    try {
+        const checklistsRef = collection(db, "checklists");
+        const q = query(checklistsRef, where("brandId", "==", doc(db, "brands", selectedId)));
+        const querySnapshot = await getDocs(q);
+        if (!querySnapshot.empty) {
+            const checklistDocRef = querySnapshot.docs[0].ref;
+            await updateDoc(checklistDocRef, {
+                [`tasks.${taskId}.note`]: noteText
+            });
+            console.log("Note saved successfully.");
+        } else {
+            console.error("No checklist document found for the selected brand.");
+        }
+    } catch (error) {
+        console.error("Error saving note:", error);
+    }
 
-  // Change note icon color based on note presence
-  const noteButton = document.querySelector(`#task-${taskId} .note-task-btn i`);
-  if (noteText) {
-      noteButton.style.color = "green";
-  } else {
-      noteButton.style.color = "";
-  }
+    // Change note icon color based on note presence
+    const noteButton = document.querySelector(`#task-${taskId} .note-task-btn i`);
+    if (noteText) {
+        noteButton.style.color = "green";
+    } else {
+        noteButton.style.color = "";
+    }
 
-  closeNoteModal(document.getElementById(`note-textarea-${taskId}`));
+    closeNoteModal(document.getElementById(`note-textarea-${taskId}`));
 }
 
+function editTaskTitle(taskId) {
+    const taskItem = document.getElementById(`task-${taskId}`);
+    const taskTitleSpan = taskItem.querySelector(".task-title");
+    const currentTitle = taskTitleSpan.textContent;
 
-// Attach functions to the window object for global access
-window.openNoteModal = openNoteModal;
-window.closeNoteModal = closeNoteModal;
-window.saveNote = saveNote;
+    const inputField = document.createElement("input");
+    inputField.type = "text";
+    inputField.value = currentTitle;
+    inputField.className = "edit-title-input";
 
-export async function fetchChecklistData(selectedId) {
-  try {
-    const brandRef = doc(db, "brands", selectedId);
-    const checklistsRef = collection(db, "checklists");
-    const q = query(checklistsRef, where("brandId", "==", brandRef));
-    const querySnapshot = await getDocs(q);
-    querySnapshot.forEach(doc => {
-      const data = doc.data();
-      const tasksObject = data.tasks;
-      globalTasksObject = tasksObject;
-      updateTaskBuckets(tasksObject);
+    taskTitleSpan.replaceWith(inputField);
+    inputField.focus();
+
+    // Save the new title when Enter is pressed or when input loses focus
+    inputField.addEventListener("keypress", function (event) {
+        if (event.key === "Enter") {
+            saveTaskTitle(taskId, inputField.value);
+        }
     });
-    console.log("Checklist data fetched successfully.");
-  } catch (error) {
-    console.error("Error fetching checklist data:", error);
-  }
+
+    inputField.addEventListener("blur", function () {
+        saveTaskTitle(taskId, inputField.value);
+    });
+}
+
+async function saveTaskTitle(taskId, newTitle) {
+    const taskItem = document.getElementById(`task-${taskId}`);
+    const inputField = taskItem.querySelector(".edit-title-input");
+
+    if (newTitle.trim() === "") {
+        newTitle = "Untitled Task"; // Default name if the title is empty
+    }
+
+    const taskTitleSpan = document.createElement("span");
+    taskTitleSpan.className = "task-title";
+    taskTitleSpan.textContent = newTitle;
+    taskTitleSpan.ondblclick = () => editTaskTitle(taskId);
+
+    inputField.replaceWith(taskTitleSpan);
+
+    // Update globalTasksObject and Firestore
+    globalTasksObject[taskId].name = newTitle;
+
+    try {
+        const checklistsRef = collection(db, "checklists");
+        const q = query(checklistsRef, where("brandId", "==", doc(db, "brands", selectedId)));
+        const querySnapshot = await getDocs(q);
+        if (!querySnapshot.empty) {
+            const checklistDocRef = querySnapshot.docs[0].ref;
+            await updateDoc(checklistDocRef, {
+                [`tasks.${taskId}.name`]: newTitle
+            });
+            console.log("Task title updated successfully.");
+        } else {
+            console.error("No checklist document found for the selected brand.");
+        }
+    } catch (error) {
+        console.error("Error updating task title in Firestore:", error);
+    }
 }
 
 function updateTaskBuckets(tasksObject) {
@@ -337,11 +345,9 @@ function updateTaskBuckets(tasksObject) {
   tasks.forEach(task => {
     const taskItem = document.createElement("li");
     taskItem.className = "task-item";
-    taskItem.draggable = true;
     taskItem.id = `task-${task.id}`;
-    taskItem.addEventListener("dragstart", drag);
     taskItem.innerHTML = `
-        <span>${task.name}</span>
+        <span class="task-title" ondblclick="editTaskTitle('${task.id}')">${task.name}</span>
         <div class="task-actions">
             <button class="note-task-btn"><i class="fas fa-sticky-note"></i></button>
             <button class="on-hold-btn"><i class="fas fa-hand-paper"></i></button>
@@ -369,10 +375,32 @@ function updateTaskBuckets(tasksObject) {
   });
 }
 
+// Attach functions to the window object for global access
+window.openNoteModal = openNoteModal;
+window.closeNoteModal = closeNoteModal;
+window.saveNote = saveNote;
+window.editTaskTitle = editTaskTitle;
+window.saveTaskTitle = saveTaskTitle;
+
+export async function fetchChecklistData(selectedId) {
+  try {
+    const brandRef = doc(db, "brands", selectedId);
+    const checklistsRef = collection(db, "checklists");
+    const q = query(checklistsRef, where("brandId", "==", brandRef));
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach(doc => {
+      const data = doc.data();
+      const tasksObject = data.tasks;
+      globalTasksObject = tasksObject;
+      updateTaskBuckets(tasksObject);
+    });
+    console.log("Checklist data fetched successfully.");
+  } catch (error) {
+    console.error("Error fetching checklist data:", error);
+  }
+}
 
 window.showAddTaskModal = showAddTaskModal;
 window.hideAddTaskModal = hideAddTaskModal;
 window.handleAddTask = handleAddTask;
-window.drop = drop;
-window.allowDrop = allowDrop;
 window.fetchChecklistData = fetchChecklistData;
