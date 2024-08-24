@@ -922,16 +922,20 @@ input[type="text"] {
 
 .kpi-table th, .kpi-table td {
     padding: 5px;
-    border: 1px solid #ddd;
     text-align: left;
     color: #000;
     min-width: 120px; /* Fixed width for each cell */
 }
 
 .kpi-table th {
-    background: #0434b6; /* Darker blue for header */
+    background: #133ba5; /* Darker blue for header */
     color: white;
     position: relative;
+    border: 1px solid #013183;
+}
+
+.kpi-table td {
+    border: 1px solid #ececec;
 }
 
 .kpi-table th .delete-container {
@@ -977,12 +981,13 @@ input[type="text"] {
 }
 
 .kpi-button {
-    background: #0434b6;
+    background: #133ba5;
     color: white;
     border: none;
-    padding: 10px 20px;
+    padding: 8px 10px;
     cursor: pointer;
     font-size: 16px;
+    border-radius:4px;
 }
 
 .kpi-button:hover {
