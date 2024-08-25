@@ -193,12 +193,23 @@ function formatWithCommas(value) {
     return isNaN(number) ? value : number.toLocaleString('en-US');
 }
 
+// Attaching delete listeners with confirmation
 function attachDeleteButtons() {
-    document.querySelectorAll('.delete-row').forEach(button => {
-        button.removeEventListener('click', handleDeleteRow); // Remove any existing listeners to avoid duplication
-        button.addEventListener('click', handleDeleteRow); // Attach the delete row functionality
+    document.querySelectorAll('.cell-trash-icon').forEach(icon => {
+        icon.addEventListener('click', function(event) {
+            const row = event.currentTarget.closest('tr');
+            deleteRow(row);
+        });
+    });
+
+    document.querySelectorAll('.trash-icon').forEach(icon => {
+        icon.addEventListener('click', function(event) {
+            const field = event.currentTarget.closest('th').getAttribute('data-field');
+            deleteColumn(field);
+        });
     });
 }
+
 
 function handleDeleteRow(event) {
     const rowToDelete = event.currentTarget.closest('tr');

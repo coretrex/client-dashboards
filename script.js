@@ -1125,44 +1125,45 @@ function updateTableWithKPIData(kpiData) {
   }
 }
 
-// Function to delete a column
+// Function to delete a column with confirmation
 export function deleteColumn(field) {
-  const index = headerFieldToIndex.get(field);
-  const flatpickrInstance = flatpickrInstances.get(field);
-  if (flatpickrInstance) {
-    flatpickrInstance.destroy();
-    flatpickrInstances.delete(field);
+  if (confirm("Are you sure you want to delete this column?")) {
+      const index = headerFieldToIndex.get(field);
+      const flatpickrInstance = flatpickrInstances.get(field);
+      if (flatpickrInstance) {
+          flatpickrInstance.destroy();
+          flatpickrInstances.delete(field);
+      }
+      const tableHead = document.querySelector("#kpi-table thead tr");
+      const tableBody = document.querySelector("#kpi-table tbody");
+
+      // Remove the header
+      tableHead.querySelectorAll("th")[index].remove();
+
+      // Remove each cell in the column
+      tableBody.querySelectorAll("tr").forEach(row => {
+          row.querySelectorAll("td")[index].remove();
+      });
+
+      // Update column indexes
+      headerFieldToIndex.delete(field);
+      headerFieldToIndex.forEach((value, key) => {
+          if (value > index) {
+              headerFieldToIndex.set(key, value - 1);
+          }
+      });
+
+      storeData(false);
   }
-  const tableHead = document.querySelector("#kpi-table thead tr");
-  const tableBody = document.querySelector("#kpi-table tbody");
-
-  // Remove the header
-  tableHead.querySelectorAll("th")[index].remove();
-
-  // Remove each cell in the column
-  tableBody.querySelectorAll("tr").forEach(row => {
-    row.querySelectorAll("td")[index].remove();
-  });
-
-  // Update column indexes
-  headerFieldToIndex.delete(field);
-  headerFieldToIndex.forEach((value, key) => {
-    if (value > index) {
-      headerFieldToIndex.set(key, value - 1);
-    }
-  });
-
-  storeData(false);
 }
 
 // Function to delete a row
 export function deleteRow(row) {
-  const tableBody = document.querySelector("#kpi-table tbody");
-
-  // Remove the row
-  tableBody.removeChild(row);
-
-  storeData(false);
+  if (confirm("Are you sure you want to delete this row?")) {
+      const tableBody = document.querySelector("#kpi-table tbody");
+      tableBody.removeChild(row);
+      storeData(false);
+  }
 }
 
 
