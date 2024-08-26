@@ -967,11 +967,11 @@ input[type="text"] {
 .kpi-table td:first-child {
     padding-right: 85px;
     font-weight: bold;
-    background-color: #F1F1F1;
+    background-color: #e3e2e2;
 }
 
 .kpi-table td:nth-child(2) {
-    background-color: #F1F1F1;
+    background-color: #e3e2e2;
 }
 
 .kpi-buttons {
