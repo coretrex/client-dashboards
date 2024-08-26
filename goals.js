@@ -46,7 +46,7 @@ function populateYearTable(listId, yearData) {
     const sequence = [
         'Future Date',
         'Revenue',
-        'Profit',
+        'Page Views',  // Changed from 'Profit' to 'Page Views'
         'CVR (%)',
         'AOV',
         'TaCoS'
@@ -54,7 +54,7 @@ function populateYearTable(listId, yearData) {
 
     if (yearData) {
         sequence.forEach(key => {
-            if (key in yearData) {
+            if (key in yearData || key === 'Page Views') {  // Add condition for 'Page Views'
                 const listItem = document.createElement('li');
                 
                 const labelSpan = document.createElement('span');
@@ -63,7 +63,7 @@ function populateYearTable(listId, yearData) {
                 const valueSpan = document.createElement('span');
                 valueSpan.className = 'editable-field';
                 valueSpan.contentEditable = true;
-                valueSpan.textContent = yearData[key];
+                valueSpan.textContent = key === 'Page Views' ? (yearData[key] || 'Enter Page Views') : yearData[key];
                 
                 // Attach input event listener to save changes
                 valueSpan.addEventListener('input', async function() {
@@ -101,6 +101,13 @@ async function storeData() {
     const year1Data = getTableData('one-year-list');
     const year3Data = getTableData('three-year-list');
     const year5Data = getTableData('five-year-list');
+
+    // Ensure 'Page Views' is included in the data
+    ['year1', 'year3', 'year5'].forEach(year => {
+        if (!eval(`${year}Data['Page Views']`)) {
+            eval(`${year}Data['Page Views'] = 'Enter Page Views'`);
+        }
+    });
 
     const updatedData = {
         year1: year1Data,
