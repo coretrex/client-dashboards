@@ -2058,6 +2058,7 @@ width: 100px;
     background: none;
     border: none;
     font-size: 18px;
+    margin-left:15px;
     cursor: pointer;
     color: #000;
   }
@@ -2620,8 +2621,8 @@ margin-right: 5px;
 .modal-content {
     background-color: #fefefe;
     padding: 20px;
-    font-size: 14px;
     border-radius: 5px;
+    font-size: 14px;
     text-align: center;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
@@ -2681,3 +2682,15 @@ margin-right: 5px;
 .reorder-icon:hover {
     color: #333;
 }
+
+.brands-dropdown {
+    width: 250px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: white;
+  }
+
+  .brands-dropdown {
+    font-family: 'Poppins', sans-serif;
+  }
