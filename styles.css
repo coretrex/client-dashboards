@@ -2620,6 +2620,7 @@ margin-right: 5px;
 .modal-content {
     background-color: #fefefe;
     padding: 20px;
+    font-size: 14px;
     border-radius: 5px;
     text-align: center;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
