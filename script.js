@@ -1127,7 +1127,29 @@ function updateTableWithKPIData(kpiData) {
 
 // Function to delete a column with confirmation
 export function deleteColumn(field) {
-  if (confirm("Are you sure you want to delete this column?")) {
+  // Create modal elements
+  const modal = document.createElement('div');
+  modal.className = 'custom-modal';
+  modal.innerHTML = `
+      <div class="modal-content">
+          <h2>Confirm Deletion</h2>
+          <p>Are you sure you want to delete this column?</p>
+          <div class="modal-buttons">
+              <button id="confirm-delete" class="btn btn-danger">Delete</button>
+              <button id="cancel-delete" class="btn btn-secondary">Cancel</button>
+          </div>
+      </div>
+  `;
+
+  // Add modal to the document
+  document.body.appendChild(modal);
+
+  // Show modal
+  modal.style.display = 'flex';
+
+  // Handle button clicks
+  document.getElementById('confirm-delete').onclick = function() {
+      // Existing deletion logic
       const index = headerFieldToIndex.get(field);
       const flatpickrInstance = flatpickrInstances.get(field);
       if (flatpickrInstance) {
@@ -1154,16 +1176,58 @@ export function deleteColumn(field) {
       });
 
       storeData(false);
-  }
+
+      // Close and remove modal
+      modal.style.display = 'none';
+      document.body.removeChild(modal);
+  };
+
+  document.getElementById('cancel-delete').onclick = function() {
+      // Close and remove modal
+      modal.style.display = 'none';
+      document.body.removeChild(modal);
+  };
 }
 
 // Function to delete a row
 export function deleteRow(row) {
-  if (confirm("Are you sure you want to delete this row?")) {
+  // Create modal elements
+  const modal = document.createElement('div');
+  modal.className = 'custom-modal';
+  modal.innerHTML = `
+      <div class="modal-content">
+          <h2>Confirm Deletion</h2>
+          <p>Are you sure you want to delete this row?</p>
+          <div class="modal-buttons">
+              <button id="confirm-delete-row" class="btn btn-danger">Delete</button>
+              <button id="cancel-delete-row" class="btn btn-secondary">Cancel</button>
+          </div>
+      </div>
+  `;
+
+  // Add modal to the document
+  document.body.appendChild(modal);
+
+  // Show modal
+  modal.style.display = 'flex';
+
+  // Handle button clicks
+  document.getElementById('confirm-delete-row').onclick = function() {
+      // Existing deletion logic
       const tableBody = document.querySelector("#kpi-table tbody");
       tableBody.removeChild(row);
       storeData(false);
-  }
+
+      // Close and remove modal
+      modal.style.display = 'none';
+      document.body.removeChild(modal);
+  };
+
+  document.getElementById('cancel-delete-row').onclick = function() {
+      // Close and remove modal
+      modal.style.display = 'none';
+      document.body.removeChild(modal);
+  };
 }
 
 
