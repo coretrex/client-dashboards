@@ -2603,6 +2603,7 @@ margin-right: 5px;
     background-color: rgb(0, 45, 97);
 }
 
+
 .custom-modal {
     display: none;
     position: fixed;
@@ -2650,4 +2651,32 @@ margin-right: 5px;
 
 .btn:hover {
     opacity: 0.8;
+}
+
+.kpi-cell {
+    position: relative;
+}
+
+.icon-container {
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    padding-right:25px;
+}
+
+.icon-container {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.reorder-icon {
+    font-size: 12px;
+    color: #666;
+    
+}
+
+.reorder-icon:hover {
+    color: #333;
 }
