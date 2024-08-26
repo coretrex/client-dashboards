@@ -122,21 +122,47 @@ function addKpiRow() {
     const numOfWeeks = table.querySelector("thead tr").children.length - 1; // Subtract KPI and Goal columns
     const newRow = document.createElement("tr");
 
-    // Add KPI cell with trash icon
+    // Add KPI cell with trash icon and reorder arrows
     const kpiCell = document.createElement("td");
     kpiCell.contentEditable = true;
     kpiCell.textContent = "New KPI";
     kpiCell.classList.add("cell-trash-parent");
 
+    // Create container for icons
+    const iconContainer = document.createElement("div");
+    iconContainer.className = "icon-container";
+    iconContainer.style.display = "flex";
+    iconContainer.style.alignItems = "center";
+
+    // Create and add the up arrow icon
+    const upArrow = document.createElement("i");
+    upArrow.className = "fas fa-arrow-up reorder-icon";
+    upArrow.style.cursor = "pointer";
+    upArrow.addEventListener("click", function() {
+        moveRowUp(this.closest("tr"));
+    });
+
+    // Create and add the down arrow icon
+    const downArrow = document.createElement("i");
+    downArrow.className = "fas fa-arrow-down reorder-icon";
+    downArrow.style.cursor = "pointer";
+    downArrow.addEventListener("click", function() {
+        moveRowDown(this.closest("tr"));
+    });
+
     // Create and add the trash icon for the KPI cell
     const trashIcon = document.createElement("i");
-    trashIcon.className = "fas fa-trash cell-trash-icon ";
-    trashIcon.style.cursor = "pointer"; // Make the trash icon clickable
+    trashIcon.className = "fas fa-trash cell-trash-icon";
+    trashIcon.style.cursor = "pointer";
     trashIcon.addEventListener("click", function(event) {
         handleDeleteRow(event);
         deleteRow();
     });
-    kpiCell.appendChild(trashIcon);
+
+    iconContainer.appendChild(upArrow);
+    iconContainer.appendChild(downArrow);
+    iconContainer.appendChild(trashIcon);
+    kpiCell.appendChild(iconContainer);
     newRow.appendChild(kpiCell);
 
     // Add cells for each week
@@ -195,11 +221,36 @@ function formatWithCommas(value) {
 
 // Attaching delete listeners with confirmation
 function attachDeleteButtons() {
-    document.querySelectorAll('.cell-trash-icon').forEach(icon => {
-        icon.addEventListener('click', function(event) {
-            const row = event.currentTarget.closest('tr');
-            deleteRow(row);
+    document.querySelectorAll('.cell-trash-parent').forEach(cell => {
+        const iconContainer = document.createElement("div");
+        iconContainer.className = "icon-container";
+        iconContainer.style.display = "flex";
+        iconContainer.style.alignItems = "center";
+
+        const upArrow = document.createElement("i");
+        upArrow.className = "fas fa-arrow-up reorder-icon";
+        upArrow.style.cursor = "pointer";
+        upArrow.addEventListener("click", function() {
+            moveRowUp(this.closest("tr"));
         });
+
+        const downArrow = document.createElement("i");
+        downArrow.className = "fas fa-arrow-down reorder-icon";
+        downArrow.style.cursor = "pointer";
+        downArrow.addEventListener("click", function() {
+            moveRowDown(this.closest("tr"));
+        });
+
+        const trashIcon = cell.querySelector('.cell-trash-icon');
+        if (trashIcon) {
+            trashIcon.remove();
+        }
+
+        iconContainer.appendChild(upArrow);
+        iconContainer.appendChild(downArrow);
+        iconContainer.appendChild(trashIcon || createTrashIcon());
+
+        cell.appendChild(iconContainer);
     });
 
     document.querySelectorAll('.trash-icon').forEach(icon => {
@@ -210,6 +261,16 @@ function attachDeleteButtons() {
     });
 }
 
+function createTrashIcon() {
+    const trashIcon = document.createElement("i");
+    trashIcon.className = "fas fa-trash cell-trash-icon";
+    trashIcon.style.cursor = "pointer";
+    trashIcon.addEventListener("click", function(event) {
+        const row = event.currentTarget.closest('tr');
+        deleteRow(row);
+    });
+    return trashIcon;
+}
 
 function handleDeleteRow(event) {
     const rowToDelete = event.currentTarget.closest('tr');
@@ -228,3 +289,17 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById('save-button').addEventListener('click', saveKpiTable);
     formatTable(); // Initial formatting on load
 });
+
+function moveRowUp(row) {
+    const prevRow = row.previousElementSibling;
+    if (prevRow) {
+        row.parentNode.insertBefore(row, prevRow);
+    }
+}
+
+function moveRowDown(row) {
+    const nextRow = row.nextElementSibling;
+    if (nextRow) {
+        row.parentNode.insertBefore(nextRow, row);
+    }
+}
