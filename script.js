@@ -928,12 +928,20 @@ function renderTeamTable(teamData) {
         return brand._key.path.segments[brand._key.path.segments.length - 1];
       }) || [];
 
+      // Create a dropdown for brands
+      const brandsDropdown = `
+        <select class="brands-dropdown">
+          <option value="">Select Brand</option>
+          ${team.brands.split(', ').map(brand => `<option value="${brand}">${brand}</option>`).join('')}
+        </select>
+      `;
+
       return `
         <tr>
           <td>${team.name}</td>
           <td>${team.email}</td>
           <td class="brands-box" style="background-color:white">
-            ${team.brands}
+            ${brandsDropdown}
             <div class="more-options">
               <button class="more-options-button"><i class="fa-solid fa-ellipsis-vertical"></i></button>
               <div class="more-options-menu">
@@ -946,6 +954,16 @@ function renderTeamTable(teamData) {
       `;
     }).join("");
   }
+
+  // Add event listener for brand selection
+  const brandDropdowns = document.querySelectorAll('.brands-dropdown');
+  brandDropdowns.forEach(dropdown => {
+    dropdown.addEventListener('change', function() {
+      const selectedBrand = this.value;
+      console.log(`Selected brand: ${selectedBrand}`);
+      // Add any additional logic you want to perform when a brand is selected
+    });
+  });
 }
 
 
