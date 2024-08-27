@@ -45,6 +45,7 @@ function populateYearTable(listId, yearData) {
 
     const sequence = [
         'Future Date',
+        'Monthly Revenue',  // Added 'Monthly Revenue'
         'Revenue',
         'Page Views',
         'CVR (%)',
@@ -54,8 +55,8 @@ function populateYearTable(listId, yearData) {
 
     if (yearData) {
         sequence.forEach(key => {
-            // Include 'TACoS' in the condition
-            if (key in yearData || key === 'Page Views' || key === 'TACoS') {
+            // Include all fields in the condition
+            if (key in yearData || ['Page Views', 'TACoS', 'Monthly Revenue'].includes(key)) {
                 const listItem = document.createElement('li');
                 
                 const labelSpan = document.createElement('span');
@@ -65,13 +66,15 @@ function populateYearTable(listId, yearData) {
                 valueSpan.className = 'editable-field';
                 valueSpan.contentEditable = true;
                 
-                // Handle 'Page Views' and 'TACoS' separately
+                // Handle all fields
                 if (key === 'Page Views') {
                     valueSpan.textContent = yearData[key] || 'Enter Page Views';
                 } else if (key === 'TACoS') {
                     valueSpan.textContent = yearData[key] || 'Enter TACoS';
+                } else if (key === 'Monthly Revenue') {
+                    valueSpan.textContent = yearData[key] || 'Enter Monthly Revenue';
                 } else {
-                    valueSpan.textContent = yearData[key];
+                    valueSpan.textContent = yearData[key] || `Enter ${key}`;
                 }
                 
                 // Attach input event listener to save changes
@@ -111,14 +114,13 @@ async function storeData() {
     const year3Data = getTableData('three-year-list');
     const year5Data = getTableData('five-year-list');
 
-    // Ensure 'Page Views' and 'TACoS' are included in the data
+    // Ensure all fields are included in the data
     ['year1', 'year3', 'year5'].forEach(year => {
-        if (!eval(`${year}Data['Page Views']`)) {
-            eval(`${year}Data['Page Views'] = 'Enter Page Views'`);
-        }
-        if (!eval(`${year}Data['TACoS']`)) {
-            eval(`${year}Data['TACoS'] = 'Enter TACoS'`);
-        }
+        ['Page Views', 'TACoS', 'Monthly Revenue'].forEach(field => {
+            if (!eval(`${year}Data['${field}']`)) {
+                eval(`${year}Data['${field}'] = 'Enter ${field}'`);
+            }
+        });
     });
 
     const updatedData = {
