@@ -1097,6 +1097,23 @@ input[type="text"] {
     z-index: 1; 
 }
 
+.vision-input-container input[type="text"] {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+    color: #0056b3; /* Blue text color */
+    font-weight: bold;
+}
+
+.vision-input-container input[type="text"]::placeholder {
+    color: #cccccc;
+    font-style: normal;
+    font-weight: normal;
+}
+
 input[type="text"] {
     flex: 1;
     padding: 10px;
