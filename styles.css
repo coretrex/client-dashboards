@@ -1087,16 +1087,6 @@ input[type="text"] {
     cursor: text;
 }
 
-.vision-input-container {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-top: 10px;
-    padding-bottom: 0;
-    position: relative;
-    z-index: 1; 
-}
-
 .vision-input-container input[type="text"] {
     flex: 1;
     padding: 10px;
@@ -1106,11 +1096,17 @@ input[type="text"] {
     font-family: 'Poppins', sans-serif;
     color: #0056b3; /* Blue text color */
     font-weight: bold;
+    transition: box-shadow 0.3s ease-in-out;
+}
+
+.vision-input-container input[type="text"]:focus {
+    outline: none;
+    box-shadow: 0 0 5px 2px rgba(0, 86, 179, 0.5); /* Glowing blue effect */
+    border-color: #0056b3;
 }
 
 .vision-input-container input[type="text"]::placeholder {
     color: #cccccc;
-    font-style: normal;
     font-weight: normal;
 }
 
