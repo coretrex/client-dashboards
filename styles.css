@@ -2703,3 +2703,73 @@ margin-right: 5px;
   }
 
   
+/* Add these new styles */
+
+/* Add these new styles */
+@keyframes neonLaser {
+    0% {
+        background-position: 0% 0%;
+    }
+    100% {
+        background-position: 200% 200%;
+    }
+}
+
+.goal-column:first-of-type {
+    position: relative;
+    z-index: 1;
+}
+
+.goal-column:first-of-type::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(90deg, 
+    #ff00ff, #00ffff, #ff00ff, /* Magenta to Cyan to Magenta */
+    transparent 40%, transparent 60%, 
+    #ff00ff, #00ffff, #ff00ff /* Magenta to Cyan to Magenta */
+);
+    background-size: 400% 400%;
+    animation: neonLaser 8s linear infinite;
+    border-radius: 5px;
+    z-index: -1;
+    pointer-events: none;
+}
+
+.goal-column:first-of-type::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #ffffff;
+    border-radius: 3px;
+    z-index: -1;
+    pointer-events: none;
+}
+
+/* Modify the existing .goal-column style */
+.goal-column {
+    background-color: #ffffff;
+    padding: 20px;
+    padding-top: 0px;
+    border-radius: 3px;
+    width: 30%;
+    color: #000000;
+    position: relative;
+    overflow: visible !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.goal-column:nth-of-type(2) h2,
+.goal-column:nth-of-type(3) h2 {
+    background-color: #4663b3; /* Muted blue color */
+    color: white;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+}
+
