@@ -1263,13 +1263,14 @@ input[type="text"] {
     background-color: #ffffff;
     padding: 20px;
     padding-top: 0px;
-    border-radius: 0px;
+    border-radius: 3px;
     width: 30%;
     color: #000000;
 }
 
 .goal-column h2 {
     color: #000000;
+    border-radius: 3px;
 }
 
 .editable-list {

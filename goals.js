@@ -45,8 +45,8 @@ function populateYearTable(listId, yearData) {
 
     const sequence = [
         'Future Date',
-        'Revenue',
-        'Page Views',  // Changed from 'Profit' to 'Page Views'
+        'Monthly Revenue',  // Changed from 'Revenue' to 'Monthly Revenue'
+        'Page Views',
         'CVR (%)',
         'AOV',
         'TaCoS'
@@ -54,7 +54,7 @@ function populateYearTable(listId, yearData) {
 
     if (yearData) {
         sequence.forEach(key => {
-            if (key in yearData || key === 'Page Views') {  // Add condition for 'Page Views'
+            if (key in yearData || key === 'Monthly Revenue' || key === 'Page Views') {  // Add condition for 'Monthly Revenue'
                 const listItem = document.createElement('li');
                 
                 const labelSpan = document.createElement('span');
@@ -63,7 +63,9 @@ function populateYearTable(listId, yearData) {
                 const valueSpan = document.createElement('span');
                 valueSpan.className = 'editable-field';
                 valueSpan.contentEditable = true;
-                valueSpan.textContent = key === 'Page Views' ? (yearData[key] || 'Enter Page Views') : yearData[key];
+                valueSpan.textContent = (key === 'Monthly Revenue' && !yearData[key]) ? 'Enter Monthly Revenue' : 
+                                        (key === 'Page Views' && !yearData[key]) ? 'Enter Page Views' : 
+                                        yearData[key] || `Enter ${key}`;
                 
                 // Attach input event listener to save changes
                 valueSpan.addEventListener('input', async function() {
@@ -73,24 +75,18 @@ function populateYearTable(listId, yearData) {
                 listItem.appendChild(labelSpan);
                 listItem.appendChild(valueSpan);
 
+                // Add dropdown menu
                 const dropdown = document.createElement('div');
                 dropdown.className = 'dropdown';
-
-                const dropdownButton = document.createElement('button');
-                dropdownButton.className = 'dropdown-icon';
-                dropdownButton.innerHTML = '<i class="fas fa-ellipsis-h"></i>';
-
-                const dropdownContent = document.createElement('div');
-                dropdownContent.className = 'dropdown-content';
-                dropdownContent.innerHTML = `
-                    <a href="#" onclick="editField2(this)"><i class="fas fa-edit"></i> Edit</a>
-                    <a href="#" onclick="deleteField2(this)"><i class="fas fa-trash"></i> Delete</a>
+                dropdown.innerHTML = `
+                    <button class="dropdown-icon"><i class="fas fa-ellipsis-h"></i></button>
+                    <div class="dropdown-content">
+                        <a href="#" onclick="editField2(this)"><i class="fas fa-edit"></i> Edit</a>
+                        <a href="#" onclick="deleteField2(this)"><i class="fas fa-trash"></i> Delete</a>
+                    </div>
                 `;
 
-                dropdown.appendChild(dropdownButton);
-                dropdown.appendChild(dropdownContent);
                 listItem.appendChild(dropdown);
-
                 list.appendChild(listItem);
             }
         });
@@ -102,10 +98,10 @@ async function storeData() {
     const year3Data = getTableData('three-year-list');
     const year5Data = getTableData('five-year-list');
 
-    // Ensure 'Page Views' is included in the data
+    // Ensure 'Monthly Revenue' is included in the data
     ['year1', 'year3', 'year5'].forEach(year => {
-        if (!eval(`${year}Data['Page Views']`)) {
-            eval(`${year}Data['Page Views'] = 'Enter Page Views'`);
+        if (!eval(`${year}Data['Monthly Revenue']`)) {
+            eval(`${year}Data['Monthly Revenue'] = 'Enter Monthly Revenue'`);
         }
     });
 
@@ -143,6 +139,8 @@ function getTableData(listId) {
     }
     return data;
 }
+
+
 
 window.editField2 = editField2;
 window.deleteField2 = deleteField2;
