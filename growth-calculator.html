@@ -1,159 +1,180 @@
-<!-- growth-calculator.html -->
-<div class="header">
-    <h1>Growth Calculator</h1>
-    <p class="subtext">Calculate the growth metrics necessary to achieve your business goals by entering the information below.</p>
-</div>
-<div class="container">
-    <div class="input-container">
-        <div class="input-box">
-            <label for="revenueGoal">Annual Revenue Goal ($):</label>
-            <input type="text" id="revenueGoal" class="growth-input" placeholder="$1,000,000" oninput="formatCurrency(this)" onclick="this.value=''">
-        </div>
-        <div class="input-box">
-            <label for="aov">Average Order Value ($):</label>
-            <input type="text" id="aov" class="growth-input" placeholder="$50" oninput="formatCurrency(this)" onclick="this.value=''">
-        </div>
-        <div class="input-box">
-            <label for="conversionRate">Conversion Rate (%):</label>
-            <input type="range" id="conversionRate" class="growth-input" min="0.25" max="50" step="0.25" value="1" oninput="updateRangeValue(this.value)">
-            <div class="range-value" id="rangeValue">1.00%</div>
-        </div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Growth Calculator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="header">
+        <h1>Growth Calculator</h1>
+        <p class="subtext">Calculate the growth metrics necessary to achieve your business goals by entering the information below.</p>
     </div>
-    <div class="toggle-container left-justified" onclick="toggleMetrics()">
-        <span class="toggle-text">Analyze Marketing Metrics</span>
-        <span class="toggle-icon">+</span>
-    </div>
-    <div id="metricsSubtext" class="metrics-subtext" style="display:none;">
-        CoreTrex advises aiming for a traffic distribution of 70% organic and 30% paid for best performance.
-    </div>
-    <div class="input-container" id="marketingMetrics" style="display:none;">
-        <div class="input-box">
-            <label for="organicRate">Organic Page Views (%):</label>
-            <input type="range" id="organicRate" class="growth-input" min="0" max="100" step="1" value="70" oninput="updateOrganicValue(this.value)">
-            <div class="range-value" id="organicValue">70%</div>
+    <div class="container">
+        <div class="input-container">
+            <div class="input-box">
+                <label for="revenueGoal">Annual Revenue Goal ($):</label>
+                <input type="text" id="revenueGoal" class="growth-input" placeholder="$1,000,000" oninput="formatCurrency(this)" onclick="this.value=''">
+            </div>
+            <div class="input-box">
+                <label for="aov">Average Order Value ($):</label>
+                <input type="text" id="aov" class="growth-input" placeholder="$50" oninput="formatCurrency(this)" onclick="this.value=''">
+            </div>
+            <div class="input-box">
+                <label for="conversionRate">Conversion Rate (%):</label>
+                <input type="range" id="conversionRate" class="growth-input" min="0.25" max="50" step="0.25" value="1" oninput="updateRangeValue(this.value)">
+                <div class="range-value" id="rangeValue">1.00%</div>
+            </div>
         </div>
-        <div class="input-box">
-            <label for="cpc">Estimated CPC ($):</label>
-            <input type="number" id="cpc" class="growth-input" placeholder="$1.00" step="0.01" onclick="this.value=''">
+        <div class="toggle-container left-justified" onclick="toggleMetrics()">
+            <span class="toggle-text">Analyze Marketing Metrics</span>
+            <span class="toggle-icon">+</span>
         </div>
-        <div class="input-box">
-            <label for="adsConversionRate">Ads Conversion Rate (%):</label>
-            <input type="range" id="adsConversionRate" class="growth-input" min="0.25" max="50" step="0.25" value="2" oninput="updateAdsConversionValue(this.value)">
-            <div class="range-value" id="adsConversionValue">2.00%</div>
+        <div id="metricsSubtext" class="metrics-subtext" style="display:none;">
+            CoreTrex advises aiming for a traffic distribution of 70% organic and 30% paid for best performance.
         </div>
+        <div class="input-container" id="marketingMetrics" style="display:none;">
+            <div class="input-box">
+                <label for="organicRate">Organic Page Views (%):</label>
+                <input type="range" id="organicRate" class="growth-input" min="0" max="100" step="1" value="70" oninput="updateOrganicValue(this.value)">
+                <div class="range-value" id="organicValue">70%</div>
+            </div>
+            <div class="input-box">
+                <label for="cpc">Estimated CPC ($):</label>
+                <input type="text" id="cpc" class="growth-input" placeholder="$1.00" oninput="formatCurrency(this)" onclick="this.value=''">
+            </div>
+            
+            
+            <div class="input-box">
+                <label for="adsConversionRate">Ads Conversion Rate (%):</label>
+                <input type="range" id="adsConversionRate" class="growth-input" min="0.25" max="50" step="0.25" value="2" oninput="updateAdsConversionValue(this.value)">
+                <div class="range-value" id="adsConversionValue">2.00%</div>
+            </div>
+        </div>
+        <div class="button-container">
+            <button id="calculateButton" class="calculate-btn" onclick="calculatePageViews()">Calculate Estimated Page Views</button>
+            <button id="saveButton" class="save-btn" onclick="saveInputs()">Save Inputs</button>
+        </div>
+        <div id="saveMessage" class="save-message" style="display: none;">
+            Inputs have been saved successfully!
+        </div>
+        <div class="results" id="results" style="display:none;"></div>
     </div>
-    <button id="calculateButton" class="calculate-btn" onclick="calculatePageViews()">Calculate Estimated Page Views</button>
-    <div class="results" id="results" style="display:none;"></div>
-</div>
-<script>
-    function updateRangeValue(value) {
-  document.getElementById("rangeValue").innerText =
-    parseFloat(value).toFixed(2) + "%";
-}
 
-function updateOrganicValue(value) {
-  document.getElementById("organicValue").innerText = value + "%";
-}
+    <script src="growth-calculator.js"></script>
+    <script>
+        function updateRangeValue(value) {
+            document.getElementById("rangeValue").innerText = parseFloat(value).toFixed(2) + "%";
+        }
 
-function updateAdsConversionValue(value) {
-  document.getElementById("adsConversionValue").innerText =
-    parseFloat(value).toFixed(2) + "%";
-}
+        function updateOrganicValue(value) {
+            document.getElementById("organicValue").innerText = value + "%";
+        }
 
-function toggleMetrics() {
-  const metrics = document.getElementById("marketingMetrics");
-  const subtext = document.getElementById("metricsSubtext");
-  const icon = document.querySelector(".toggle-icon");
-  if (metrics.style.display === "none" || metrics.style.display === "") {
-    metrics.style.display = "flex";
-    subtext.style.display = "block";
-    icon.textContent = "-";
-  } else {
-    metrics.style.display = "none";
-    subtext.style.display = "none";
-    icon.textContent = "+";
-  }
-}
-function calculatePageViews() {
-    console.log("calculatePageViews function called");
+        function updateAdsConversionValue(value) {
+            document.getElementById("adsConversionValue").innerText = parseFloat(value).toFixed(2) + "%";
+        }
 
-    let revenueGoal = parseFloat(
-        document.getElementById("revenueGoal").value.replace(/[^\d.-]/g, "")
-    );
-    let aov = parseFloat(
-        document.getElementById("aov").value.replace(/[^\d.-]/g, "")
-    );
-    const conversionRate =
-        parseFloat(document.getElementById("conversionRate").value) / 100;
-    const organicRate =
-        parseFloat(document.getElementById("organicRate").value) / 100;
-    const adsConversionRate =
-        parseFloat(document.getElementById("adsConversionRate").value) / 100;
-    let cpc = parseFloat(document.getElementById("cpc").value);
+        function toggleMetrics() {
+            const metrics = document.getElementById("marketingMetrics");
+            const subtext = document.getElementById("metricsSubtext");
+            const icon = document.querySelector(".toggle-icon");
+            if (metrics.style.display === "none" || metrics.style.display === "") {
+                metrics.style.display = "flex";
+                subtext.style.display = "block";
+                icon.textContent = "-";
+            } else {
+                metrics.style.display = "none";
+                subtext.style.display = "none";
+                icon.textContent = "+";
+            }
+        }
 
-    if (isNaN(revenueGoal)) {
-        revenueGoal = 1000000;
-    }
-    if (isNaN(aov)) {
-        aov = 50;
-    }
-    if (isNaN(cpc)) {
-        cpc = 1.0;
-    }
+        function calculatePageViews() {
+            console.log("calculatePageViews function called");
 
-    const requiredPageViewsAnnually = revenueGoal / (aov * conversionRate);
-    const requiredPageViewsDaily = requiredPageViewsAnnually / 365;
-    const requiredPageViewsWeekly = requiredPageViewsAnnually / 52;
-    const requiredPageViewsMonthly = requiredPageViewsAnnually / 12;
+            let revenueGoal = parseFloat(
+                document.getElementById("revenueGoal").value.replace(/[^\d.-]/g, "")
+            );
+            let aov = parseFloat(
+                document.getElementById("aov").value.replace(/[^\d.-]/g, "")
+            );
+            const conversionRate =
+                parseFloat(document.getElementById("conversionRate").value) / 100;
+            const organicRate =
+                parseFloat(document.getElementById("organicRate").value) / 100;
+            const adsConversionRate =
+                parseFloat(document.getElementById("adsConversionRate").value) / 100;
+            let cpc = parseFloat(document.getElementById("cpc").value);
 
-    const nonOrganicRate = 1 - organicRate;
-    const requiredNonOrganicPageViewsAnnually =
-        (revenueGoal / (aov * adsConversionRate)) * nonOrganicRate;
-    const requiredNonOrganicPageViewsDaily =
-        requiredNonOrganicPageViewsAnnually / 365;
-    const requiredNonOrganicPageViewsWeekly =
-        requiredNonOrganicPageViewsAnnually / 52;
-    const requiredNonOrganicPageViewsMonthly =
-        requiredNonOrganicPageViewsAnnually / 12;
+            if (isNaN(revenueGoal)) {
+                revenueGoal = 1000000;
+            }
+            if (isNaN(aov)) {
+                aov = 50;
+            }
+            if (isNaN(cpc)) {
+                cpc = 1.0;
+            }
 
-    const adSpendAnnually = requiredNonOrganicPageViewsAnnually * cpc;
-    const adSpendDaily = adSpendAnnually / 365;
-    const adSpendWeekly = adSpendAnnually / 52;
-    const adSpendMonthly = adSpendAnnually / 12;
+            const requiredPageViewsAnnually = revenueGoal / (aov * conversionRate);
+            const requiredPageViewsDaily = requiredPageViewsAnnually / 365;
+            const requiredPageViewsWeekly = requiredPageViewsAnnually / 52;
+            const requiredPageViewsMonthly = requiredPageViewsAnnually / 12;
 
-    // Calculate TACoS
-    const tACoSAnnually = (adSpendAnnually / revenueGoal) * 100;
-    const tACoSDaily = (adSpendDaily / (revenueGoal / 365)) * 100;
-    const tACoSWeekly = (adSpendWeekly / (revenueGoal / 52)) * 100;
-    const tACoSMonthly = (adSpendMonthly / (revenueGoal / 12)) * 100;
+            const nonOrganicRate = 1 - organicRate;
+            const requiredNonOrganicPageViewsAnnually =
+                (revenueGoal / (aov * adsConversionRate)) * nonOrganicRate;
+            const requiredNonOrganicPageViewsDaily =
+                requiredNonOrganicPageViewsAnnually / 365;
+            const requiredNonOrganicPageViewsWeekly =
+                requiredNonOrganicPageViewsAnnually / 52;
+            const requiredNonOrganicPageViewsMonthly =
+                requiredNonOrganicPageViewsAnnually / 12;
 
-    // Calculate revenue generated from paid visits
-    const dailyRevenueFromPaidVisits = requiredNonOrganicPageViewsDaily * aov * adsConversionRate;
-    const weeklyRevenueFromPaidVisits = requiredNonOrganicPageViewsWeekly * aov * adsConversionRate;
-    const monthlyRevenueFromPaidVisits = requiredNonOrganicPageViewsMonthly * aov * adsConversionRate;
-    const annualRevenueFromPaidVisits = requiredNonOrganicPageViewsAnnually * aov * adsConversionRate;
+            const adSpendAnnually = requiredNonOrganicPageViewsAnnually * cpc;
+            const adSpendDaily = adSpendAnnually / 365;
+            const adSpendWeekly = adSpendAnnually / 52;
+            const adSpendMonthly = adSpendAnnually / 12;
 
-    const resultsElement = document.getElementById("results");
-    resultsElement.style.display = "block";
-    resultsElement.innerHTML = `
-    <p>To achieve an annual revenue goal of <strong>$${revenueGoal.toLocaleString()}</strong>, with an average order value of <strong>$${aov.toLocaleString()}</strong> and a conversion rate of <strong>${parseFloat(
-conversionRate * 100
-).toFixed(2)}%</strong>, you need approximately:</p>
-<ul>
-    <li><strong>${Math.round(requiredPageViewsDaily).toLocaleString()}</strong> page views daily, generating approximately <strong>$${(requiredPageViewsDaily * aov * conversionRate).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong> in daily revenue</li>
-    <li><strong>${Math.round(requiredPageViewsWeekly).toLocaleString()}</strong> page views weekly, generating approximately <strong>$${(requiredPageViewsWeekly * aov * conversionRate).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong> in weekly revenue</li>
-    <li><strong>${Math.round(requiredPageViewsMonthly).toLocaleString()}</strong> page views monthly, generating approximately <strong>$${(requiredPageViewsMonthly * aov * conversionRate).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong> in monthly revenue</li>
-    <li><strong>${Math.round(requiredPageViewsAnnually).toLocaleString()}</strong> page views annually, generating approximately <strong>$${(requiredPageViewsAnnually * aov * conversionRate).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong> in annual revenue</li>
-</ul>
+            // Calculate TACoS
+            const tACoSAnnually = (adSpendAnnually / revenueGoal) * 100;
+            const tACoSDaily = (adSpendDaily / (revenueGoal / 365)) * 100;
+            const tACoSWeekly = (adSpendWeekly / (revenueGoal / 52)) * 100;
+            const tACoSMonthly = (adSpendMonthly / (revenueGoal / 12)) * 100;
 
-        <p>Based on <strong>${(organicRate * 100).toFixed(2)}%</strong> organic page views, an estimated CPC of <strong>$${cpc.toFixed(2)}</strong>, and an ads conversion rate of <strong>${(adsConversionRate * 100).toFixed(2)}%</strong>, to hit your revenue goal of <strong>$${revenueGoal.toLocaleString()}</strong>, your ad spend will be approximately:</p>
-        <ul>
-            <li><strong>$${adSpendDaily.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong> daily ad spend to generate <strong>$${dailyRevenueFromPaidVisits.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} daily ad revenue (${Math.round(requiredNonOrganicPageViewsDaily).toLocaleString()} paid page visits, TACoS: ${tACoSDaily.toFixed(2)}%)</strong></li>
-            <li><strong>$${adSpendWeekly.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong> weekly ad spend to generate <strong>$${weeklyRevenueFromPaidVisits.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} weekly ad revenue (${Math.round(requiredNonOrganicPageViewsWeekly).toLocaleString()} paid page visits, TACoS: ${tACoSWeekly.toFixed(2)}%)</strong></li>
-            <li><strong>$${adSpendMonthly.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong> monthly ad spend to generate <strong>$${monthlyRevenueFromPaidVisits.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} monthly ad revenue (${Math.round(requiredNonOrganicPageViewsMonthly).toLocaleString()} paid page visits, TACoS: ${tACoSMonthly.toFixed(2)}%)</strong></li>
-            <li><strong>$${adSpendAnnually.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong> annual ad spend to generate <strong>$${annualRevenueFromPaidVisits.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} annual ad revenue (${Math.round(requiredNonOrganicPageViewsAnnually).toLocaleString()} paid page visits, TACoS: ${tACoSAnnually.toFixed(2)}%)</strong></li>
-        </ul>`;
-}
+            // Calculate revenue generated from paid visits
+            const dailyRevenueFromPaidVisits = requiredNonOrganicPageViewsDaily * aov * adsConversionRate;
+            const weeklyRevenueFromPaidVisits = requiredNonOrganicPageViewsWeekly * aov * adsConversionRate;
+            const monthlyRevenueFromPaidVisits = requiredNonOrganicPageViewsMonthly * aov * adsConversionRate;
+            const annualRevenueFromPaidVisits = requiredNonOrganicPageViewsAnnually * aov * adsConversionRate;
 
-</script>
+            const resultsElement = document.getElementById("results");
+            resultsElement.style.display = "block";
+            resultsElement.innerHTML = `
+            <p>To achieve an annual revenue goal of <strong>$${revenueGoal.toLocaleString()}</strong>, with an average order value of <strong>$${aov.toLocaleString()}</strong> and a conversion rate of <strong>${parseFloat(
+                conversionRate * 100
+            ).toFixed(2)}%</strong>, you need approximately:</p>
+            <ul>
+                <li><strong>${Math.round(requiredPageViewsDaily).toLocaleString()}</strong> page views daily, generating approximately <strong>$${(requiredPageViewsDaily * aov * conversionRate).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong> in daily revenue</li>
+                <li><strong>${Math.round(requiredPageViewsWeekly).toLocaleString()}</strong> page views weekly, generating approximately <strong>$${(requiredPageViewsWeekly * aov * conversionRate).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong> in weekly revenue</li>
+                <li><strong>${Math.round(requiredPageViewsMonthly).toLocaleString()}</strong> page views monthly, generating approximately <strong>$${(requiredPageViewsMonthly * aov * conversionRate).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong> in monthly revenue</li>
+                <li><strong>${Math.round(requiredPageViewsAnnually).toLocaleString()}</strong> page views annually, generating approximately <strong>$${(requiredPageViewsAnnually * aov * conversionRate).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong> in annual revenue</li>
+            </ul>
+
+            <p>Based on <strong>${(organicRate * 100).toFixed(2)}%</strong> organic page views, an estimated CPC of <strong>$${cpc.toFixed(2)}</strong>, and an ads conversion rate of <strong>${(adsConversionRate * 100).toFixed(2)}%</strong>, to hit your revenue goal of <strong>$${revenueGoal.toLocaleString()}</strong>, your ad spend will be approximately:</p>
+            <ul>
+                <li><strong>$${adSpendDaily.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong> daily ad spend to generate <strong>$${dailyRevenueFromPaidVisits.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} daily ad revenue (${Math.round(requiredNonOrganicPageViewsDaily).toLocaleString()} paid page visits, TACoS: ${tACoSDaily.toFixed(2)}%)</strong></li>
+                <li><strong>$${adSpendWeekly.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong> weekly ad spend to generate <strong>$${weeklyRevenueFromPaidVisits.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} weekly ad revenue (${Math.round(requiredNonOrganicPageViewsWeekly).toLocaleString()} paid page visits, TACoS: ${tACoSWeekly.toFixed(2)}%)</strong></li>
+                <li><strong>$${adSpendMonthly.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong> monthly ad spend to generate <strong>$${monthlyRevenueFromPaidVisits.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} monthly ad revenue (${Math.round(requiredNonOrganicPageViewsMonthly).toLocaleString()} paid page visits, TACoS: ${tACoSMonthly.toFixed(2)}%)</strong></li>
+                <li><strong>$${adSpendAnnually.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong> annual ad spend to generate <strong>$${annualRevenueFromPaidVisits.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} annual ad revenue (${Math.round(requiredNonOrganicPageViewsAnnually).toLocaleString()} paid page visits, TACoS: ${tACoSAnnually.toFixed(2)}%)</strong></li>
+            </ul>`;
+        }
+    </script>
+    
+    <!-- The JavaScript file containing saveInputs function -->
+    <script type="module" src="script.js"></script>
+    <script type="module" src="growth-calculator.js"></script>
 </body>
+</html>
