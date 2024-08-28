@@ -32,6 +32,7 @@ import { fetchPlanData } from "./goals.js";
 import { initializeMeetingPage as fetchMeetingData } from './meeting.js';
 import { fetchVisionData } from "./vision.js";
 import { initializeDataPage } from './data.js';
+import { saveInputs, fetchGrowthData } from './growth-calculator.js';
 var globalSelectedValue;
 var globalOptionselected;
 export { globalSelectedValue };
@@ -60,7 +61,7 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 const storage = getStorage(app);
-export { deleteField, db, doc, setDoc, getDocs, collection, query, where, addDoc, updateDoc };
+export { deleteField, db, doc, setDoc, getDocs, getDoc, collection, query, where, addDoc, updateDoc };
 
 document.addEventListener("DOMContentLoaded", function () {
 
@@ -516,6 +517,19 @@ async function addNewBrand(brandName, brandLogo, uniqueFileName) {
         "Guarantee": "e.g., Enjoy or it's free—your happiness, our priority.",
       }
     })
+
+    const calcRef = doc(collection(db, "growthCalculators"));
+await setDoc(calcRef, {
+  brandId: brandDocRef,
+  revenueGoal: 1000000,
+  aov: 50,
+  conversionRate: 1,
+  organicRate: 70,
+  adsConversionRate: 2,
+  cpc: 1.0,
+  timestamp: new Date(),  // Optional: to keep track of when the data was saved
+});
+
 
 
     const oldBrandsData = localStorage.getItem("brandsData");
@@ -1448,6 +1462,9 @@ async function fetchDataForFunc(func, brandId) {
 
       }
       break;
+      case "calculator":
+        await fetchGrowthData(brandId); // Add the growth calculator fetch function here
+        break;
     default:
       console.error("Invalid function type.");
       break;
@@ -1712,6 +1729,7 @@ window.loadContent = function (event, url) {
         kpisLoad();
       } else if (url === "checklist.html") {
         checklistLoad();
+        initializeChecklist(); 
       } else if (url === "goals.html") {
         goalsLoad(); // Ensure this function re-initializes all necessary components
       }
@@ -1801,6 +1819,8 @@ function clearSampleText(event) {
 //     `;
 // }
 
+
+// Growth Checklist To Do Test
 document.addEventListener("DOMContentLoaded", function() {
   const addToChecklistButtons = document.querySelectorAll('.in-progress');
   const addToRocksButtons = document.querySelectorAll('.add-to-rocks');
@@ -1825,5 +1845,83 @@ document.addEventListener("DOMContentLoaded", function() {
       }
   });
 });
+
+window.addModuleToRocks = async function(buttonElement) {
+  try {
+      // Find the module element and its title
+      const moduleElement = buttonElement.closest('.checklist-module');
+      const moduleName = moduleElement.querySelector('h2').textContent.trim();
+
+      // Add the goal
+      await addGoal(moduleName); // Wait for the goal to be added
+
+      // Get the current date
+      const currentDate = new Date().toLocaleDateString();
+
+      // Update the module appearance
+      moduleElement.style.backgroundColor = 'lightgrey';
+      moduleElement.style.color = 'grey';
+      moduleElement.querySelector('h2').insertAdjacentHTML('beforebegin', `<p style="color: grey; font-weight: bold;">In Progress on ${currentDate}</p>`);
+
+      // Disable the "Add to Rocks" button to prevent further clicks
+      buttonElement.disabled = true;
+      buttonElement.textContent = 'In Progress';
+
+      // Optionally disable other buttons or elements within the module
+      const buttons = moduleElement.querySelectorAll('button');
+      buttons.forEach(button => button.disabled = true);
+
+  } catch (error) {
+      console.error("Error adding module to rocks:", error);
+  }
+}
+
+// Add this function if it doesn't exist, or modify it if it does
+function addModuleToChecklist(buttonElement) {
+  const moduleElement = buttonElement.closest('.checklist-module');
+  const moduleTitle = moduleElement.querySelector('.module-title-container h2').textContent.trim();
+
+  // Store the module title in sessionStorage (instead of localStorage)
+  sessionStorage.setItem('newChecklistTask', moduleTitle);
+
+  // Navigate to checklist.html
+  window.location.href = "checklist.html";
+}
+
+
+// Add this function to communicate with the checklist.js
+function addTaskToActiveList(taskName) {
+  // Use localStorage to pass the task name between pages
+  localStorage.setItem('newTask', taskName);
+  
+  // If the checklist page is open in another tab, we can use postMessage
+  // This part is optional and depends on your setup
+  if (window.opener) {
+      window.opener.postMessage({ type: 'newTask', task: taskName }, '*');
+  }
+}
+
+
+//Checklist To Do Test
+
+window.addModuleToChecklist = function(buttonElement) {
+  const moduleElement = buttonElement.closest('.checklist-module');
+  const moduleName = moduleElement.querySelector('h2').textContent.trim();
+
+  // Store the new task in localStorage
+  localStorage.setItem('newChecklistTask', moduleName);
+
+  // Update UI
+  buttonElement.disabled = true;
+  buttonElement.textContent = 'Added to Checklist';
+  moduleElement.style.backgroundColor = 'lightgrey';
+  moduleElement.style.color = 'grey';
+
+  // Dispatch a custom event
+  const event = new CustomEvent('newChecklistTask', { detail: moduleName });
+  window.dispatchEvent(event);
+
+  console.log(`Task "${moduleName}" added to checklist`);
+};
 
 
