@@ -51,6 +51,7 @@ body {
 #embed-btn {
     width: 400px; /* Adjust the width as needed */
         vertical-align: middle;
+        background-color: #045cb9;
 }
 
 .Google {
