@@ -1837,12 +1837,15 @@ margin-right: 20px;
 #add-brand-button{
     border-radius: 3px;
     width : 120px;
+    background-color: #045cb9;
     }
     #brand-logo{
-        border-radius: 10px;
-        width: 140px;
+        font-family: 'Poppins', sans-serif;
+        border-radius: 3px;
+        width: 195px;
         margin-right:10px ;
-        background-color: rgb(29, 14, 252);
+        padding: 5px;
+        background-color: #045cb9;
     }
 
 
@@ -1862,16 +1865,17 @@ margin-right: 20px;
 
 .header-info select{
 font-family: 'Poppins', sans-serif;
-padding: 8.6px;
-background-color: #007bff;
-border-color: #007bff;
+padding: 6px;
+background-color: #045cb9;
+border-color: #045cb9;
 color: white;
 margin-right: 5px;
 border-radius: 3px;
 }
 .header-info button{
-border-radius: 0px;
+border-radius: 3px;
 width: 100px;
+background-color: #045cb9;
 }
 
 #brand-select{
@@ -2049,51 +2053,68 @@ width: 100px;
     align-items: center;
   } */
 
-  .brands-box  {
-      position: relative;
-      display: inline-block;
-      min-height: 25px;
-  }
+  .brands-box {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-right: 30px; /* Add some padding to the right to accommodate the icon */
+}
+
 .more-options {
-    position: absolute;
-    right: 0;
+    position: relative;
     display: inline-block;
-    /* margin-left: 78%; */
-  }
-  
-  .more-options-button {
+}
+
+.more-options-button {
     background: none;
     border: none;
-    font-size: 18px;
-    margin-left:15px;
+    font-size: 14px;
     cursor: pointer;
     color: #000;
-  }
-  
-  .more-options-menu {
+    padding: 5px;
+}
+
+.more-options-button:hover {
+    background-color: transparent;
+}
+
+.more-options-menu {
     display: none;
     width: 150px;
-    position: absolute;
-    top: 100%;
-    right: 0;
+    position: absolute; /* Change to fixed positioning */
     background-color: #f9f9f9;
     border: 1px solid #ddd;
     border-radius: 4px;
-    z-index: 1;
-  }
-  
-  .more-options-menu button {
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2); /* Add shadow for better visibility */
+    z-index: 9999; /* Very high z-index */
+}
+
+.more-options-menu button {
     font-weight: 400;
     color: #000;
     display: block;
     width: 100%;
-    /* padding: 8px 26px; */
+    padding: 10px 15px; /* Increase padding for easier selection */
     border: none;
     background: none;
     text-align: left;
     cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.more-options-menu button:hover {
+    background-color: #f0f0f0; /* Add hover effect */
+}
+
+.more-options-menu button:not(:last-child) {
     border-bottom: 1px solid #ddd;
-  }
+}
+
+/* Ensure the icon is visible */
+.more-options-button i {
+    pointer-events: none; /* This ensures clicks go through to the button */
+}
   
   .more-options-menu button:hover {
     background-color: #c7bfbf;
@@ -2895,4 +2916,42 @@ margin-right: 5px;
     height: 18px;
     margin-right: 8px;
     stroke: white;
+}
+
+/* Admin KPI Table Styles */
+.admin-kpi-table {
+    width: 55%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-family: 'Poppins', sans-serif;
+    background-color: #f8f8f8; /* Light background for the table */
+    font-size:14px;
+}
+
+.admin-kpi-table th, .admin-kpi-table td {
+    padding: 6px;
+    text-align: left;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.admin-kpi-table th {
+    background-color: #133ba5;
+    color: white;
+    font-weight: bold;
+}
+
+.admin-kpi-table tbody td {
+    color: black; /* Set text color to black for table cells */
+}
+
+.admin-kpi-table tbody tr:nth-child(even) {
+    background-color: #f0f0f0; /* Slightly darker background for even rows */
+}
+
+.admin-kpi-table tbody tr:hover {
+    background-color: #e8e8e8;
+}
+
+.brands-box {
+    background-color:transparent !important;
 }
