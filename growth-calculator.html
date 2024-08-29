@@ -15,11 +15,12 @@
         <div class="input-container">
             <div class="input-box">
                 <label for="revenueGoal">Annual Revenue Goal ($):</label>
-                <input type="text" id="revenueGoal" class="growth-input"  oninput="formatCurrency(this)" onclick="this.value=''">
+                <input type="text" id="revenueGoal" class="growth-input" oninput="handleCurrencyInput(this)" onclick="this.value='$'">
             </div>
+            
             <div class="input-box">
                 <label for="aov">Average Order Value ($):</label>
-                <input type="text" id="aov" class="growth-input" oninput="formatCurrency(this)" onclick="this.value=''">
+                <input type="text" id="aov" class="growth-input" oninput="formatCurrency(this)" onclick="this.value='$'">
             </div>
             <div class="input-box">
                 <label for="conversionRate">Conversion Rate (%):</label>
@@ -42,7 +43,7 @@
             </div>
             <div class="input-box">
                 <label for="cpc">Estimated CPC ($):</label>
-                <input type="text" id="cpc" class="growth-input" oninput="formatCurrency(this)" onclick="this.value=''">
+                <input type="text" id="cpc" class="growth-input" oninput="formatCurrency(this)" onclick="this.value='$'">
             </div>
             
             
