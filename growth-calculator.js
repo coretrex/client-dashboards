@@ -16,12 +16,12 @@ export async function saveInputs() {
         return;
     }
 
-    const revenueGoal = parseFloat(document.getElementById("revenueGoal").value.replace(/[^\d.-]/g, "")) || 1000000;
+    const revenueGoal = parseCurrency(document.getElementById("revenueGoal").value);
     const aov = parseFloat(document.getElementById("aov").value.replace(/[^\d.-]/g, "")) || 50;
     const conversionRate = parseFloat(document.getElementById("conversionRate").value) || 1;
     const organicRate = parseFloat(document.getElementById("organicRate").value) || 70;
     const adsConversionRate = parseFloat(document.getElementById("adsConversionRate").value) || 2;
-    const cpc = parseFloat(document.getElementById("cpc").value) || 1.0;
+    const cpc = parseCurrency(document.getElementById("cpc").value);
 
     try {
         const brandId = selectedId;  // Use the globally imported selectedId
@@ -56,12 +56,12 @@ export async function fetchGrowthData() {
             console.log("Fetched Growth Calculator data:", data);
 
             // Populate HTML elements with the fetched data
-            document.getElementById("revenueGoal").value = formatCurrency(data.revenueGoal, 0);
+            document.getElementById("revenueGoal").value = formatCurrency(data.revenueGoal ?? 1000000, 2);
             document.getElementById("aov").value = formatCurrency(data.aov, 2);
             document.getElementById("conversionRate").value = data.conversionRate ?? 1;
             document.getElementById("organicRate").value = data.organicRate ?? 70;
             document.getElementById("adsConversionRate").value = data.adsConversionRate ?? 2;
-            document.getElementById("cpc").value = data.cpc ?? 1.0;
+            document.getElementById("cpc").value = formatCurrency(data.cpc ?? 1.0, 2);
 
             // Trigger oninput event for sliders to update their associated display elements
             document.getElementById("conversionRate").dispatchEvent(new Event('input'));
@@ -81,14 +81,14 @@ export async function fetchGrowthData() {
 
 
 function formatCurrency(value, decimals) {
-    return value !== undefined && value !== null
-        ? value.toLocaleString('en-US', {
-            style: 'currency',
-            currency: 'USD',
-            minimumFractionDigits: decimals,
-            maximumFractionDigits: decimals
-        })
-        : (decimals === 0 ? '$1,000,000' : '$50.00');
+    return '$' + parseFloat(value).toLocaleString('en-US', {
+        minimumFractionDigits: decimals,
+        maximumFractionDigits: decimals
+    });
+}
+
+function parseCurrency(value) {
+    return parseFloat(value.replace(/[^\d.]/g, '')) || 0;
 }
 
 function setDefaultValues() {
@@ -97,7 +97,7 @@ function setDefaultValues() {
     document.getElementById("conversionRate").value = 1;
     document.getElementById("organicRate").value = 70;
     document.getElementById("adsConversionRate").value = 2;
-    document.getElementById("cpc").value = 1.0;
+    document.getElementById("cpc").value = formatCurrency(1.0, 2);
 
     updateRangeValue("conversionRate");
     updateRangeValue("organicRate");
@@ -152,6 +152,6 @@ function showSaveMessage(message, type) {
         setTimeout(() => {
             saveMessageElement.style.display = 'none';
         }, 500); // Wait for fade out animation to complete
-    }, 5000);
+    }, 500);
 }
 
