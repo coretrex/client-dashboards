@@ -2773,3 +2773,126 @@ margin-right: 5px;
     border-top-right-radius: 3px;
 }
 
+
+
+/* Calculate Page Views Button */
+@keyframes neonGlow {
+    0%, 100% {
+        box-shadow: 
+            0 0 5px #ff00ff,
+            0 0 10px #ff00ff,
+            0 0 20px #ff00ff,
+            0 0 30px #ff00ff,
+            0 0 40px #ff00ff;
+    }
+    50% {
+        box-shadow: 
+            0 0 5px #00ffff,
+            0 0 10px #00ffff,
+            0 0 20px #00ffff,
+            0 0 30px #00ffff,
+            0 0 40px #00ffff;
+    }
+}
+
+@keyframes rotate {
+    0% {
+        background-position: 0% 0%;
+    }
+    100% {
+        background-position: 200% 0%;
+    }
+}
+
+#calculateButton {
+    position: relative;
+    background-color: #133ba5; /* Blue background */
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    overflow: hidden;
+    z-index: 1;
+    border-radius: 3px;
+    transition: background-color 0.3s ease;
+}
+
+#calculateButton::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(90deg, 
+        #ff00ff, #00ffff, #ff00ff, #00ffff, #ff00ff
+    );
+    background-size: 200% 100%;
+    z-index: -1;
+    animation: rotate 4s linear infinite, neonGlow 2s infinite;
+    border-radius: 5px;
+    filter: blur(3px);
+    opacity: 0.8;
+}
+
+#calculateButton::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    right: 2px;
+    bottom: 2px;
+    background-color: #133ba5;
+    z-index: -1;
+    border-radius: 3px;
+    transition: background-color 0.3s ease;
+}
+
+#calculateButton:hover::before {
+    animation: rotate 2s linear infinite, neonGlow 1s infinite;
+    filter: blur(2px);
+    opacity: 0.9;
+}
+
+#calculateButton.clicked {
+    background-color: #133ba5;
+}
+
+#calculateButton.clicked::before {
+    animation: none;
+    background: #133ba5;
+}
+
+#calculateButton.clicked::after {
+    background-color: #133ba5;
+}
+
+#saveButton {
+    background-color: #4a5568; /* A muted blue-gray color */
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: background-color 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#saveButton:hover {
+    background-color: #2d3748; /* A slightly darker shade for hover */
+}
+
+#saveButton:active {
+    background-color: #1a202c; /* Even darker for the active state */
+}
+
+.save-icon {
+    width: 18px;
+    height: 18px;
+    margin-right: 8px;
+    stroke: white;
+}
