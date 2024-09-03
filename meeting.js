@@ -623,3 +623,5 @@ window.dragMeeting = dragMeeting;
 window.dropMeeting = dropMeeting;
 window.saveMeetingTaskOrder = saveMeetingTaskOrder;
 window.updateTaskStatusInFirestore = updateTaskStatusInFirestore;
+window.moveTaskUp = moveTaskUp;
+window.moveTaskDown = moveTaskDown;
