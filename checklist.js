@@ -457,3 +457,67 @@ window.handleAddTask = handleAddTask;
 window.drop = drop;
 window.allowDrop = allowDrop;
 window.fetchChecklistData = fetchChecklistData;
+
+async function preloadOnboardingTasks() {
+    const onboardingTasks = [
+        "Submit Onboarding Form",
+        "Send Seller Central Account Invites",
+        "Bid-Automation Rules Deployed",
+        "Establish Daily Ad Budgets",
+        "Style Guide Created",
+        "Consumer Profile Created",
+        "Establish Quarterly Goals",
+        "Launch 3 Growth Sprints",
+        "Analytics Integration + User Access",
+        "Top Products Keyword Tracking",
+    ];
+
+    for (const taskText of onboardingTasks) {
+        await addTask(taskText, "active-task-list");
+        // Add a small delay between each task addition
+        await new Promise(resolve => setTimeout(resolve, 100));
+    }
+}
+
+async function preloadProductLaunchTasks() {
+    const productLaunchTasks = [
+        "Create New Product Infographics",
+        "Deploy New Product Backend Keywords",
+        "Create & Deploy A+ Content",
+        "Add New Product to Store Page",
+        "Deploy Vine Reviewer Program",
+        "Add New Product to Brand Story A+",
+        "Ensure Store Byline Connection",
+    ];
+
+    for (const taskText of productLaunchTasks) {
+        await addTask(taskText, "active-task-list");
+        // Add a small delay between each task addition
+        await new Promise(resolve => setTimeout(resolve, 100));
+    }
+}
+
+// ... existing code ...
+
+async function preloadPromotionalHolidayTasks() {
+  const PromotionalHolidayTasks = [
+      "Schedule Coupons/Deals",
+      "Deploy Promotional SB Campaign",
+      "Increase CPCs on High Intent Keywords",
+      "Update Brand Story A+",
+      "Create Store Page Banner",
+      "Schedule Brand Tailored Promotion",
+      "Frontload FBA Inventory",
+  ];
+
+  for (const taskText of PromotionalHolidayTasks) {
+      await addTask(taskText, "active-task-list");
+      // Add a small delay between each task addition
+      await new Promise(resolve => setTimeout(resolve, 100));
+  }
+}
+
+// Make sure these functions are called when the buttons are clicked
+window.preloadOnboardingTasks = preloadOnboardingTasks;
+window.preloadProductLaunchTasks = preloadProductLaunchTasks;
+window.preloadPromotionalHolidayTasks = preloadPromotionalHolidayTasks; // Fix this line

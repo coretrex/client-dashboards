@@ -20,19 +20,33 @@
                 <h3>Active Tasks</h3>
                 <button class="add-task-btn" onclick="showAddTaskModal()">+</button>
             </div>
-            <ul class="task-list" id="active-task-list"></ul>
+            <div class="task-list-wrapper">
+                <ul class="task-list" id="active-task-list"></ul>
+            </div>
         </div>
         <div class="task-bucket" id="onhold-tasks" ondrop="drop(event)" ondragover="allowDrop(event)">
             <div class="bucket-header">
                 <h3>On-Hold</h3>
             </div>
-            <ul class="task-list" id="onhold-task-list"></ul>
+            <div class="task-list-wrapper">
+                <ul class="task-list" id="onhold-task-list"></ul>
+            </div>
         </div>
         <div class="task-bucket" id="completed-tasks" ondrop="drop(event)" ondragover="allowDrop(event)">
             <div class="bucket-header">
                 <h3>Completed</h3>
             </div>
-            <ul class="task-list" id="completed-task-list"></ul>
+            <div class="task-list-wrapper">
+                <ul class="task-list" id="completed-task-list"></ul>
+            </div>
+        </div>
+    </div>
+    <div class="header task-templates-header">
+        <h1>Pre-Built Task Lists</h1>
+        <div class="preload-buttons">
+            <button class="preload-tasks-btn" onclick="preloadOnboardingTasks()">Brand Onboarding</button>
+            <button class="preload-tasks-btn" onclick="preloadProductLaunchTasks()">New Product Launch</button>
+            <button class="preload-tasks-btn" onclick="preloadPromotionalHolidayTasks()">Pre-Promotion Tasks</button>
         </div>
     </div>
 
