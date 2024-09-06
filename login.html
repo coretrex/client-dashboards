@@ -62,17 +62,18 @@
         }
 
         .login-container p {
-            color: #595959;
-            border-style: none;
-            font-size: small;
-            display: flex;
-            justify-items: start;
-        }
+        color: #595959;
+        border-style: none;
+        font-size: small;
+        display: flex;
+        justify-content: flex-start;
+        margin: 5px 0;
+    }
 
-        .login-container a {
-            color: #0434b6;
-            margin-left: 2px;
-        }
+    .login-container a {
+        color: #0434b6;
+        margin-left: 2px;
+    }
     </style>
     <script defer src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
     <script defer src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
@@ -88,6 +89,7 @@
         <input type="email" id="login-email" placeholder="Email" required>
         <input type="password" id="login-password" placeholder="Password" required>
         <p>Don't have an account? <a href="signup.html">Create an account</a></p>
+        <p><a href="forgot-password.html">Forgot Password?</a></p>
         <button id="login-btn">Login</button>
     </div>
 </body>
