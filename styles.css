@@ -5,11 +5,13 @@ body {
     margin: 0;
     padding: 0;
     display: flex;
-
     background: linear-gradient(90deg, rgb(0, 45, 97) 0%, rgb(0, 16, 32) 100%);
     color: white;
+    overflow-y: hidden; /* Hide vertical scrollbar for the body */
+    height: 100vh; /* Set body height to full viewport height */
+    display: flex;
+    flex-direction: column;
 }
-
 
 
 /* Add this to your CSS */
@@ -3686,3 +3688,38 @@ vertical-align: middle;
     border-color: #007bff;
     box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
 }
+
+
+
+/* Modern scrollbar styles */
+.kpi-table-container {
+    scrollbar-width: thin;
+    scrollbar-color: #787879 #c4c4c4;
+}
+
+.kpi-table-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.kpi-table-container::-webkit-scrollbar-track {
+    background: #f0f0f0;
+    border-radius: 4px;
+}
+
+.kpi-table-container::-webkit-scrollbar-thumb {
+    background-color: #05216e;
+    border-radius: 4px;
+    border: 2px solid #f0f0f0;
+}
+
+.kpi-table-container::-webkit-scrollbar-thumb:hover {
+    background-color: #0d2b7a;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
