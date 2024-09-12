@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up - Together Goals</title>
+    <title>Sign Up - CoreTrex Dashboard</title>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
@@ -160,7 +160,7 @@
     <div class="signup-page">
         <div class="signup-form-container">
             <h2>Create account</h2>
-            <p class="left-align">Join for free & start aligning your family's goals today.</p>
+            <p class="left-align">The Dashboard for Progress, Initiatives, & Rapid Growth.</p>
             <button id="google-signup-btn" class="google-login-btn-custom">
                 <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="18" height="18" alt="Google icon">
                 Sign up with Google
@@ -171,24 +171,22 @@
             <input type="password" id="signup-password" placeholder="Create a Password" required>
             <button id="signup-btn">Sign up</button>
             <p>Already have an account? <a href="login.html">Log in</a></p>
-            <p class="terms">By creating an account, you agree to our <a href="#">terms of use.</a></p>
         </div>
         <div class="signup-image-container">
-            <img src="family.jpg" alt="Sign up image">
+            <img src="coretrex.jpg" alt="Sign up image">
         </div>
     </div>
     <script>
         // Initialize Firebase
         const firebaseConfig = {
-            apiKey: "AIzaSyBFvRtuouPEjIhidJRl2C_3pBnMKcZJ_uU",
-            authDomain: "together-goals.firebaseapp.com",
-            projectId: "together-goals",
-            storageBucket: "together-goals.appspot.com",
-            messagingSenderId: "174649929001",
-            appId: "1:174649929001:web:f660e68bb9277bdea69b38",
-            measurementId: "G-VYH2YL7QXP"
-        };
-
+  apiKey: "AIzaSyCHQcAa3Z-ADIDeTI88LXgP4gmVPFuM9Hc",
+  authDomain: "coretrex-dashboard.firebaseapp.com",
+  projectId: "coretrex-dashboard",
+  storageBucket: "coretrex-dashboard.appspot.com",
+  messagingSenderId: "964784655965",
+  appId: "1:964784655965:web:c25a95fd4e4af26be407b4",
+  measurementId: "G-NLRD798V18"
+};
         firebase.initializeApp(firebaseConfig);
 
         // Get references to auth and firestore
