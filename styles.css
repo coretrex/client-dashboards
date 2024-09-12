@@ -7,7 +7,6 @@ body {
     display: flex;
     background: linear-gradient(90deg, rgb(0, 45, 97) 0%, rgb(0, 16, 32) 100%);
     color: white;
-    overflow-y: hidden; /* Hide vertical scrollbar for the body */
     height: 100vh; /* Set body height to full viewport height */
     display: flex;
     flex-direction: column;
@@ -3719,6 +3718,6 @@ html, body {
     height: 100%;
     margin: 0;
     padding: 0;
-    overflow: hidden;
+    overflow-x: hidden;
 }
 
