@@ -179,14 +179,14 @@
     <script>
         // Initialize Firebase
         const firebaseConfig = {
-  apiKey: "AIzaSyCHQcAa3Z-ADIDeTI88LXgP4gmVPFuM9Hc",
-  authDomain: "coretrex-dashboard.firebaseapp.com",
-  projectId: "coretrex-dashboard",
-  storageBucket: "coretrex-dashboard.appspot.com",
-  messagingSenderId: "964784655965",
-  appId: "1:964784655965:web:c25a95fd4e4af26be407b4",
-  measurementId: "G-NLRD798V18"
-};
+            apiKey: "AIzaSyCHQcAa3Z-ADIDeTI88LXgP4gmVPFuM9Hc",
+            authDomain: "coretrex-dashboard.firebaseapp.com",
+            projectId: "coretrex-dashboard",
+            storageBucket: "coretrex-dashboard.appspot.com",
+            messagingSenderId: "964784655965",
+            appId: "1:964784655965:web:c25a95fd4e4af26be407b4",
+            measurementId: "G-NLRD798V18"
+        };
         firebase.initializeApp(firebaseConfig);
 
         // Get references to auth and firestore
@@ -208,25 +208,54 @@
                 });
         });
 
+        // Email/Password Sign Up
+        document.getElementById('signup-btn').addEventListener('click', () => {
+            const name = document.getElementById('signup-name').value;
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+
+            auth.createUserWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    const user = userCredential.user;
+                    console.log("User signed up:", user);
+                    handleEmailPasswordSignUp(user, name);
+                })
+                .catch((error) => {
+                    console.error("Sign-up error:", error);
+                    alert("Sign-up failed: " + error.message);
+                });
+        });
+
         async function handleGoogleSignUp(user) {
             try {
-                // Check if the user already exists in your Firestore database
-                const userDoc = await db.collection("users").doc(user.uid).get();
-
-                if (!userDoc.exists) {
-                    // If the user doesn't exist, create a new user document
-                    await db.collection("users").doc(user.uid).set({
-                        name: user.displayName,
-                        email: user.email,
-                        role: "Client", // You might want to set a default role or ask the user to choose
-                    });
-                }
-
-                // Load user data and redirect
+                await createOrUpdateUser(user, user.displayName);
                 loadUserData(user);
             } catch (error) {
                 console.error("Error handling Google sign-up:", error);
                 alert("Error occurred while processing your sign-up. Please try again.");
+            }
+        }
+
+        async function handleEmailPasswordSignUp(user, name) {
+            try {
+                await createOrUpdateUser(user, name);
+                loadUserData(user);
+            } catch (error) {
+                console.error("Error handling email/password sign-up:", error);
+                alert("Error occurred while processing your sign-up. Please try again.");
+            }
+        }
+
+        async function createOrUpdateUser(user, name) {
+            const userDocRef = db.collection("users").doc(user.uid);
+            const userDoc = await userDocRef.get();
+
+            if (!userDoc.exists) {
+                await userDocRef.set({
+                    name: name,
+                    email: user.email,
+                    role: "Client", // You might want to set a default role or ask the user to choose
+                });
             }
         }
 
@@ -238,11 +267,8 @@
                     const userData = docSnap.data();
                     console.log("User Data:", userData);
                     localStorage.setItem("userData", JSON.stringify(userData));
-                    if (userData.role === "Admin") {
-                        window.location.href = "admin.html";
-                    } else if (userData.role === "Client" || userData.role === "Team") {
-                        window.location.href = "kpis.html";
-                    }
+                    // Always redirect to index.html
+                    window.location.href = "index.html";
                 } else {
                     console.log("No such user!");
                     window.location.href = "error.html";
