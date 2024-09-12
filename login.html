@@ -319,26 +319,23 @@ const firebaseConfig = {
     }
 
     async function loadUserData(user) {
-        try {
-            const userDocRef = db.collection("users").doc(user.uid);
-            const docSnap = await userDocRef.get();
-            if (docSnap.exists) {
-                const userData = docSnap.data();
-                console.log("User Data:", userData);
-                localStorage.setItem("userData", JSON.stringify(userData));
-                if (userData.role === "Admin") {
-                    window.location.href = "admin.html";
-                } else if (userData.role === "Client" || userData.role === "Team") {
-                    window.location.href = "kpis.html";
-                }
-            } else {
-                console.log("No such user!");
-                window.location.href = "error.html";
-            }
-        } catch (error) {
-            console.log("Error getting user data:", error);
-        }
-    }
+     try {
+         const userDocRef = db.collection("users").doc(user.uid);
+         const docSnap = await userDocRef.get();
+         if (docSnap.exists) {
+             const userData = docSnap.data();
+             console.log("User Data:", userData);
+             localStorage.setItem("userData", JSON.stringify(userData));
+             // Always redirect to index.html
+             window.location.href = "index.html";
+         } else {
+             console.log("No such user!");
+             window.location.href = "error.html";
+         }
+     } catch (error) {
+         console.log("Error getting user data:", error);
+     }
+ }
 
     // Check if user is already signed in
     auth.onAuthStateChanged((user) => {
