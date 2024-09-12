@@ -5,11 +5,22 @@ body {
     margin: 0;
     padding: 0;
     display: flex;
-    background: linear-gradient(90deg, rgb(0, 45, 97) 0%, rgb(0, 16, 32) 100%);
+    background: linear-gradient(90deg, rgba(0, 45, 97, 0.95) 0%, rgba(0, 16, 32, 0.95) 100%);
     color: white;
-    height: 100vh; /* Set body height to full viewport height */
+    height: 100vh;
     display: flex;
     flex-direction: column;
+    position: relative;
+    overflow: hidden;
+}
+
+#network-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
 }
 
 
@@ -1937,7 +1948,8 @@ background-color: #045cb9;
     font-family: 'Poppins', sans-serif;
     padding: 5px;
     background-color: #024b99;
-    color: white;
+    color: rgb(255, 255, 255);
+    border-color: #024b99;
     margin-right: 5px;
     border-radius: 3px;
     border-style: none;
@@ -1945,7 +1957,7 @@ background-color: #045cb9;
 }
 .brand-option{
     padding: 8.6px;
-    background-color: #007bff;
+    background-color: #024b99;
     color: white;
     margin-right: 5px;
     border-radius: 30px;
@@ -3721,3 +3733,27 @@ html, body {
     overflow-x: hidden;
 }
 
+/* Custom scrollbar styles */
+.custom-scrollbar .kpi-table-container {
+    max-height: 70vh; /* Adjust this value as needed */
+    overflow-y: auto;
+}
+
+.custom-scrollbar .kpi-table-container::-webkit-scrollbar {
+    width: 12px;
+}
+
+.custom-scrollbar .kpi-table-container::-webkit-scrollbar-track {
+    background: #1e1e1e;
+    border-radius: 10px;
+}
+
+.custom-scrollbar .kpi-table-container::-webkit-scrollbar-thumb {
+    background: linear-gradient(45deg, #00aeff, #a200ff);
+    border-radius: 10px;
+    border: 2px solid #1e1e1e;
+}
+
+.custom-scrollbar .kpi-table-container::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(45deg, #0095dd, #8a00dd);
+}

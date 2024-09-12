@@ -21,9 +21,13 @@
     <script type="module" src="meeting.js"></script>
     <script type="module" src="vision.js"></script>
     <script type="module" src="data.js"></script>
+    <script type="module" src="growth-calculator.js"></script>
+    <script type="module" src="growth-checklist.js"></script>
+
 </head>
 
 <body>
+    <canvas id="network-background"></canvas>
     <div class="sidebar">
         <a href="/" class="sidebar-logo">
             <img src="CoreTrex_Horizontal_White.png" alt="CoreTrex Logo" class="logo">
@@ -31,13 +35,15 @@
         <ul class="sidebar-menu">
             <li><a href="#kpis" onclick="loadContent(event, 'kpis.html')"><i class="fas fa-chart-line"></i>
                 <span>KPIs</span></a></li>
-                        <!-- New Data Page -->
-            <li><a href="#data" onclick="loadContent(event, 'data.html')"><i class="fas fa-database"></i>
-                <span>Data</span></a></li>
+          
             <li><a href="#checklist" onclick="loadContent(event, 'checklist.html')"><i class="fas fa-check-square"></i>
-                <span>Checklist</span></a></li>
+                <span>To Do</span></a></li>
+                <li><a href="#growth-checklist" onclick="loadContent(event, 'growth-checklist.html')"><i class="fas fa-list-alt"></i>
+                    <span>Growth Checklist</span></a></li>
             <li><a href="#quarterly-goals" onclick="loadContent(event, 'quarterly-goals.html')"><i class="fas fa-bullseye"></i> 
                 <span>Quarterly Goals</span></a></li>
+
+                        <!-- New Data Page -->
             <li><a href="#meeting" onclick="loadContent(event, 'meeting.html')"><i class="fas fa-comments"></i>
                 <span>Meeting Agenda</span></a></li>
             <li><a href="#vision" onclick="loadContent(event, 'vision.html')"><i class="fas fa-binoculars"></i>
@@ -46,6 +52,8 @@
                 <span>Annual Plan</span></a></li>
             <li><a href="#growth-calculator" onclick="loadContent(event, 'growth-calculator.html')"><i class="fas fa-rocket"></i>
                 <span>Growth Calculator</span></a></li>
+                <li><a href="#data" onclick="loadContent(event, 'data.html')"><i class="fas fa-database"></i>
+                    <span>Data</span></a></li>
                 <li><a href="#admin-dashboard" id="admin-dashboard" onclick="loadContent(event, 'admin.html')"><i class="fas fa-user-shield"></i> <span>Admin Dashboard</span></a></li>
         
             <li><a href="./login.html" id="logout-link"><i class="fas fa-sign-out-alt"></i>
@@ -86,6 +94,18 @@
         this.classList.add('active');
     });
 });
+
+document.addEventListener('DOMContentLoaded', function() {
+        const userData = JSON.parse(localStorage.getItem("userData"));
+        if (userData) {
+            if (userData.role === "Admin") {
+                loadContent(null, "admin.html");
+            } else if (userData.role === "Client" || userData.role === "Team") {
+                loadContent(null, "kpis.html");
+            }
+        }
+    });
+
 
 </script>
         

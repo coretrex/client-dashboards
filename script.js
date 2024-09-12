@@ -33,6 +33,7 @@ import { initializeMeetingPage as fetchMeetingData } from './meeting.js';
 import { fetchVisionData } from "./vision.js";
 import { initializeDataPage } from './data.js';
 import { saveInputs, fetchGrowthData } from './growth-calculator.js';
+import { loadSprints } from './growth-checklist.js';
 var globalSelectedValue;
 var globalOptionselected;
 export { globalSelectedValue };
@@ -530,6 +531,13 @@ await setDoc(calcRef, {
   timestamp: new Date(),  // Optional: to keep track of when the data was saved
 });
 
+const checklistRef = doc(collection(db, "growthChecklists"));
+await setDoc(checklistRef, {
+  brandId: brandDocRef,
+  sprints: [],  // Initialize with an empty array of sprints
+  completedModules: [],  // Track completed modules
+  timestamp: new Date(),  // To keep track of when the checklist was created
+});
 
 
     const oldBrandsData = localStorage.getItem("brandsData");
@@ -1465,6 +1473,9 @@ async function fetchDataForFunc(func, brandId) {
       case "calculator":
         await fetchGrowthData(brandId); // Add the growth calculator fetch function here
         break;
+        case "growthchecklist":
+          await loadSprints(brandId); // Add the growth calculator fetch function here
+          break;
     default:
       console.error("Invalid function type.");
       break;
@@ -1670,6 +1681,7 @@ export function initializePage() {
   initializeCountdownTimer();
   initializeGrowthCalculator();
   clearSampleTextOnFocus();
+  initializeGrowthChecklist()
 
   document.getElementById("login-btn").addEventListener("click", () => {
     const email = document.getElementById("login-email").value;
@@ -1731,36 +1743,49 @@ window.loadContent = function (event, url) {
         checklistLoad();
         initializeChecklist(); 
       } else if (url === "goals.html") {
-        goalsLoad(); // Ensure this function re-initializes all necessary components
-      }
-      else if (url === "quarterly-goals.html") {
+        goalsLoad(); 
+      } else if (url === "quarterly-goals.html") {
         quarterlyGoalsLoad();
-      }
-      else if (url === "meeting.html") {
+      } else if (url === "meeting.html") {
         meetingLoad();
-      }
-      else if (url === "vision.html") {
+      } else if (url === "vision.html") {
         visionLoad();
-      }
-      else if (url === "admin.html") {
+      } else if (url === "admin.html") {
         loadAdminData();
-      }
-      else if (url === "data.html") {
+      } else if (url === "data.html") {
         loadDataPage();
-      }
-      else if (url === "growth-calculator.html") {
+      } else if (url === "growth-calculator.html") {
         calculatorLoad();
-      }
-      else if (url === "growth-checklist.html") {
+      } else if (url === "growth-checklist.html") {
         growthchecklistLoad();
+
+        // Ensure filters are re-initialized for the Growth Checklist page
+        setTimeout(() => {
+          console.log('Reattaching filter listeners...');
+          if (typeof attachFilterListeners === "function") {
+            attachFilterListeners();  // Reattach listeners to the filters
+            console.log('Filter listeners attached.');
+          } else {
+            console.error('attachFilterListeners function not found.');
+          }
+          
+          console.log('Reapplying filters...');
+          if (typeof filterModules === "function") {
+            filterModules();  // Reapply filters based on current selections
+            console.log('Filters reapplied.');
+          } else {
+            console.error('filterModules function not found.');
+          }
+        }, 100);
       }
+
       // General initialization
       setTimeout(() => {
         if (url.includes("quarterly-goals.html")) {
           initializeGoalInput();
           initializeQuarterlyCountdownTimer();
         } else {
-          initializePage(); // Ensure general initialization happens after specific ones
+          initializePage(); 
         }
       }, 100);
     })
@@ -1768,6 +1793,8 @@ window.loadContent = function (event, url) {
       console.error("Error loading content:", error);
     });
 };
+
+
 
 document.addEventListener("DOMContentLoaded", function () {
   document.body.addEventListener("focusin", function (event) {
@@ -1846,35 +1873,6 @@ document.addEventListener("DOMContentLoaded", function() {
   });
 });
 
-window.addModuleToRocks = async function(buttonElement) {
-  try {
-      // Find the module element and its title
-      const moduleElement = buttonElement.closest('.checklist-module');
-      const moduleName = moduleElement.querySelector('h2').textContent.trim();
-
-      // Add the goal
-      await addGoal(moduleName); // Wait for the goal to be added
-
-      // Get the current date
-      const currentDate = new Date().toLocaleDateString();
-
-      // Update the module appearance
-      moduleElement.style.backgroundColor = 'lightgrey';
-      moduleElement.style.color = 'grey';
-      moduleElement.querySelector('h2').insertAdjacentHTML('beforebegin', `<p style="color: grey; font-weight: bold;">In Progress on ${currentDate}</p>`);
-
-      // Disable the "Add to Rocks" button to prevent further clicks
-      buttonElement.disabled = true;
-      buttonElement.textContent = 'In Progress';
-
-      // Optionally disable other buttons or elements within the module
-      const buttons = moduleElement.querySelectorAll('button');
-      buttons.forEach(button => button.disabled = true);
-
-  } catch (error) {
-      console.error("Error adding module to rocks:", error);
-  }
-}
 
 // Add this function if it doesn't exist, or modify it if it does
 function addModuleToChecklist(buttonElement) {
@@ -1925,3 +1923,72 @@ window.addModuleToChecklist = function(buttonElement) {
 };
 
 
+function initializeGrowthChecklist() {
+  // Other initialization code...
+  loadSprints();
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  const canvas = document.getElementById('network-background');
+  const ctx = canvas.getContext('2d');
+  let width, height;
+  let particles = [];
+
+  function resizeCanvas() {
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = width;
+      canvas.height = height;
+      initParticles();
+  }
+
+  function initParticles() {
+      particles = [];
+      const particleCount = Math.floor(width * height / 10000);
+      for (let i = 0; i < particleCount; i++) {
+          particles.push({
+              x: Math.random() * width,
+              y: Math.random() * height,
+              vx: Math.random() * 0.5 - 0.25,
+              vy: Math.random() * 0.5 - 0.25
+          });
+      }
+  }
+
+  function drawParticles() {
+      ctx.clearRect(0, 0, width, height);
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+      ctx.lineWidth = 0.5;
+
+      particles.forEach(particle => {
+          particle.x += particle.vx;
+          particle.y += particle.vy;
+
+          if (particle.x < 0 || particle.x > width) particle.vx *= -1;
+          if (particle.y < 0 || particle.y > height) particle.vy *= -1;
+
+          ctx.beginPath();
+          ctx.arc(particle.x, particle.y, 1, 0, Math.PI * 2);
+          ctx.stroke();
+
+          particles.forEach(otherParticle => {
+              const dx = particle.x - otherParticle.x;
+              const dy = particle.y - otherParticle.y;
+              const distance = Math.sqrt(dx * dx + dy * dy);
+
+              if (distance < 100) {
+                  ctx.beginPath();
+                  ctx.moveTo(particle.x, particle.y);
+                  ctx.lineTo(otherParticle.x, otherParticle.y);
+                  ctx.stroke();
+              }
+          });
+      });
+
+      requestAnimationFrame(drawParticles);
+  }
+
+  window.addEventListener('resize', resizeCanvas);
+  resizeCanvas();
+  drawParticles();
+});
