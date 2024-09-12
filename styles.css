@@ -5,23 +5,11 @@ body {
     margin: 0;
     padding: 0;
     display: flex;
-    background: linear-gradient(90deg, rgba(0, 45, 97, 0.95) 0%, rgba(0, 16, 32, 0.95) 100%);
+
+    background: linear-gradient(90deg, rgb(0, 45, 97) 0%, rgb(0, 16, 32) 100%);
     color: white;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    overflow: hidden;
 }
 
-#network-background {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-}
 
 
 /* Add this to your CSS */
@@ -736,8 +724,9 @@ input[type="text"] {
 }
 
 .goal-item.completed {
-    background-color: rgb(190, 190, 190);
-    color: rgb(97, 96, 96);
+    background-color: grey;
+    color: grey;
+    background-color: #f0f0f0;
     order: 1;
 }
 
@@ -1948,8 +1937,7 @@ background-color: #045cb9;
     font-family: 'Poppins', sans-serif;
     padding: 5px;
     background-color: #024b99;
-    color: rgb(255, 255, 255);
-    border-color: #024b99;
+    color: white;
     margin-right: 5px;
     border-radius: 3px;
     border-style: none;
@@ -1957,7 +1945,7 @@ background-color: #045cb9;
 }
 .brand-option{
     padding: 8.6px;
-    background-color: #024b99;
+    background-color: #007bff;
     color: white;
     margin-right: 5px;
     border-radius: 30px;
@@ -3697,63 +3685,4 @@ vertical-align: middle;
     outline: none;
     border-color: #007bff;
     box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
-}
-
-
-
-/* Modern scrollbar styles */
-.kpi-table-container {
-    scrollbar-width: thin;
-    scrollbar-color: #787879 #c4c4c4;
-}
-
-.kpi-table-container::-webkit-scrollbar {
-    width: 8px;
-}
-
-.kpi-table-container::-webkit-scrollbar-track {
-    background: #f0f0f0;
-    border-radius: 4px;
-}
-
-.kpi-table-container::-webkit-scrollbar-thumb {
-    background-color: #05216e;
-    border-radius: 4px;
-    border: 2px solid #f0f0f0;
-}
-
-.kpi-table-container::-webkit-scrollbar-thumb:hover {
-    background-color: #0d2b7a;
-}
-
-html, body {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    overflow-x: hidden;
-}
-
-/* Custom scrollbar styles */
-.custom-scrollbar .kpi-table-container {
-    max-height: 70vh; /* Adjust this value as needed */
-    overflow-y: auto;
-}
-
-.custom-scrollbar .kpi-table-container::-webkit-scrollbar {
-    width: 12px;
-}
-
-.custom-scrollbar .kpi-table-container::-webkit-scrollbar-track {
-    background: #1e1e1e;
-    border-radius: 10px;
-}
-
-.custom-scrollbar .kpi-table-container::-webkit-scrollbar-thumb {
-    background: linear-gradient(45deg, #00aeff, #a200ff);
-    border-radius: 10px;
-    border: 2px solid #1e1e1e;
-}
-
-.custom-scrollbar .kpi-table-container::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(45deg, #0095dd, #8a00dd);
 }

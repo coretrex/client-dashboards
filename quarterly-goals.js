@@ -32,11 +32,10 @@ export async function fetchQuarterlyGoalsData() {
                                     
                                     <div class="goal-status">
                                     <button class="delete-button" onclick="deleteGoal('${key}')"><i class="fas fa-trash"></i></button>
-                                        <select class="status-dropdown ${goal.status}" onchange="setGoalStatusDropdown(this, '${key}')" ${goal.completed ? 'disabled' : ''}>
+                                        <select class="status-dropdown ${goal.status}" onchange="setGoalStatusDropdown(this, '${key}')">
                                             <option value="on-track" ${goal.status === 'on-track' ? 'selected' : ''}>On-Track</option>
                                             <option value="on-hold" ${goal.status === 'on-hold' ? 'selected' : ''}>On-Hold</option>
                                             <option value="off-track" ${goal.status === 'off-track' ? 'selected' : ''}>Off-Track</option>
-                                            <option value="completed" ${goal.status === 'completed' ? 'selected' : ''}>Completed</option>
                                         </select>
                                         <button class="status-button complete-button" onclick="completeGoal(this, '${key}')"><i class="fas fa-check"></i></button>
                                         
@@ -246,16 +245,10 @@ async function completeGoal(button, goalId) {
     console.log(button, goalId);
 
     const goalItem = button.closest('.goal-item');
-    const statusDropdown = goalItem.querySelector('.status-dropdown');
 
     // Update the UI to show the goal as completed
     goalItem.className = 'goal-item completed';
     goalItem.style.order = '1'; // Move completed items to the bottom
-
-    // Update the status dropdown
-    statusDropdown.value = 'completed';
-    statusDropdown.disabled = true; // Disable the dropdown for completed goals
-    updateDropdownColor(statusDropdown, 'completed');
 
     try {
         const brandRef = doc(db, "brands", selectedId);
@@ -272,7 +265,6 @@ async function completeGoal(button, goalId) {
                         ...data,
                         [goalId]: {
                             ...data[goalId],
-                            status: 'completed',
                             completed: true
                         }
                     };
@@ -330,8 +322,7 @@ function updateDropdownColor(select, status) {
     const colorMap = {
         'on-track': 'darkgreen',
         'on-hold': 'darkorange',
-        'off-track': 'darkred',
-        'completed': 'grey'
+        'off-track': 'darkred'
     };
     select.style.backgroundColor = colorMap[status];
 }
