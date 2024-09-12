@@ -1927,4 +1927,3 @@ function initializeGrowthChecklist() {
   // Other initialization code...
   loadSprints();
 }
-
