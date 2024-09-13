@@ -258,7 +258,7 @@ function launchRocket() {
     // Add the CSS styles
     const style = document.createElement('style');
     style.textContent = `
-#blur-overlay {
+     #blur-overlay {
             position: fixed;
             top: 0;
             left: 0;
@@ -270,18 +270,18 @@ function launchRocket() {
         }
         #rocket-container {
             position: fixed;
-            top: 50%;
+            top: 100vh; /* Start from bottom of viewport */
             left: 50%;
-            transform: translate(-50%, -50%);
+            transform: translateX(-50%);
             width: 60px;
             height: 200px;
             z-index: 1001;
         }
         #ready-text {
             position: fixed;
-            top: 50%;
+            top: 80vh; /* Start from bottom of viewport */
             left: 50%;
-            transform: translate(-50%, 200%);
+            transform: translate(-50%, -50%);
             font-size: 96px;
             font-weight: bold;
             color: white;
@@ -305,7 +305,7 @@ function launchRocket() {
             100% { transform: translateY(-200px) scale(0); opacity: 0; }
         }
         @keyframes launch {
-            0% { top: 50%; }
+            0% { top: 100vh; }
             100% { top: -200px; }
         }
         .shake {
@@ -787,8 +787,6 @@ async function updateCompletionStatus(moduleTitle, isCompleted) {
         console.error("Error updating completion status:", error);
     }
 }
-
-
 
 window.attachFilterListeners = attachFilterListeners;
 window.filterModules = filterModules;
