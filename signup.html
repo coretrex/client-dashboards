@@ -4,107 +4,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
     <title>Sign Up - CoreTrex Dashboard</title>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
     <style>
         body {
-            font-family: 'Poppins', sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background: #f5f5f5;
-        }
-
-        .signup-page {
-            font-family: 'Poppins', sans-serif;
-            display: flex;
-            width: 80%;
-            max-width: 1200px;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-        }
-
-        .signup-form-container {
-            flex: 1;
-            padding: 40px;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            max-width: 400px;
-            margin: auto;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(90deg, rgb(1, 6, 75) 0%, hsla(211, 100%, 28%, 1) 100%);
+            font-family: 'Poppins', sans-serif;
         }
 
-        .signup-form-container h2 {
-            font-size: 30px;
-            margin-bottom: 0px;
+        .logo-container {
+            text-align: center;
+            margin-bottom: 20px;
+            max-width: 300px;
+            width: 100%;
+        }
+
+        .logo-container img {
+            width: 100%;
+            height: auto;
+        }
+
+        .signup-container {
+            background-color: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 300px; /* Adjust the width as needed */
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .signup-container h2 {
+            margin-bottom: 20px;
             color: black;
         }
 
-        .signup-form-container p {
-            font-size: 14px;
-            color: #666;
-            margin-bottom: 20px;
-            text-align: left;
-        }
+        .signup-container input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box; /* Ensures padding is included in width */
+    font-family: 'Poppins', sans-serif;
+}
 
-        .google-login-btn-custom {
-            background-color: #fcfbfb !important;
-            color: #636363 !important;
-            border-style: solid !important;
-            border-color: #e0e0e0 !important;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 10px;
-        }
 
-        .google-login-btn-custom img {
-            margin-right: 10px;
-            vertical-align: middle;
-        }
-
-        .divider {
-            text-align: center;
-            margin: 20px 0;
-            position: relative;
-            color: grey;
-        }
-
-        .divider::before,
-        .divider::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            width: 40%;
-            height: 1px;
-            background: #ccc;
-        }
-
-        .divider::before {
-            left: 0;
-        }
-
-        .divider::after {
-            right: 0;
-        }
-
-        .signup-form-container input {
-            width: 100%;
-            padding: 10px;
-            margin: 5px 0;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-
-        .signup-form-container button {
+        .signup-container button {
             width: 100%;
             padding: 10px;
             background-color: #007bff;
@@ -113,164 +65,63 @@
             color: white;
             font-size: 16px;
             cursor: pointer;
-            margin-top: 10px;
         }
 
-        .signup-image-container {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: #f5f5f5;
+        .signup-container p {
+            color: #0434b6;
+            font-size: small;
         }
 
-        .signup-image-container img {
-            width: 100%;
-            height: auto;
-            object-fit: cover;
+        .signup-container a {
+            color: #0434b6;
+            margin-left: 2px;
+        }
+
+        .radio-group {
+    display: flex;
+    justify-content: flex-start;
+    gap: 20px; /* Adjust gap between options */
+    margin-bottom: 20px;
+}
+
+.radio-group label {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    color: black;
+}
+
+
+        .radio-group input {
+            margin-right: 8px;
         }
     </style>
+    <script defer src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
+    <script type="module" src="script.js" defer></script>
 </head>
 
 <body>
-    <div class="signup-page">
-        <div class="signup-form-container">
-            <h2>Create account</h2>
-            <p class="left-align">The Dashboard for Progress, Initiatives, & Rapid Growth.</p>
-            <button id="google-signup-btn" class="google-login-btn-custom">
-                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="18" height="18" alt="Google icon">
-                Sign up with Google
-            </button>
-            <div class="divider">OR</div>
-            <input type="text" id="signup-name" placeholder="Name" required>
-            <input type="email" id="signup-email" placeholder="Email" required>
-            <input type="password" id="signup-password" placeholder="Create a Password" required>
-            <button id="signup-btn">Sign up</button>
-            <p>Already have an account? <a href="login.html">Log in</a></p>
+    <div class="logo-container">
+        <img src="CoreTrex_Horizontal_White.png" alt="CoreTrex Logo">
+    </div>
+    <div class="signup-container">
+        <h2>Sign Up</h2>
+        <input type="text" id="signup-name" placeholder="Name" required>
+        <input type="email" id="signup-email" placeholder="Email" required>
+        <input type="password" id="signup-password" placeholder="Password" required>
+
+        <div class="radio-group">
+            <label><input type="radio" name="role" value="Client" required> Client</label>
+            <label><input type="radio" name="role" value="Team" required> Team</label>
+           <!-- <label><input type="radio" name="role" value="Admin" required> Admin</label> -->
         </div>
-        <div class="signup-image-container">
-            <img src="coretrex.jpg" alt="CoreTrex Dashboard">
-        </div>
+
+        <p>Already have an account? <a href="login.html">Sign in</a></p>
+        <button id="signup-btn">Create Account</button>
     </div>
 
-    <script src="firebase-config.js"></script>
-    <script>
-        const auth = firebase.auth();
-        const db = firebase.firestore();
-
-        // Google Sign-Up
-        document.getElementById('google-signup-btn').addEventListener('click', () => {
-            const provider = new firebase.auth.GoogleAuthProvider();
-            auth.signInWithPopup(provider)
-                .then((result) => {
-                    const user = result.user;
-                    console.log("Google user signed up:", user);
-                    handleGoogleSignUp(user);
-                })
-                .catch((error) => {
-                    console.error("Google sign-up error:", error);
-                    alert("Google sign-up failed: " + error.message);
-                });
-        });
-
-        // Email/Password Sign-Up
-        document.getElementById('signup-btn').addEventListener('click', async () => {
-            const name = document.getElementById('signup-name').value;
-            const email = document.getElementById('signup-email').value;
-            const password = document.getElementById('signup-password').value;
-
-            try {
-                const userRecord = await checkIfDeleted(email);
-                if (userRecord) {
-                    if (userRecord.data().deletedByAdmin) {
-                        alert("This account has been deleted by the admin.");
-                    } else {
-                        alert("User already exists and is active.");
-                    }
-                } else {
-                    const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-                    const user = userCredential.user;
-                    console.log("User signed up:", user);
-                    await handleEmailPasswordSignUp(user, name);
-                }
-            } catch (error) {
-                console.error("Sign-up error:", error);
-                alert("Sign-up failed: " + error.message);
-            }
-        });
-
-        // Check if the user is marked as deleted by the admin in Firestore
-        async function checkIfDeleted(email) {
-            const querySnapshot = await db.collection("users").where("email", "==", email).get();
-            if (!querySnapshot.empty) {
-                const userDoc = querySnapshot.docs[0];
-                if (userDoc.exists && userDoc.data().deletedByAdmin) {
-                    return userDoc; // User was deleted by admin
-                }
-                return null; // User exists but not deleted
-            }
-            return null; // No user found
-        }
-
-        async function handleGoogleSignUp(user) {
-            try {
-                await createOrUpdateUser(user, user.displayName);
-                loadUserData(user);
-            } catch (error) {
-                console.error("Error handling Google sign-up:", error);
-                alert("Error occurred while processing your sign-up. Please try again.");
-            }
-        }
-
-        async function handleEmailPasswordSignUp(user, name) {
-            try {
-                await createOrUpdateUser(user, name);
-                loadUserData(user);
-            } catch (error) {
-                console.error("Error handling email/password sign-up:", error);
-                alert("Error occurred while processing your sign-up. Please try again.");
-            }
-        }
-
-        async function createOrUpdateUser(user, name) {
-            const userDocRef = db.collection("users").doc(user.uid);
-            const userDoc = await userDocRef.get();
-
-            if (!userDoc.exists) {
-                await userDocRef.set({
-                    name: name,
-                    email: user.email,
-                    role: "Client",
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                    deletedByAdmin: false // Assume new account isn't deleted by admin
-                });
-            }
-        }
-
-        async function loadUserData(user) {
-            try {
-                const userDocRef = db.collection("users").doc(user.uid);
-                const docSnap = await userDocRef.get();
-                if (docSnap.exists) {
-                    const userData = docSnap.data();
-                    console.log("User Data:", userData);
-                    localStorage.setItem("userData", JSON.stringify(userData));
-                    window.location.href = "index.html";
-                } else {
-                    console.log("No such user!");
-                    window.location.href = "error22.html";
-                }
-            } catch (error) {
-                console.log("Error getting user data:", error);
-            }
-        }
-
-        auth.onAuthStateChanged((user) => {
-            if (user) {
-                loadUserData(user);
-            }
-        });
-    </script>
+    <script src="signup.js"></script>
 </body>
 
 </html>
