@@ -241,38 +241,61 @@ function logout() {
   });
 }
 async function loadUserData(user) {
-  document.getElementById('loader1').style.display = 'flex';
-  console.log("User UID:", user.uid); // Log UID for debugging
-  const userDocRef = doc(db, "users", user.uid); // Reference to the user document
-  try {
-    const docSnap = await getDoc(userDocRef);
-    if (docSnap.exists()) {
-      const userData = docSnap.data();
-      console.log("User Data:", userData);
-      if (userData.role === "Admin") {
-        const customEvent = new Event('click');
-        loadContent(customEvent, 'admin.html');
-        document.getElementById('admin-dashboard').style.display = 'block';
-        console.log("Admin data loaded successfully!");
-      }
-      localStorage.setItem("userData", JSON.stringify(userData));
-      if (userData.role === "Client" || userData.role === "Team") {
-        loadTeamData(userData);
-        const customEvent = new Event('click');
-        loadContent(customEvent, 'kpis.html');
-      } else if (userData.role === "Admin") {
-        loadAdminData();
-      }
-    } else {
-      console.log("No such user!");
-      window.location.href = "/error.html";
+    document.getElementById('loader1').style.display = 'flex';
+    console.log("User UID:", user.uid); // Log UID for debugging
 
+    const userDocRef = doc(db, "users", user.uid); // Reference to the user document
+
+    try {
+        const docSnap = await getDoc(userDocRef);
+
+        if (docSnap.exists()) {
+            const userData = docSnap.data();
+            console.log("User Data:", userData);
+
+            // Check if the user has been deleted by admin
+            if (userData.deletedByAdmin) {
+                console.log("This account has been deleted by the admin.");
+                // Optionally, provide a way to re-sign up or redirect the user
+                alert("Your account has been deleted by the admin. Please contact support or re-sign up.");
+                window.location.href = "/signup.html"; // Redirect to the signup page
+                return; // Stop further execution
+            }
+
+            // Proceed with loading user data based on role
+            if (userData.role === "Admin") {
+                const customEvent = new Event('click');
+                loadContent(customEvent, 'admin.html');
+                document.getElementById('admin-dashboard').style.display = 'block';
+                console.log("Admin data loaded successfully!");
+            }
+
+            localStorage.setItem("userData", JSON.stringify(userData));
+
+            if (userData.role === "Client" || userData.role === "Team") {
+                loadTeamData(userData);
+                const customEvent = new Event('click');
+                loadContent(customEvent, 'kpis.html');
+            } else if (userData.role === "Admin") {
+                loadAdminData();
+            }
+
+        } else {
+            console.log("No such user!");
+            // Redirect to error page or allow the user to sign up
+            alert("No user data found. Please sign up.");
+            window.location.href = "/signup.html"; // Redirect to the signup page
+        }
+
+    } catch (error) {
+        console.log("Error getting user data:", error);
+        alert("An error occurred while fetching your data. Please try again.");
+        window.location.href = "/error.html"; // Redirect to error page if needed
     }
-  } catch (error) {
-    console.log("Error getting user data:", error);
-  }
-  document.getElementById('loader1').style.display = 'none';
+
+    document.getElementById('loader1').style.display = 'none';
 }
+
 
 
 function loadClientData(clientId) {
