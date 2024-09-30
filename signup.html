@@ -158,6 +158,7 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
 
+        // Google Sign-Up
         document.getElementById('google-signup-btn').addEventListener('click', () => {
             const provider = new firebase.auth.GoogleAuthProvider();
             auth.signInWithPopup(provider)
@@ -172,6 +173,7 @@
                 });
         });
 
+        // Email/Password Sign-Up
         document.getElementById('signup-btn').addEventListener('click', async () => {
             const name = document.getElementById('signup-name').value;
             const email = document.getElementById('signup-email').value;
@@ -197,12 +199,17 @@
             }
         });
 
+        // Check if the user is marked as deleted by the admin in Firestore
         async function checkIfDeleted(email) {
             const querySnapshot = await db.collection("users").where("email", "==", email).get();
             if (!querySnapshot.empty) {
-                return querySnapshot.docs[0];
+                const userDoc = querySnapshot.docs[0];
+                if (userDoc.exists && userDoc.data().deletedByAdmin) {
+                    return userDoc; // User was deleted by admin
+                }
+                return null; // User exists but not deleted
             }
-            return null;
+            return null; // No user found
         }
 
         async function handleGoogleSignUp(user) {
