@@ -130,7 +130,6 @@
             object-fit: cover;
         }
     </style>
-    <script type="module" src="script.js" defer></script>
 </head>
 
 <body>
@@ -156,11 +155,9 @@
 
     <script src="firebase-config.js"></script>
     <script>
-        // Initialize Firebase Auth and Firestore
         const auth = firebase.auth();
         const db = firebase.firestore();
 
-        // Google Sign-Up
         document.getElementById('google-signup-btn').addEventListener('click', () => {
             const provider = new firebase.auth.GoogleAuthProvider();
             auth.signInWithPopup(provider)
@@ -175,24 +172,20 @@
                 });
         });
 
-        // Email/Password Sign-Up
         document.getElementById('signup-btn').addEventListener('click', async () => {
             const name = document.getElementById('signup-name').value;
             const email = document.getElementById('signup-email').value;
             const password = document.getElementById('signup-password').value;
 
             try {
-                const userRecord = await checkUserExists(email);
+                const userRecord = await checkIfDeleted(email);
                 if (userRecord) {
-                    if (userRecord.disabled) {
-                        // Reactivate disabled account
-                        await auth.updateUser(userRecord.uid, { disabled: false });
-                        alert("Account reactivated!");
+                    if (userRecord.data().deletedByAdmin) {
+                        alert("This account has been deleted by the admin.");
                     } else {
                         alert("User already exists and is active.");
                     }
                 } else {
-                    // Create new account
                     const userCredential = await auth.createUserWithEmailAndPassword(email, password);
                     const user = userCredential.user;
                     console.log("User signed up:", user);
@@ -204,17 +197,12 @@
             }
         });
 
-        // Function to check if user already exists in Firebase Auth
-        async function checkUserExists(email) {
-            try {
-                const userRecord = await firebase.auth().getUserByEmail(email);
-                return userRecord; // User exists
-            } catch (error) {
-                if (error.code === 'auth/user-not-found') {
-                    return null; // User does not exist
-                }
-                throw error; // Other error occurred
+        async function checkIfDeleted(email) {
+            const querySnapshot = await db.collection("users").where("email", "==", email).get();
+            if (!querySnapshot.empty) {
+                return querySnapshot.docs[0];
             }
+            return null;
         }
 
         async function handleGoogleSignUp(user) {
@@ -247,6 +235,7 @@
                     email: user.email,
                     role: "Client",
                     createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    deletedByAdmin: false // Assume new account isn't deleted by admin
                 });
             }
         }
@@ -269,7 +258,6 @@
             }
         }
 
-        // Automatically load user data if already signed in
         auth.onAuthStateChanged((user) => {
             if (user) {
                 loadUserData(user);
