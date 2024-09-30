@@ -265,7 +265,7 @@ async function loadUserData(user) {
       }
     } else {
       console.log("No such user!");
-      window.location.href = "/error.html";
+      window.location.href = "/error2.html";
 
     }
   } catch (error) {
