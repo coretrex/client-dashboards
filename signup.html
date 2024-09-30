@@ -37,30 +37,25 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
-            max-width: 400px; /* Limit the width of the form container */
-            margin: auto; /* Center the form container */
+            max-width: 400px;
+            margin: auto;
         }
 
         .signup-form-container h2 {
             font-size: 30px;
             margin-bottom: 0px;
-            color: black; /* Set the color to black */
+            color: black;
         }
 
         .signup-form-container p {
             font-size: 14px;
             color: #666;
             margin-bottom: 20px;
-            text-align: left; /* Center the text */
-        }
-
-        .signup-form-container p.left-align {
-            text-align: left; /* Left align the specific paragraph */
+            text-align: left;
         }
 
         .google-login-btn-custom {
-            font-family: 'Poppins', sans-serif;
-            background-color: #fcfbfb !important; /* Your desired background color */
+            background-color: #fcfbfb !important;
             color: #636363 !important;
             border-style: solid !important;
             border-color: #e0e0e0 !important;
@@ -79,7 +74,7 @@
             text-align: center;
             margin: 20px 0;
             position: relative;
-            color: grey; /* Set the color to grey */
+            color: grey;
         }
 
         .divider::before,
@@ -107,11 +102,9 @@
             border: 1px solid #ccc;
             border-radius: 4px;
             box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
         }
 
         .signup-form-container button {
-            font-family: 'Poppins', sans-serif;
             width: 100%;
             padding: 10px;
             background-color: #007bff;
@@ -121,22 +114,6 @@
             font-size: 16px;
             cursor: pointer;
             margin-top: 10px;
-        }
-
-        .signup-form-container .terms a {
-            color: rgb(170, 170, 170); /* Set the color to grey */
-            text-decoration: underline;
-            font-weight: normal;
-        }
-
-        .signup-form-container a {
-            color: #000000;
-            text-decoration: underline;
-            font-weight: bold;
-        }
-
-        .signup-form-container a:hover {
-            text-decoration: underline;
         }
 
         .signup-image-container {
@@ -176,13 +153,14 @@
             <img src="coretrex.jpg" alt="CoreTrex Dashboard">
         </div>
     </div>
+
     <script src="firebase-config.js"></script>
     <script>
-        // Get references to auth and firestore
+        // Initialize Firebase Auth and Firestore
         const auth = firebase.auth();
         const db = firebase.firestore();
 
-        // Google Sign Up
+        // Google Sign-Up
         document.getElementById('google-signup-btn').addEventListener('click', () => {
             const provider = new firebase.auth.GoogleAuthProvider();
             auth.signInWithPopup(provider)
@@ -197,23 +175,47 @@
                 });
         });
 
-        // Email/Password Sign Up
-        document.getElementById('signup-btn').addEventListener('click', () => {
+        // Email/Password Sign-Up
+        document.getElementById('signup-btn').addEventListener('click', async () => {
             const name = document.getElementById('signup-name').value;
             const email = document.getElementById('signup-email').value;
             const password = document.getElementById('signup-password').value;
 
-            auth.createUserWithEmailAndPassword(email, password)
-                .then((userCredential) => {
+            try {
+                const userRecord = await checkUserExists(email);
+                if (userRecord) {
+                    if (userRecord.disabled) {
+                        // Reactivate disabled account
+                        await auth.updateUser(userRecord.uid, { disabled: false });
+                        alert("Account reactivated!");
+                    } else {
+                        alert("User already exists and is active.");
+                    }
+                } else {
+                    // Create new account
+                    const userCredential = await auth.createUserWithEmailAndPassword(email, password);
                     const user = userCredential.user;
                     console.log("User signed up:", user);
-                    handleEmailPasswordSignUp(user, name);
-                })
-                .catch((error) => {
-                    console.error("Sign-up error:", error);
-                    alert("Sign-up failed: " + error.message);
-                });
+                    await handleEmailPasswordSignUp(user, name);
+                }
+            } catch (error) {
+                console.error("Sign-up error:", error);
+                alert("Sign-up failed: " + error.message);
+            }
         });
+
+        // Function to check if user already exists in Firebase Auth
+        async function checkUserExists(email) {
+            try {
+                const userRecord = await firebase.auth().getUserByEmail(email);
+                return userRecord; // User exists
+            } catch (error) {
+                if (error.code === 'auth/user-not-found') {
+                    return null; // User does not exist
+                }
+                throw error; // Other error occurred
+            }
+        }
 
         async function handleGoogleSignUp(user) {
             try {
@@ -243,7 +245,8 @@
                 await userDocRef.set({
                     name: name,
                     email: user.email,
-                    role: "Client", // You might want to set a default role or ask the user to choose
+                    role: "Client",
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
                 });
             }
         }
@@ -256,7 +259,6 @@
                     const userData = docSnap.data();
                     console.log("User Data:", userData);
                     localStorage.setItem("userData", JSON.stringify(userData));
-                    // Always redirect to index.html
                     window.location.href = "index.html";
                 } else {
                     console.log("No such user!");
@@ -267,7 +269,7 @@
             }
         }
 
-        // Check if user is already signed in
+        // Automatically load user data if already signed in
         auth.onAuthStateChanged((user) => {
             if (user) {
                 loadUserData(user);
